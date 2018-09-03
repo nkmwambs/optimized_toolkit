@@ -6,4 +6,5 @@ STEP 2: Dump the sql files in optimized_toolkit/database in the order of:
   - accounts.sql
   - voucher_header.sql
   - voucher_body.sql
-  STEP 3: On the Git CLI go to htdocs folder (Assuming using XAMPP) type $ git clone 
+  STEP 3: On the Git CLI go to htdocs folder (Assuming using XAMPP) type $ git clone https://github.com/nkmwambs/optimized_toolkit.git
+  STEP 4: Go to the browser url and type http://localhost/optimized_toolkit
