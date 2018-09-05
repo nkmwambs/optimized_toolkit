@@ -4,6 +4,7 @@
 
 - Dump the sql files in optimized_toolkit/database in the order of:
   - tables_schema.sql
+  - storedprocedures.sql
   - accounts.sql
   - voucher_header.sql
   - voucher_body.sql
