@@ -16,7 +16,10 @@
 <body class="page-body">
 	
 	<div class="container">
-		<a href="<?=base_url();?>Welcome/cash_journal">Show Journal</a>
+		<p><?php
+			//echo $this->uri->segment(2);
+		?></p>
+		<a href="<?=base_url();?>Welcome/finance/show_journal/KE345/<?=strtotime("2018-01-01");?>/<?=strtotime("2018-01-31");?>">Show Journal</a>
 	</div>
 
 

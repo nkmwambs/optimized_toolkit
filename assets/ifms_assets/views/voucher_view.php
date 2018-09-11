@@ -1,8 +1,11 @@
 <hr />
+<?php
+//print_r($voucher);
+?>
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">						
 			
-			<a href="<?php echo base_url().$segments[1].'/'.$segments[2];?>" class="btn btn-default">Back</a>
+			<a href="<?php echo base_url().$segments[1].'/'.$segments[2];?>/show_journal/<?=$segments[4];?>/<?=$segments[5];?>/<?=$segments[6];?>" class="btn btn-default">Back</a>
 			
 			<!-- <center> -->
 			    <a onclick="PrintElem('#voucher_print')" class="btn btn-default btn-icon icon-left hidden-print pull-right">

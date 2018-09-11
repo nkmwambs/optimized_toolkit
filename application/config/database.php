@@ -74,12 +74,12 @@ $active_group = 'default';
 $query_builder = TRUE;
 
 $db['default'] = array(
-	'dsn'	=> '',
+	'dsn'	=>  'mysql:host=localhost;dbname=compatl8_mvc',
 	'hostname' => 'localhost',
 	'username' => 'root',
 	'password' => '',
 	'database' => 'compatl8_mvc',
-	'dbdriver' => 'mysqli',
+	'dbdriver' => 'pdo',
 	'dbprefix' => '',
 	'pconnect' => FALSE,
 	'db_debug' => (ENVIRONMENT !== 'production'),

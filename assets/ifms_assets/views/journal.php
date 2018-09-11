@@ -27,7 +27,7 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Scroll Months: </label>	
 					<div class="col-sm-5">
-						<input type="text" id="spinner" name="spinned_months" value="<?php echo isset($segments[4])?$segments[4]:0;?>" readonly="readonly"/>
+						<input type="text" id="spinner" name="spinned_months" value="<?php echo isset($segments[4])?0:0;?>" readonly="readonly"/>
 									
 					</div>
 				<div class="col-sm-4">
@@ -107,7 +107,7 @@
 							foreach($details_values as $key=>$col){
 								if($key == "VNumber"){
 							?>		
-									<td><a href="<?=base_url().$state_info['controller'].'/'.$state_info['method'].'/show_voucher/'.$state_info['project'].'/'.$col;?>/<?php echo isset($segments[4])?$segments[4]:0;?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' class="check_voucher"/><?=$col;?></a></td>
+									<td><a href="<?=base_url().$state_info['controller'].'/'.$state_info['method'].'/show_voucher/'.$state_info['project'];?>/<?php echo $segments[5];?>/<?php echo strtotime(date("Y-m-t",$segments[5]));?>/<?=$col;?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' class="check_voucher"/><?=$col;?></a></td>
 							
 							<?php
 								}else{

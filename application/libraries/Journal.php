@@ -28,6 +28,7 @@ class Journal_Layout{
 		/** Loading Config and Helpers **/
 		$this->CI->config->load('ifms');
 		$this->CI->load->helper('url');
+		$this->CI->load->database();
 				
 	}
 	
@@ -193,7 +194,7 @@ class Journal extends Journal_Layout{
 		->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);
     }
 
-    private function get_current_month_transactions_for_voucher()
+    public function get_current_month_transactions_for_voucher()
     {	
 		return $this->basic_model
 		->get_voucher_transactions($this->icpNo,$this->start_date,$this->end_date);
@@ -476,11 +477,11 @@ class Journal extends Journal_Layout{
 		
 	}
 	
-	public function pre_render_view_voucher(){
+	private function pre_render_view_voucher(){
 		
 		$vouchers = $this->voucher_transactions();
 		
-		$voucher_number = $this->CI->uri->segment(5);
+		$voucher_number = $this->CI->uri->segment(7);
 		
 		$data['view'] = "voucher_view";
 		
@@ -499,18 +500,18 @@ class Journal extends Journal_Layout{
 		
 		if($this->CI->uri->segment(3) == "show_voucher"){
 			if($this->CI->uri->segment(6)){
-				$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(6)." months",strtotime($this->start_date)));
-				$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(6)." months",strtotime($this->start_date)));
-				$this->set_date(array("START_DATE"=>$start_date,"END_DATE"=>$end_date));
+				$start_date = date("Y-m-01",$this->CI->uri->segment(5));
+				$end_date = date("Y-m-t",$this->CI->uri->segment(6));
+				$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
 			}
 			$preference_data = $this->pre_render_view_voucher();
 		}elseif($this->CI->uri->segment(3) == "scroll_journal"){
 			$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(4)." months",strtotime($this->start_date)));
 			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(4)." months",strtotime($this->start_date)));
-			$this->set_date(array("START_DATE"=>$start_date,"END_DATE"=>$end_date));
+			$this->set_date(array("START_DATE"=>strtotime($start_date),"END_DATE"=>strtotime($end_date)));
 			
 			$preference_data = $this->pre_render_journal();		
-		}else{
+		}elseif($this->CI->uri->segment(3) == "show_journal"){
 			$preference_data = $this->pre_render_journal();	
 		}
 		
