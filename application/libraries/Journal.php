@@ -189,6 +189,14 @@ class Journal extends Journal_Layout{
 		return $this->end_date;
 	}
 	
+	protected function get_start_date_epoch(){
+		return strtotime($this->start_date);
+	}
+	
+	protected function get_end_date_epoch(){
+		return strtotime($this->end_date);
+	}
+	
 	protected function get_controller(){
 		return $this->CI->router->fetch_class();;
 	}
@@ -526,7 +534,7 @@ class Journal extends Journal_Layout{
 	private function pre_render_print_vouchers(){
 		$data['view'] = "print_vouchers";
 		
-		$data['segments'] = $this->CI->uri->segment_array();
+		//$data['segments'] = $this->CI->uri->segment_array();
 		
 		$data['selected_vouchers'] = $this->CI->input->post();
 		

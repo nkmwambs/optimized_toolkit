@@ -4,7 +4,7 @@
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
 		<div class="well" style="text-align: center;"><?=$this->get_project_id();?> Cash Journal
-			for the month ending <?=date("tS F Y",strtotime($this->get_end_date()));?></div>
+			for the month ending <?=date("tS F Y",$this->get_end_date_epoch());?></div>
 	</div>	
 </div>
 
@@ -103,7 +103,7 @@
 							foreach($details_values as $key=>$col){
 								if($key == "VNumber"){
 							?>		
-									<td><a href="<?=base_url().$this->get_controller().'/'.$this->get_method().'/show_voucher/'.$this->get_project_id();?>/<?php echo $this->get_start_date();?>/<?php echo $this->get_end_date();?>/<?=$col;?>/<?php echo $this->get_first_extra_segment();?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
+									<td><a href="<?=base_url().$this->get_controller().'/'.$this->get_method().'/show_voucher/'.$this->get_project_id();?>/<?php echo $this->get_start_date_epoch();?>/<?php echo $this->get_end_date_epoch();?>/<?=$col;?>/<?php echo $this->get_first_extra_segment();?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
 							
 							<?php
 								}else{
@@ -166,7 +166,7 @@
 	
 	$("#spinner_btn").click(function(ev){
 		//alert($("#spinner").val());
-		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/scroll_journal/<?=$this->get_project_id();?>/<?=$this->get_start_date();?>/<?=$this->get_end_date();?>/"+$("#spinner").val();
+		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/scroll_journal/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_end_date_epoch();?>/"+$("#spinner").val();
 		$("#scroll").prop("method","POST");
 		$("#scroll").prop("action",url);
 		$("#scroll").submit();
@@ -176,7 +176,7 @@
 	
 	
 $("#print_vouchers").click(function(){
-		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/print_vouchers/<?=$this->get_project_id();?>/<?=$this->get_start_date();?>/<?=$this->get_end_date();?>/<?=$this->get_first_extra_segment();?>";
+		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/print_vouchers/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_end_date_epoch();?>/<?=$this->get_first_extra_segment();?>";
 	
 		$("#frm_vouchers").prop("method","POST");
 		$("#frm_vouchers").prop("action",url);

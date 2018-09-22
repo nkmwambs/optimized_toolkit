@@ -8,7 +8,7 @@ foreach($selected_vouchers['vouchers'] as $selected) $to_print[] = $all_vouchers
 <hr />
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
-			<a href="<?php echo base_url().$segments[1].'/'.$segments[2];?>/<?=isset($segments[8])?"scroll_journal":"show_journal";?>/<?=$segments[4];?>/<?=$segments[5];?>/<?=$segments[6];?>/<?=isset($segments[8])?$segments[8]:0;?>" class="btn btn-default">Back</a>
+			<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/<?=$this->get_first_extra_segment()!=""?"scroll_journal":"show_journal";?>/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_end_date_epoch();?>/<?=$this->get_first_extra_segment();?>" class="btn btn-default">Back</a>
 			
 			<!-- <center> -->
 			    <a onclick="PrintElem('#voucher_print')" class="btn btn-default btn-icon icon-left hidden-print pull-right">
@@ -32,7 +32,7 @@ foreach($to_print as $voucher){
 						<table  class="table table-striped datatable">
 							<thead>
 								<tr>
-									<th colspan="6" style="text-align:center;"><?php echo $segments[4];?><br>Transaction Voucher</th>
+									<th colspan="6" style="text-align:center;"><?php echo $this->get_project_id();?><br>Transaction Voucher</th>
 								</tr>
 							</thead>
 							<tbody>
