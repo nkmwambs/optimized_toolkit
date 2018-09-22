@@ -59,6 +59,84 @@ class Journal_model extends CI_Model{
 		return $result;
 	}
 	
+	// private function get_current_voucher(){
+		// return (array)$this->get_icp_max_voucher($this->get_project_id());
+	// }
+// 	
+	// private function get_current_financial_report(){
+		// return (array)$this->get_max_report_submitted($this->get_project_id());
+	// }
+	
+	public function get_current_financial_report_date($icp=""){
+		extract((array)$this->get_max_report_submitted($icp));
+		
+		return $closureDate;
+	} 
+	
+	public function get_current_financial_report_validated($icp=""){
+		extract((array)$this->get_max_report_submitted($icp));
+		
+		return $allowEdit == 1?false:true;
+	} 
+	
+	public function get_current_financial_report_submitted($icp=""){
+		extract((array)$this->get_max_report_submitted($icp=""));
+		
+		return $submitted == 1?true:false;
+	}
+	
+	public function get_current_financial_report_is_initial($icp=""){
+		extract((array)$this->get_max_report_submitted($icp));
+		
+		return $systemOpening == 1?true:false;
+	}
+	
+	public function get_current_financial_report_timestamp($icp=""){
+		extract((array)$this->get_max_report_submitted($icp));
+		
+		return strtotime($stmp);
+	}
+	
+	public function get_current_voucher_date($icp=""){
+		extract((array)$this->get_icp_max_voucher($icp));
+		
+		return $TDate;
+	}
+	
+	public function get_current_voucher_number($icp=""){
+		extract((array)$this->get_icp_max_voucher($icp));
+		
+		return $VNumber;
+	}
+	
+	public function get_current_voucher_timestamp($icp=""){
+		extract((array)$this->get_icp_max_voucher($icp));
+		
+		return $unixStmp;
+	}
+	
+	public function get_current_voucher_fy($icp=""){
+		extract((array)$this->get_icp_max_voucher($icp));
+		
+		return $Fy;
+	}
+	
+	function get_transacting_month($icp=""){
+		$current_voucher_date = strtotime($this->get_current_voucher_date($icp));
+		$current_report_date = strtotime($this->get_current_financial_report_date($icp));
+		
+		$params = array();
+		
+		if($current_voucher_date > $current_report_date){
+			$params['start_date'] = strtotime(date("Y-m-01",$current_voucher_date));
+			$params['end_date'] = strtotime(date("Y-m-t",$current_voucher_date));
+		}else{
+			
+		}
+		
+		return $params;
+	}
+	
 	function start_cash_balance($icpNo="",$month_start=""){
 		
 		$last_month_cash_balance = "";

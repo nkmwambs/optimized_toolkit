@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
 <?php
-//print_r($this->get_transacting_month())
+// print_r($this->test())
 ?>
 <hr/>
 <div class="row">

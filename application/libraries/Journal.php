@@ -135,12 +135,13 @@ class Journal extends Journal_Layout{
 	function __construct(){
 		parent::__construct();
 		$this->CI->load->model("Journal_model");
-		$this->basic_model = new Journal_model();
+		$this->basic_model 	= new Journal_model();
 		
 		/**Initialization**/
+		$transaction_month = $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
 		$this->icpNo = $this->CI->uri->segment(4);
-		$this->start_date = "2018-06-01";//date("Y-m-d",$this->CI->uri->segment(5));
-		$this->end_date = "2018-06-30";//date("Y-m-d",$this->CI->uri->segment(6));
+		$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
+		$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
 	}
 		
 	public function set_project_id($project_id=""){
@@ -148,8 +149,8 @@ class Journal extends Journal_Layout{
 	}
 
 	public function set_date($params=array()){
-		$this->start_date = $params['START_DATE'];
-		$this->end_date = $params['END_DATE'];
+		$this->start_date	= $params['START_DATE'];
+		$this->end_date 	= $params['END_DATE'];
 	}
 	
 	function opening_cash_balance(){
@@ -212,86 +213,7 @@ class Journal extends Journal_Layout{
 	protected function get_second_extra_segment(){
 		return $this->CI->uri->segment(8)?$this->CI->uri->segment(8):"";
 	}
-	
-	private function get_current_voucher(){
-		return (array)$this->basic_model->get_icp_max_voucher($this->get_project_id());
-	}
-	
-	private function get_current_financial_report(){
-		return (array)$this->basic_model->get_max_report_submitted($this->get_project_id());
-	}
-	
-	protected function get_current_financial_report_date(){
-		extract($this->get_current_financial_report());
 		
-		return $closureDate;
-	} 
-	
-	protected function get_current_financial_report_validated(){
-		extract($this->get_current_financial_report());
-		
-		return $allowEdit == 1?false:true;
-	} 
-	
-	protected function get_current_financial_report_submitted(){
-		extract($this->get_current_financial_report());
-		
-		return $submitted == 1?true:false;
-	}
-	
-	protected function get_current_financial_report_is_initial(){
-		extract($this->get_current_financial_report());
-		
-		return $systemOpening == 1?true:false;
-	}
-	
-	protected function get_current_financial_report_timestamp(){
-		extract($this->get_current_financial_report());
-		
-		return strtotime($stmp);
-	}
-	
-	protected function get_current_voucher_date(){
-		extract($this->get_current_voucher());
-		
-		return $TDate;
-	}
-	
-	protected function get_current_voucher_number(){
-		extract($this->get_current_voucher());
-		
-		return $VNumber;
-	}
-	
-	protected function get_current_voucher_timestamp(){
-		extract($this->get_current_voucher());
-		
-		return $unixStmp;
-	}
-	
-	protected function get_current_voucher_fy(){
-		extract($this->get_current_voucher());
-		
-		return $Fy;
-	}
-	
-	protected function get_transacting_month(){
-		$current_voucher_date = strtotime($this->get_current_voucher_date());
-		$current_report_date = strtotime($this->get_current_financial_report_date());
-		
-		$params = array();
-		
-		if($current_voucher_date > $current_report_date){
-			$params['start_date'] = strtotime(date("Y-m-01",$current_voucher_date));
-			$params['end_date'] = strtotime(date("Y-m-t",$current_voucher_date));
-		}else{
-			
-		}
-		
-		return $params;
-	}
-	
-	
 	/**
 	 * This is a getter that retrieves records from the database to popluate the Cash Journal
 	 */

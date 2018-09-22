@@ -225,16 +225,16 @@ class CI_DB_pdo_driver extends CI_DB {
 	 * @param	string
 	 * @return	string
 	 */
-	protected function _escape_str($str)
-	{
-		// Escape the string
-		$str = $this->conn_id->quote($str);
-
-		// If there are duplicated quotes, trim them away
-		return ($str[0] === "'")
-			? substr($str, 1, -1)
-			: $str;
-	}
+	// protected function _escape_str($str)
+	// {
+		// // Escape the string
+		// $str = $this->conn_id->quote($str);
+// 
+		// // If there are duplicated quotes, trim them away
+		// return ($str[0] === "'")
+			// ? substr($str, 1, -1)
+			// : $str;
+	// }
 
 	// --------------------------------------------------------------------
 
