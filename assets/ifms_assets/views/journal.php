@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
 <?php
-	//echo date("Y-m-d",strtotime("first day of next month"));
+	//print_r($transacting_month);
 ?>
 <hr/>
 <div class="row">
@@ -15,7 +15,13 @@
 	<div class="col-sm-offset-1 col-sm-5">
 		<div class="btn btn-default" id="select_btn">Select All Vouchers</div>
 		<div  class="btn btn-default" id="print_vouchers">Print Selected Vouchers</div>
-		<a class="btn btn-default" href="<?=base_url();?>Welcome/finance/create_voucher/KE345/<?=strtotime("2018-01-01");?>/<?=strtotime("2018-01-31");?>">New Voucher</a>		
+		<?php 
+			if($transacting_month['start_date'] == $this->get_start_date_epoch()){
+		?>
+			<a class="btn btn-default" href="<?=base_url();?>Welcome/finance/create_voucher/KE345/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>">New Voucher</a>		
+		<?php
+			}
+		?>
 	</div>
 
 

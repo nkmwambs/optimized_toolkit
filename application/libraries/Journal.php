@@ -143,6 +143,10 @@ class Journal extends Journal_Layout{
 		$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
 		$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
 	}
+	
+	protected function get_transacting_month(){
+		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
+	}
 		
 	public function set_project_id($project_id=""){
 		$this->icpNo = $project_id;
@@ -510,7 +514,7 @@ class Journal extends Journal_Layout{
  		
 		$data['all_accounts_labels'] = $this->linear_accounts_utilized();
 		
-		//$data['segments'] = $this->CI->uri->segment_array();
+		$data['transacting_month'] = $this->get_transacting_month();
 		
 		$data['view'] = "journal";
  		
