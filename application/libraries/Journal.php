@@ -139,8 +139,8 @@ class Journal extends Journal_Layout{
 		
 		/**Initialization**/
 		$this->icpNo = $this->CI->uri->segment(4);
-		$this->start_date = date("Y-m-d",$this->CI->uri->segment(5));
-		$this->end_date = date("Y-m-d",$this->CI->uri->segment(6));
+		$this->start_date = "2018-06-01";//date("Y-m-d",$this->CI->uri->segment(5));
+		$this->end_date = "2018-06-30";//date("Y-m-d",$this->CI->uri->segment(6));
 	}
 		
 	public function set_project_id($project_id=""){
@@ -189,12 +189,20 @@ class Journal extends Journal_Layout{
 		return $this->end_date;
 	}
 	
-	protected function get_state_info(){
-		$this->state_data['project'] = $this->get_project_id();
-		$this->state_data['controller'] = $this->CI->router->fetch_class();
-		$this->state_data['method'] = $this->CI->router->fetch_method();
-		
-		return $this->state_data;
+	protected function get_controller(){
+		return $this->CI->router->fetch_class();;
+	}
+	
+	protected function get_method(){
+		return $this->CI->router->fetch_method();;
+	}
+	
+	protected function get_first_extra_segment(){
+		return $this->CI->uri->segment(7)?$this->CI->uri->segment(7):"";
+	}
+	
+	protected function get_second_extra_segment(){
+		return $this->CI->uri->segment(8)?$this->CI->uri->segment(8):"";
 	}
 	
 	/**
@@ -492,9 +500,7 @@ class Journal extends Journal_Layout{
  		
 		$data['all_accounts_labels'] = $this->linear_accounts_utilized();
 		
-		$data['state_info'] = $this->get_state_info();
-		
-		$data['segments'] = $this->CI->uri->segment_array();
+		//$data['segments'] = $this->CI->uri->segment_array();
 		
 		$data['view'] = "journal";
  		

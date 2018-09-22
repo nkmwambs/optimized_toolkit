@@ -22,7 +22,7 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Scroll Months: </label>	
 					<div class="col-sm-5">
-						<input type="text" id="spinner" name="spinned_months" value="<?php echo isset($segments[7])?$segments[7]:0;?>" readonly="readonly"/>
+						<input type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_first_extra_segment();?>" readonly="readonly"/>
 									
 					</div>
 				<div class="col-sm-4">
@@ -103,7 +103,7 @@
 							foreach($details_values as $key=>$col){
 								if($key == "VNumber"){
 							?>		
-									<td><a href="<?=base_url().$state_info['controller'].'/'.$state_info['method'].'/show_voucher/'.$state_info['project'];?>/<?php echo $segments[5];?>/<?php echo strtotime(date("Y-m-t",$segments[5]));?>/<?=$col;?>/<?php echo isset($segments[7])?$segments[7]:"";?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
+									<td><a href="<?=base_url().$this->get_controller().'/'.$this->get_method().'/show_voucher/'.$this->get_project_id();?>/<?php echo $this->get_start_date();?>/<?php echo $this->get_end_date();?>/<?=$col;?>/<?php echo $this->get_first_extra_segment();?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
 							
 							<?php
 								}else{
@@ -166,7 +166,7 @@
 	
 	$("#spinner_btn").click(function(ev){
 		//alert($("#spinner").val());
-		var url = "<?=base_url();?><?=$state_info['controller'];?>/<?=$state_info['method'];?>/scroll_journal/<?=$this->get_project_id();?>/<?=$segments[5];?>/<?=$segments[6];?>/"+$("#spinner").val();
+		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/scroll_journal/<?=$this->get_project_id();?>/<?=$this->get_start_date();?>/<?=$this->get_end_date();?>/"+$("#spinner").val();
 		$("#scroll").prop("method","POST");
 		$("#scroll").prop("action",url);
 		$("#scroll").submit();
@@ -176,7 +176,7 @@
 	
 	
 $("#print_vouchers").click(function(){
-		var url = "<?=base_url();?><?=$segments[1];?>/<?=$segments[2];?>/print_vouchers/<?=$segments[4];?>/<?=$segments[5];?>/<?=$segments[6];?>/<?=isset($segments[7])?$segments[7]:"";?>";
+		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/print_vouchers/<?=$this->get_project_id();?>/<?=$this->get_start_date();?>/<?=$this->get_end_date();?>/<?=$this->get_first_extra_segment();?>";
 	
 		$("#frm_vouchers").prop("method","POST");
 		$("#frm_vouchers").prop("action",url);

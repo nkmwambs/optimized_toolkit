@@ -37,7 +37,8 @@
 					//echo strtotime("1970-01-01 00:00:00");
 				?>
 			</p>
-			<p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/<?=strtotime("2018-01-01");?>/<?=strtotime("2018-01-31");?>">Show Journal</a></p>
+			<!-- <p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/<?=strtotime("2018-01-01");?>/<?=strtotime("2018-01-31");?>">Show Journal</a></p> -->
+			<p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/">Show Journal</a></p>
 			<p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/create_voucher/KE345/<?=strtotime("2018-01-01");?>/<?=strtotime("2018-01-31");?>">Create a Voucher</a></p>
 			
 	</div>
