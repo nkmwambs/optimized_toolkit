@@ -213,6 +213,85 @@ class Journal extends Journal_Layout{
 		return $this->CI->uri->segment(8)?$this->CI->uri->segment(8):"";
 	}
 	
+	private function get_current_voucher(){
+		return (array)$this->basic_model->get_icp_max_voucher($this->get_project_id());
+	}
+	
+	private function get_current_financial_report(){
+		return (array)$this->basic_model->get_max_report_submitted($this->get_project_id());
+	}
+	
+	protected function get_current_financial_report_date(){
+		extract($this->get_current_financial_report());
+		
+		return $closureDate;
+	} 
+	
+	protected function get_current_financial_report_validated(){
+		extract($this->get_current_financial_report());
+		
+		return $allowEdit == 1?false:true;
+	} 
+	
+	protected function get_current_financial_report_submitted(){
+		extract($this->get_current_financial_report());
+		
+		return $submitted == 1?true:false;
+	}
+	
+	protected function get_current_financial_report_is_initial(){
+		extract($this->get_current_financial_report());
+		
+		return $systemOpening == 1?true:false;
+	}
+	
+	protected function get_current_financial_report_timestamp(){
+		extract($this->get_current_financial_report());
+		
+		return strtotime($stmp);
+	}
+	
+	protected function get_current_voucher_date(){
+		extract($this->get_current_voucher());
+		
+		return $TDate;
+	}
+	
+	protected function get_current_voucher_number(){
+		extract($this->get_current_voucher());
+		
+		return $VNumber;
+	}
+	
+	protected function get_current_voucher_timestamp(){
+		extract($this->get_current_voucher());
+		
+		return $unixStmp;
+	}
+	
+	protected function get_current_voucher_fy(){
+		extract($this->get_current_voucher());
+		
+		return $Fy;
+	}
+	
+	protected function get_transacting_month(){
+		$current_voucher_date = strtotime($this->get_current_voucher_date());
+		$current_report_date = strtotime($this->get_current_financial_report_date());
+		
+		$params = array();
+		
+		if($current_voucher_date > $current_report_date){
+			$params['start_date'] = strtotime(date("Y-m-01",$current_voucher_date));
+			$params['end_date'] = strtotime(date("Y-m-t",$current_voucher_date));
+		}else{
+			
+		}
+		
+		return $params;
+	}
+	
+	
 	/**
 	 * This is a getter that retrieves records from the database to popluate the Cash Journal
 	 */
@@ -456,6 +535,7 @@ class Journal extends Journal_Layout{
 		
 		return $cash;
 	}
+
 	
 	
 	private function readable_labels(){
@@ -616,3 +696,4 @@ class Journal extends Journal_Layout{
 	}
 	
 }
+

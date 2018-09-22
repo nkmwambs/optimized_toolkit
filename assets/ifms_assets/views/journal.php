@@ -1,5 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
-
+<?php
+//print_r($this->get_transacting_month())
+?>
 <hr/>
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
@@ -106,6 +108,9 @@
 									<td><a href="<?=base_url().$this->get_controller().'/'.$this->get_method().'/show_voucher/'.$this->get_project_id();?>/<?php echo $this->get_start_date_epoch();?>/<?php echo $this->get_end_date_epoch();?>/<?=$col;?>/<?php echo $this->get_first_extra_segment();?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
 							
 							<?php
+								}elseif($key == "ChqNo"){
+									$chq = explode("-",$col);
+									echo "<td>".$chq[0]."</td>";
 								}else{
 									echo "<td>".$col."</td>";
 								}

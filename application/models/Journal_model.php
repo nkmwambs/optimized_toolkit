@@ -33,6 +33,32 @@ class Journal_model extends CI_Model{
 		return $month_transactions_obj->num_rows() > 0?$month_transactions_obj->result_array():array();
     }
 	
+	function get_icp_max_voucher ($icp=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_icp_max_voucher(?)",array($icp));
+			$result = $query->num_rows()>0?$query->row():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Error Occurred!";
+		}
+		
+		return $result;
+	}
+	
+	function get_max_report_submitted($icp=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_max_report_submitted(?)",array($icp));
+			$result = $query->num_rows()>0?$query->row():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Error Occurred!";
+		}
+		
+		return $result;
+	}
+	
 	function start_cash_balance($icpNo="",$month_start=""){
 		
 		$last_month_cash_balance = "";
