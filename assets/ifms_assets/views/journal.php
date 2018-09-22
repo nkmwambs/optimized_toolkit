@@ -1,6 +1,6 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
 <?php
-// print_r($this->test())
+	//echo date("Y-m-d",strtotime("first day of next month"));
 ?>
 <hr/>
 <div class="row">

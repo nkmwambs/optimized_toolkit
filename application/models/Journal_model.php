@@ -131,7 +131,8 @@ class Journal_model extends CI_Model{
 			$params['start_date'] = strtotime(date("Y-m-01",$current_voucher_date));
 			$params['end_date'] = strtotime(date("Y-m-t",$current_voucher_date));
 		}else{
-			
+			$params['start_date'] = strtotime(date("Y-m-d",strtotime("first day of next month",$current_report_date)));
+			$params['end_date'] = strtotime(date("Y-m-d",strtotime("first day of next month",$current_report_date)));
 		}
 		
 		return $params;
