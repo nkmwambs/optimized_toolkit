@@ -71,10 +71,11 @@ class Journal_Layout{
 		$this->set_js_files($this->default_javascript_path.'/bootstrap.min.js');
 		$this->set_js_files($this->default_javascript_path.'/jquery.dataTables.min.js');
 		$this->set_js_files($this->default_javascript_path.'/buttons.bootstrap.js');
-		$this->set_js_files($this->default_javascript_path.'/custom.js');
 		$this->set_js_files($this->default_javascript_path.'/dataTables.bootstrap.min.js');
 		$this->set_js_files($this->default_javascript_path.'/jquery-ui.min.js');
 		$this->set_js_files($this->default_javascript_path.'/printThis.js');
+		$this->set_js_files($this->default_javascript_path.'/datepicker/js/bootstrap-datepicker.min.js');
+		$this->set_js_files($this->default_javascript_path.'/custom.js');
 	}
 	
 	protected function load_css(){
@@ -84,6 +85,9 @@ class Journal_Layout{
 		$this->set_css_files($this->default_css_path.'/jquery-ui-themes/base/jquery-ui.min.css');
 		$this->set_css_files($this->default_css_path.'/jquery-ui-themes/base/theme.css');
 		$this->set_css_files($this->default_css_path.'/font-icons/font-awesome/css/font-awesome.css');
+		$this->set_css_files($this->default_css_path.'/font-icons/entypo/css/entypo.css');
+		$this->set_css_files($this->default_css_path.'/font-icons/font-awesome/css/font-awesome.css');
+		$this->set_css_files($this->default_css_path.'/datepicker/js/bootstrap-datepicker.min.css');
 	}
 	
 	
@@ -132,6 +136,11 @@ class Journal extends Journal_Layout{
 		parent::__construct();
 		$this->CI->load->model("Journal_model");
 		$this->basic_model = new Journal_model();
+		
+		/**Initialization**/
+		$this->icpNo = $this->CI->uri->segment(4);
+		$this->start_date = date("Y-m-d",$this->CI->uri->segment(5));
+		$this->end_date = date("Y-m-d",$this->CI->uri->segment(6));
 	}
 		
 	public function set_project_id($project_id=""){
@@ -188,12 +197,19 @@ class Journal extends Journal_Layout{
 		return $this->state_data;
 	}
 	
+	/**
+	 * This is a getter that retrieves records from the database to popluate the Cash Journal
+	 */
+	
     private function get_current_month_transactions()
     {		
 		return $this->basic_model
 		->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);
     }
-
+	
+	/**
+	 * This is a getter that retrieve records from the database to populate vouchers
+	 */
     public function get_current_month_transactions_for_voucher()
     {	
 		return $this->basic_model
@@ -447,6 +463,15 @@ class Journal extends Journal_Layout{
 		
 	}
 	
+	/**
+	 * Pre-render methods:
+	 * These are private methods that set the variables to be used in a particular view i.e.
+	 * - pre_render_journal
+	 * - pre_render_view_voucher
+	 * - pre_render_print_voucher
+	 * - pre_render_create_voucher
+	 */
+	
 	private function pre_render_journal(){
 		
 		$data['records'] =  $this->construct_journal();
@@ -492,6 +517,31 @@ class Journal extends Journal_Layout{
 		return $data;
 	}
 
+	private function pre_render_print_vouchers(){
+		$data['view'] = "print_vouchers";
+		
+		$data['segments'] = $this->CI->uri->segment_array();
+		
+		$data['selected_vouchers'] = $this->CI->input->post();
+		
+		$data['all_vouchers'] = $this->voucher_transactions();	
+		
+		return $data;
+	}
+	
+	private function pre_render_create_voucher(){
+		$data['view'] = "create_voucher";
+		$data['segments'] = $this->CI->uri->segment_array();
+		return $data;
+	}
+
+	/**
+	 * Render Method:
+	 * Its set the appropriate pre-render based on the 3rd segment of the url, 
+	 * reset the set_date() method and render output to the Controller
+	 * 
+	 */
+	
 	public function render(){
 		
 		$this->CI->benchmark->mark('profiler_start');
@@ -499,20 +549,49 @@ class Journal extends Journal_Layout{
 		$preference_data = array();
 		
 		if($this->CI->uri->segment(3) == "show_voucher"){
-			if($this->CI->uri->segment(6)){
+		
+			if($this->CI->uri->segment(8)){
+				$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(8)." months",strtotime($this->get_start_date())));
+				$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(8)." months",strtotime($this->get_end_date())));
+			}else{	
 				$start_date = date("Y-m-01",$this->CI->uri->segment(5));
 				$end_date = date("Y-m-t",$this->CI->uri->segment(6));
-				$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
 			}
+		
+			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
+		
 			$preference_data = $this->pre_render_view_voucher();
+		
+		}elseif($this->CI->uri->segment(3) == "show_journal"){
+		
+			$preference_data = $this->pre_render_journal();	
+		
 		}elseif($this->CI->uri->segment(3) == "scroll_journal"){
-			$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(4)." months",strtotime($this->start_date)));
-			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(4)." months",strtotime($this->start_date)));
-			$this->set_date(array("START_DATE"=>strtotime($start_date),"END_DATE"=>strtotime($end_date)));
+		
+			$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(7)." months",strtotime($this->get_start_date())));
+			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(7)." months",strtotime($this->get_end_date())));
+			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
 			
 			$preference_data = $this->pre_render_journal();		
-		}elseif($this->CI->uri->segment(3) == "show_journal"){
-			$preference_data = $this->pre_render_journal();	
+		
+		}elseif($this->CI->uri->segment(3) == "print_vouchers"){
+			
+			$start_date = date("Y-m-01",$this->CI->uri->segment(5));
+			$end_date = date("Y-m-t",$this->CI->uri->segment(6));
+		
+			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
+		
+			$preference_data = $this->pre_render_print_vouchers();	
+		
+		}elseif($this->CI->uri->segment(3) == "create_voucher"){
+			
+			$start_date = date("Y-m-01",$this->CI->uri->segment(5));
+			$end_date = date("Y-m-t",$this->CI->uri->segment(6));
+		
+			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
+		
+			$preference_data = $this->pre_render_create_voucher();	
+		
 		}
 		
 		$this->set_view($preference_data['view'],$preference_data);

@@ -8,17 +8,12 @@
 	</div>	
 </div>
 
-<?php
-//print_r($segments);
-?>
-
 <hr />
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-5">
-		<div class="btn btn-default">Show Spread</div>
 		<div class="btn btn-default" id="select_btn">Select All Vouchers</div>
-		<div class="btn btn-default">Print Selected Vouchers</div>
-				
+		<div  class="btn btn-default" id="print_vouchers">Print Selected Vouchers</div>
+		<a class="btn btn-default" href="<?=base_url();?>Welcome/finance/create_voucher/KE345/<?=strtotime("2018-01-01");?>/<?=strtotime("2018-01-31");?>">New Voucher</a>		
 	</div>
 
 
@@ -27,7 +22,7 @@
 			<div class="form-group">
 				<label class="col-sm-3 control-label">Scroll Months: </label>	
 					<div class="col-sm-5">
-						<input type="text" id="spinner" name="spinned_months" value="<?php echo isset($segments[4])?0:0;?>" readonly="readonly"/>
+						<input type="text" id="spinner" name="spinned_months" value="<?php echo isset($segments[7])?$segments[7]:0;?>" readonly="readonly"/>
 									
 					</div>
 				<div class="col-sm-4">
@@ -41,6 +36,7 @@
 
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1" id="display">
+		<form id="frm_vouchers">
 		<?php
 			if(!isset($records[0])){
 				include("error.php");		
@@ -107,7 +103,7 @@
 							foreach($details_values as $key=>$col){
 								if($key == "VNumber"){
 							?>		
-									<td><a href="<?=base_url().$state_info['controller'].'/'.$state_info['method'].'/show_voucher/'.$state_info['project'];?>/<?php echo $segments[5];?>/<?php echo strtotime(date("Y-m-t",$segments[5]));?>/<?=$col;?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' class="check_voucher"/><?=$col;?></a></td>
+									<td><a href="<?=base_url().$state_info['controller'].'/'.$state_info['method'].'/show_voucher/'.$state_info['project'];?>/<?php echo $segments[5];?>/<?php echo strtotime(date("Y-m-t",$segments[5]));?>/<?=$col;?>/<?php echo isset($segments[7])?$segments[7]:"";?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
 							
 							<?php
 								}else{
@@ -147,6 +143,7 @@
 		<?php
 		}
 		?>
+		</form>
 	</div>
 </div>
 <hr />
@@ -169,11 +166,20 @@
 	
 	$("#spinner_btn").click(function(ev){
 		//alert($("#spinner").val());
-		var url = "<?=base_url();?><?=$state_info['controller'];?>/<?=$state_info['method'];?>/scroll_journal/"+$("#spinner").val();
+		var url = "<?=base_url();?><?=$state_info['controller'];?>/<?=$state_info['method'];?>/scroll_journal/<?=$this->get_project_id();?>/<?=$segments[5];?>/<?=$segments[6];?>/"+$("#spinner").val();
 		$("#scroll").prop("method","POST");
 		$("#scroll").prop("action",url);
 		$("#scroll").submit();
 		
 		//ev.preventDefault();
 	});
+	
+	
+$("#print_vouchers").click(function(){
+		var url = "<?=base_url();?><?=$segments[1];?>/<?=$segments[2];?>/print_vouchers/<?=$segments[4];?>/<?=$segments[5];?>/<?=$segments[6];?>/<?=isset($segments[7])?$segments[7]:"";?>";
+	
+		$("#frm_vouchers").prop("method","POST");
+		$("#frm_vouchers").prop("action",url);
+		$("#frm_vouchers").submit();
+});	
 </script>	
