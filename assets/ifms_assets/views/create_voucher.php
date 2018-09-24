@@ -19,8 +19,8 @@
 				</div>
 			</div>
 			
-			<div class="col-sm-6" style="text-align: center;">
-				<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/<?=$this->get_second_extra_segment()!=""?"scroll_journal":"show_journal";?>/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_start_date_epoch();?>/<?=isset($segments[8])?$segments[8]:0;?>" class="btn btn-default" class="btn btn-default">Back</a>
+			<div class="col-sm-6">
+				<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/<?=$this->get_second_extra_segment()!=""?"scroll_journal":"show_journal";?>/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_start_date_epoch();?>/<?=isset($segments[8])?$segments[8]:0;?>" class="btn btn-default btn-icon icon-left hidden-print pull-right" class="btn btn-default">Back <i class="entypo-left-dir"></i></a>
 			</div>
 				
 		</div>
@@ -177,7 +177,7 @@
 								</div>
 								
 						
-								<div style="display: none" id='btnDelRow' class="btn btn-default btn-icon icon-left hidden-print pull-left">
+								<div id='btnDelRow' class="btn btn-default btn-icon icon-left hidden hidden-print pull-left">
 								      Remove Item Row
 								     <i class="entypo-minus-circled"></i>
 								</div>
@@ -195,7 +195,7 @@
 		    <hr />
 		    <div class="row">
 		    	<div class="col-sm-12">   
-				        <table id="bodyTable" class="table table-bordered">
+				        <table id="bodyTable" class="table table-striped">
 				        	<thead>
 					            <tr style="font-weight: bold;">
 					                <th>Check</th><th>Quantity</th><th>Items Purchased/ Services Received</th><th>Unit Cost</th><th>Cost</th><th>Account</th><th>Budget Item</th></th><th>CIV Code</th>
@@ -343,7 +343,7 @@
 					+"<td><input type='text' class='form-control detail'/></td>"
 					+"<td><input type='text' class='form-control detail'/></td>"
 					+"<td><input type='text' class='form-control detail' readonly='readonly'/></td>"
-					+"<td><select class='form-control detail accounts' onchange='budget_item();'>"
+					+"<td><select class='form-control detail accounts'>"
 					+"<option value=''>Select Account</option>"
 					+accounts_option
 					+"</select></td>"
@@ -363,17 +363,74 @@
 		}
 
 	}
-
-
-	function budget_item(el){
-		alert($(this).val());	
-	}
 	
-	
-	$(".check").change(function(){
-		alert("Yes");
+	$(document).on("click",".check",function(){
+		
+		var checked = $(".check:checked").length;
+		if(checked>0){
+			$("#btnDelRow").removeClass("hidden");	
+		}else{
+			$("#btnDelRow").addClass("hidden");
+		}
 	});
+
 	
+	$(document).on("change", ".accounts", function(){
+		
+		var account = $(this).val();
+		var budget_item_select = $(this).parent().next();
+		
+		var budget_item_options = "";
+		
+		var budget_item_options_default = "";
+		
+		<?php $accounts_array = json_encode($accounts['expense']);?>
+		
+		var obj_accounts = <?=$accounts_array;?>;
+		
+		var budgeted_account = false;
+		
+		for(i=0;i<obj_accounts.length;i++){
+			if(obj_accounts[i].AccNo == account){
+				if(obj_accounts[i].budget == 1){
+					budgeted_account = true;
+				}
+			}
+		}
+		
+		if(budgeted_account == false){
+			budget_item_options_default+="<option value='0'>Budget Not Required</option>";
+		}else{
+			budget_item_options_default+="<option value=''>Missing Budget</option>";
+		}
+		
+		budget_item_select.html("<select class='form-control detail'>"
+								+"<option value=''>Select Bugdet Item</option>"
+								+budget_item_options_default
+								+"</select>");
+								
+								
+				
+		<?php $approved_budget = json_encode($approved_budget);?>
+		
+		var obj = <?=$approved_budget;?>;
+		var select_obj = obj[account];	
+
+		for (i=0;i<select_obj.length;i++){
+		 	budget_item_options+="<option value='"+select_obj[i].scheduleID+"'>"+select_obj[i].details+"</option>";
+		}
+				
+		
+		var select_budget_items = 	"<select class='form-control detail'>"
+									+"<option value=''>Select Bugdet Item</option>"
+									+ budget_item_options
+									+"</select>";
+		
+									
+		budget_item_select.html(select_budget_items);								
+		
+	} );
+		
 	
 	function del_selected_rows(){
 		var elem = $("#bodyTable tbody");

@@ -13,12 +13,12 @@
 <hr />
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-5">
-		<div class="btn btn-default" id="select_btn">Select All Vouchers</div>
-		<div  class="btn btn-default" id="print_vouchers">Print Selected Vouchers</div>
+		<div class="btn btn-default btn-icon icon-left hidden-print pull-left" id="select_btn">Select All Vouchers <i class="entypo-mouse"></i></div>
+		<div  class="btn btn-default btn-icon icon-left hidden-print pull-left" id="print_vouchers">Print Selected Vouchers <i class="entypo-print"></i></div>
 		<?php 
 			if($transacting_month['start_date'] == $this->get_start_date_epoch()){
 		?>
-			<a class="btn btn-default" href="<?=base_url();?>Welcome/finance/create_voucher/KE345/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>">New Voucher</a>		
+			<a class="btn btn-default btn-icon icon-left hidden-print pull-left" href="<?=base_url();?>Welcome/finance/create_voucher/<?=$this->get_project_id();?>/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>">New Voucher <i class="entypo-list-add"></i></a>		
 		<?php
 			}
 		?>
