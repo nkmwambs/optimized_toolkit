@@ -1,5 +1,6 @@
 <?php
 //print_r($approved_budget);
+//echo $this->get_next_voucher_number();
 ?>
 <hr/>
 <div class="row">
@@ -69,9 +70,11 @@
 													<label class="control-label"><span style="font-weight: bold;">Date: </span></label>
 													
 														<div class="input-group">
-															<input type="text"  data-provide="datepicker" name="TDate" id="TDate" class="form-control datepicker accNos" data-validate="required"  
-																data-date-format="yyyy-mm-dd" data-start-date="<?=$this->get_start_date_epoch();?>" 
-																	data-end-date="<?=$this->get_start_date_epoch();?>" readonly="readonly">
+															<input type="text" name="TDate" id="TDate" class="form-control datepicker accNos" 
+															data-validate="required" data-provide="datepicker" data-date-format="yyyy-mm-dd" 
+															data-date-start-date="<?=date('Y-m-d',$voucher_date_range['end_date']);?>" 
+															data-date-end-date="<?=date('Y-m-t',$voucher_date_range['end_date']);?>"  readonly="readonly" 
+															value="<?=date('Y-m-d',$voucher_date_range['end_date']);?>"/>
 															
 															<div class="input-group-addon">
 																<a href="#"><i class="entypo-calendar"></i></a>
@@ -84,7 +87,7 @@
 								            <td colspan="3">
 								            	<div class="form-group">
 								            		<label for='VNumber' class="control-label"><span style="font-weight: bold;">Voucher Number</span></label>	
-								            		<input type="text" class="form-control accNos" id="VNumber" name="VNumber" data-validate="required"  value="" readonly/>
+								            		<input type="text" class="form-control accNos" id="VNumber" name="VNumber" data-validate="required"  value="<?=$voucher_number;?>" readonly/>
 								            	</div>
 								            </td>
 						
@@ -252,12 +255,9 @@
 </div>	
 
 <script>
-	$('.datepicker').datepicker({
-		format: 'yyyy-mm-dd',
-		startDate:'',
-		endDate:''
-	});
-	
+
+	$('.datepicker').datepicker();
+
 	
 	$("#VTypeMain").mousedown(function(ev){
 		var details_length = $("#bodyTable tbody").children().length;
@@ -343,7 +343,7 @@
 					+"<td><input type='text' class='form-control detail'/></td>"
 					+"<td><input type='text' class='form-control detail'/></td>"
 					+"<td><input type='text' class='form-control detail' readonly='readonly'/></td>"
-					+"<td><select class='form-control detail accounts'>"
+					+"<td><select class='form-control detail accounts' onchange='budget_item();'>"
 					+"<option value=''>Select Account</option>"
 					+accounts_option
 					+"</select></td>"
@@ -365,9 +365,9 @@
 	}
 
 
-	$(".accounts").change(function(){
-		alert("Hello");	
-	});
+	function budget_item(el){
+		alert($(this).val());	
+	}
 	
 	
 	$(".check").change(function(){

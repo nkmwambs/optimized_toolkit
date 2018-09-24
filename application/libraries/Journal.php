@@ -68,7 +68,7 @@ class Journal_Layout{
 	protected function load_js()
 	{
 		$this->set_js_files($this->default_javascript_path.'/jquery-3.3.1.min.js');
-		$this->set_js_files($this->default_javascript_path.'/bootstrap.min.js');
+		$this->set_js_files($this->default_javascript_path.'/bootstrap/bootstrap.min.js');
 		$this->set_js_files($this->default_javascript_path.'/jquery.dataTables.min.js');
 		$this->set_js_files($this->default_javascript_path.'/buttons.bootstrap.js');
 		$this->set_js_files($this->default_javascript_path.'/dataTables.bootstrap.min.js');
@@ -79,7 +79,7 @@ class Journal_Layout{
 	}
 	
 	protected function load_css(){
-		$this->set_css_files($this->default_css_path.'/bootstrap.css');
+		$this->set_css_files($this->default_css_path.'/bootstrap/bootstrap.css');
 		$this->set_css_files($this->default_css_path.'/dataTables.bootstrap.css');
 		$this->set_css_files($this->default_css_path.'/custom.css');
 		$this->set_css_files($this->default_css_path.'/jquery-ui-themes/base/jquery-ui.min.css');
@@ -87,7 +87,7 @@ class Journal_Layout{
 		$this->set_css_files($this->default_css_path.'/font-icons/font-awesome/css/font-awesome.css');
 		$this->set_css_files($this->default_css_path.'/font-icons/entypo/css/entypo.css');
 		$this->set_css_files($this->default_css_path.'/font-icons/font-awesome/css/font-awesome.css');
-		$this->set_css_files($this->default_css_path.'/datepicker/js/bootstrap-datepicker.min.css');
+		$this->set_css_files($this->default_css_path.'/datepicker/css/bootstrap-datepicker.min.css');
 	}
 	
 	
@@ -236,12 +236,12 @@ class Journal extends Journal_Layout{
 		return $this->basic_model->account_for_vouchers();
 	}
 	
-	private function get_current_budget(){
-		return $this->basic_model->get_current_budget($this->get_project_id(),$this->get_current_fy());
+	private function get_current_approved_budget(){
+		return $this->basic_model->get_current_approved_budget($this->get_project_id(),$this->get_current_fy());
 	}
 	
 	protected function budget_grouped_items(){
-		$raw_budget = $this->get_current_budget();
+		$raw_budget = $this->get_current_approved_budget();
 		
 		$account_groups = array();
 		
@@ -264,6 +264,14 @@ class Journal extends Journal_Layout{
 		}
 		
 		return $grouped;
+	}
+	
+	protected function get_next_voucher_number(){
+		return $this->basic_model->get_next_voucher_number($this->get_project_id());
+	}
+	
+	protected function get_voucher_date_picker_control(){
+		return $this->basic_model->get_voucher_date_picker_control($this->get_project_id());
 	}
 	
 	/**
@@ -577,11 +585,7 @@ class Journal extends Journal_Layout{
 
 	private function pre_render_print_vouchers(){
 		$data['view'] = "print_vouchers";
-		
-		//$data['segments'] = $this->CI->uri->segment_array();
-		
 		$data['selected_vouchers'] = $this->CI->input->post();
-		
 		$data['all_vouchers'] = $this->voucher_transactions();	
 		
 		return $data;
@@ -591,7 +595,8 @@ class Journal extends Journal_Layout{
 		$data['view'] = "create_voucher";
 		$data['accounts'] = $this->group_accounts();
 		$data['approved_budget'] = $this->budget_grouped_items();
-		$data['segments'] = $this->CI->uri->segment_array();
+		$data['voucher_number'] = $this->get_next_voucher_number();
+		$data['voucher_date_range'] = $this->get_voucher_date_picker_control();
 		return $data;
 	}
 

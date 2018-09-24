@@ -129,7 +129,48 @@ class Journal_model extends CI_Model{
 		
 		return $params;
 	}
+
+	function get_next_voucher_number($icp = ""){
+		
+		$current_voucher_number = $this->get_current_voucher_number($icp);
+		
+		$current_voucher_date = strtotime($this->get_current_voucher_date($icp));
+		
+		$transacting_month 		= $this->get_transacting_month($icp);		
+		
+		
+		$voucher_year = date("y",$transacting_month['start_date']);
+		$voucher_month = date("m",$transacting_month['start_date']);
+		$voucher_serial = substr($current_voucher_number, 4) + 1;
+			
+
+		if($current_voucher_date < $transacting_month['start_date']){
+			$voucher_serial = "01";
+		}
+			
+		$next_voucher_number = $voucher_year.$voucher_month.$voucher_serial;
+		
+		return $next_voucher_number;
+	}
 	
+	function get_voucher_date_picker_control($icp = ""){
+		$current_voucher_date = strtotime($this->get_current_voucher_date($icp));
+		$current_report_date = strtotime($this->get_current_financial_report_date($icp));
+		
+		$params = array();
+		
+		if($current_voucher_date > $current_report_date){
+			$params['start_date'] = strtotime(date("Y-m-01",$current_voucher_date));
+			$params['end_date'] = strtotime($this->get_current_voucher_date($icp));
+		}else{
+			$params['start_date'] = strtotime(date("Y-m-d",strtotime("first day of next month",$current_report_date)));
+			$params['end_date'] = strtotime(date("Y-m-d",strtotime("first day of next month",$current_report_date)));
+		}
+		
+		return $params;
+	}
+	
+		
 	function account_for_vouchers(){
 		try{
 			$this->db->reconnect();
@@ -143,7 +184,7 @@ class Journal_model extends CI_Model{
 		return $result;
 	}
 	
-	function get_current_budget($icpNo="",$fy=""){
+	function get_current_approved_budget($icpNo="",$fy=""){
 		try{
 			$this->db->reconnect();
 			$query = $this->db->query("CALL get_current_budget(?,?)",array($icpNo,$fy));
@@ -155,6 +196,7 @@ class Journal_model extends CI_Model{
 		
 		return $result;
 	}
+	
 	
 	function start_cash_balance($icpNo="",$month_start=""){
 		
