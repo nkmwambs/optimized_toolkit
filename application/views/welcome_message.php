@@ -32,14 +32,25 @@
 <body class="page-body">
 	<hr/>
 	<div class="container">
-			<p>
-				<?php
-					//echo strtotime("1970-01-01 00:00:00");
-				?>
-			</p>
-			<!-- <p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/<?=strtotime("2018-01-01");?>/<?=strtotime("2018-01-31");?>">Show Journal</a></p> -->
-			<p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/">Show Journal</a></p>
-			<!-- <p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/create_voucher/KE345/<?=strtotime("2018-01-01");?>/<?=strtotime("2018-01-31");?>">Create a Voucher</a></p> -->
+			
+			<!-- <p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/">Show Journal</a></p> -->
+			
+			<?php 
+				echo form_open(base_url() . 'Welcome/finance/show_journal/', array('id'=>'frmLoad','class' => 'form-horizontal form-groups-bordered validate',"autocomplete"=>"off",'enctype' => 'multipart/form-data'));
+			?>
+				<div class="form-group">
+					<label for="" class="control-label col-sm-2">Project</label>
+					<div class="col-sm-4">
+						<input type="text" class="form-control" name="icpNo" id="icpNo" />
+					</div>
+					<div class="col-sm-2">
+						<button id="submit" class="btn btn-default">Go</button>
+					</div>
+				</div>
+				
+				
+			</form>
+			
 			
 	</div>
 <hr/>
@@ -47,7 +58,7 @@
 <script>
 	$("#submit").click(function(ev){
 		
-		var url = $("#frmLoad").attr('action')+$("#icp").val()+'/'+$("#start_date").val()+'/'+$("#end_date").val();
+		var url = $("#frmLoad").attr('action')+$("#icpNo").val();
 		
 		$("#frmLoad").prop('action',url);
 		$("#frmLoad").submit();
