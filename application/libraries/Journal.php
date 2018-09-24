@@ -335,6 +335,7 @@ class Journal extends Journal_Layout{
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['UnitCost'] = $rows['UnitCost'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Cost'] = $rows['Cost'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['AccNo'] = $rows['AccText'];
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['scheduleID'] = $rows['scheduleID'];
 			
 			$cnt ++;
 		}

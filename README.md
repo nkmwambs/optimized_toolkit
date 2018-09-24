@@ -8,6 +8,5 @@
   - accounts.sql
   - voucher_header.sql
   - voucher_body.sql
-  - Project Details.sql
  - On the Git CLI go to htdocs folder (Assuming using XAMPP) type $ git clone https://github.com/nkmwambs/optimized_toolkit.git
  - Go to the browser url and type http://localhost/optimized_toolkit
