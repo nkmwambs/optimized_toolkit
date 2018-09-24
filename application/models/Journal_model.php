@@ -40,7 +40,7 @@ class Journal_model extends CI_Model{
 			$result = $query->num_rows()>0?$query->row():array();
 			$this->db->close();
 		}catch(Exception $e){
-			echo "Error Occurred!";
+			echo "Message: ".$e->getMessage();
 		}
 		
 		return $result;
@@ -53,19 +53,11 @@ class Journal_model extends CI_Model{
 			$result = $query->num_rows()>0?$query->row():array();
 			$this->db->close();
 		}catch(Exception $e){
-			echo "Error Occurred!";
+			echo "Message: ".$e->getMessage();
 		}
 		
 		return $result;
 	}
-	
-	// private function get_current_voucher(){
-		// return (array)$this->get_icp_max_voucher($this->get_project_id());
-	// }
-// 	
-	// private function get_current_financial_report(){
-		// return (array)$this->get_max_report_submitted($this->get_project_id());
-	// }
 	
 	public function get_current_financial_report_date($icp=""){
 		extract((array)$this->get_max_report_submitted($icp));
@@ -136,6 +128,32 @@ class Journal_model extends CI_Model{
 		}
 		
 		return $params;
+	}
+	
+	function account_for_vouchers(){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_accounts()");
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function get_current_budget($icpNo="",$fy=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_current_budget(?,?)",array($icpNo,$fy));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
 	}
 	
 	function start_cash_balance($icpNo="",$month_start=""){

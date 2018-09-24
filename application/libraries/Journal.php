@@ -202,6 +202,10 @@ class Journal extends Journal_Layout{
 		return strtotime($this->end_date);
 	}
 	
+	protected function get_current_fy(){
+		return 19;
+	}
+	
 	protected function get_controller(){
 		return $this->CI->router->fetch_class();;
 	}
@@ -227,6 +231,40 @@ class Journal extends Journal_Layout{
 		return $this->basic_model
 		->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);
     }
+	
+	private function account_for_vouchers(){
+		return $this->basic_model->account_for_vouchers();
+	}
+	
+	private function get_current_budget(){
+		return $this->basic_model->get_current_budget($this->get_project_id(),$this->get_current_fy());
+	}
+	
+	protected function budget_grouped_items(){
+		$raw_budget = $this->get_current_budget();
+		
+		$account_groups = array();
+		
+		foreach($raw_budget as $item){
+			$account_groups[$item->AccNo][] = $item;
+		}
+		
+		return $account_groups;
+	}
+	
+	protected function group_accounts(){
+		$raw_accounts = $this->account_for_vouchers();
+		
+		$AccGrps = array("expense","revenue","bankbalance","pcdeposits","rebanking");
+		
+		$grouped = array();
+		
+		foreach($raw_accounts as $account){
+			$grouped[$AccGrps[$account->AccGrp]][] = $account;
+		}
+		
+		return $grouped;
+	}
 	
 	/**
 	 * This is a getter that retrieve records from the database to populate vouchers
@@ -551,6 +589,8 @@ class Journal extends Journal_Layout{
 	
 	private function pre_render_create_voucher(){
 		$data['view'] = "create_voucher";
+		$data['accounts'] = $this->group_accounts();
+		$data['approved_budget'] = $this->budget_grouped_items();
 		$data['segments'] = $this->CI->uri->segment_array();
 		return $data;
 	}

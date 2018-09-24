@@ -1,3 +1,6 @@
+<?php
+//print_r($approved_budget);
+?>
 <hr/>
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
@@ -16,7 +19,7 @@
 			</div>
 			
 			<div class="col-sm-6" style="text-align: center;">
-				<a href="<?php echo base_url().$segments[1].'/'.$segments[2];?>/<?=isset($segments[8])?"scroll_journal":"show_journal";?>/<?=$segments[4];?>/<?=$segments[5];?>/<?=$segments[6];?>/<?=isset($segments[8])?$segments[8]:0;?>" class="btn btn-default" class="btn btn-default">Back</a>
+				<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/<?=$this->get_second_extra_segment()!=""?"scroll_journal":"show_journal";?>/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_start_date_epoch();?>/<?=isset($segments[8])?$segments[8]:0;?>" class="btn btn-default" class="btn btn-default">Back</a>
 			</div>
 				
 		</div>
@@ -36,48 +39,18 @@
 			        
 					<div class="panel-body" overflow: auto;">	
 		
-						<div class="row">
-							<div class="col-sm-12">
-								<div class="col-sm-1">
-									<a href="#"   id="resetBtn" class="btn btn-default btn-icon icon-left hidden-print pull-left">
-								      	Reset
-								    	 <i class="entypo-plus-circled"></i>
-									</a>
-								</div>
-								
-								<div class="col-sm-1">		
-								<button type="submit" id="btnPostVch" class="btn btn-default btn-icon icon-left hidden-print pull-left">
-								     Post
-								     <i class="entypo-thumbs-up"></i>
-								</button>
-								</div>
-								
 						
-								<div style="display: none" id='btnDelRow' class="btn btn-default btn-icon icon-left hidden-print pull-left">
-								      Remove Item Row
-								     <i class="entypo-minus-circled"></i>
-								</div>
-													
-								<div class="col-sm-1">		
-									<div id='addrow' class="btn btn-default btn-icon icon-left hidden-print pull-left">
-									      New Item Row
-									     <i class="entypo-plus-circled"></i>
-									</div>
-								</div>	
-							</div>
-						
-						</div>
 		
 						<?php echo form_open("", array('id' => 'frm_voucher', 'class' => 'form-horizontal form-groups-bordered validate', 'enctype' => 'multipart/form-data')); ?>
 		
 						<div class="row">	
 						<div class="col-sm-12">		
-						            <input type="hidden" value="<?php echo $segments[4];?>" id="KENo" name="KENo"/>
+						            <input type="hidden" value="<?php echo $this->get_project_id();?>" id="KENo" name="KENo"/>
 						            
 						            <table id='tblVch' class='table'>
 						            	<thead>
 							                <tr>
-							                    <th colspan="8"  style="text-align: center;"><?php echo $segments[4]; ?><br>Payment Voucher</th>
+							                    <th colspan="8"  style="text-align: center;"><?php echo $this->get_project_id(); ?><br>Payment Voucher</th>
 							                </tr>
 										</thead>
 										
@@ -97,8 +70,8 @@
 													
 														<div class="input-group">
 															<input type="text"  data-provide="datepicker" name="TDate" id="TDate" class="form-control datepicker accNos" data-validate="required"  
-																data-date-format="yyyy-mm-dd" data-start-date="<?=$segments[5];?>" 
-																	data-end-date="<?=$segments[6];?>" readonly="readonly">
+																data-date-format="yyyy-mm-dd" data-start-date="<?=$this->get_start_date_epoch();?>" 
+																	data-end-date="<?=$this->get_start_date_epoch();?>" readonly="readonly">
 															
 															<div class="input-group-addon">
 																<a href="#"><i class="entypo-calendar"></i></a>
@@ -138,7 +111,7 @@
 						                    	<div class="col-sm-10 form-group" id='VType'>
 						                    		<label for="VTypeMain" class="control-label"><span style="font-weight: bold;">Voucher Type:</span></label>
 								                        <select name="VTypeMain" id="VTypeMain" class="form-control accNos" data-validate="required">
-								                            <option value="#">Select Voucher Type</option>
+								                            <option value="">Select Voucher Type</option>
 								                            <option value="PC">Payment By Cash</option>
 								                            <option value="CHQ">Payment By Cheque</option>
 								                            <option value="BCHG">Bank Adjustments</option>
@@ -182,8 +155,41 @@
 					    
 					    	</div>
 					    </div>
+					   	    
+		    	
+		    	<div class="row">
+							<div class="col-sm-12">
+								<div class="col-sm-1">
+									<a href="#"   id="resetBtn" class="btn btn-default btn-icon icon-left hidden-print pull-left">
+								      	Reset
+								    	 <i class="entypo-plus-circled"></i>
+									</a>
+								</div>
+								
+								<div class="col-sm-1">		
+								<button type="submit" id="btnPostVch" class="btn btn-default btn-icon icon-left hidden-print pull-left">
+								     Post
+								     <i class="entypo-thumbs-up"></i>
+								</button>
+								</div>
+								
+						
+								<div style="display: none" id='btnDelRow' class="btn btn-default btn-icon icon-left hidden-print pull-left">
+								      Remove Item Row
+								     <i class="entypo-minus-circled"></i>
+								</div>
+													
+								<div class="col-sm-1">		
+									<div id='addrow' class="btn btn-default btn-icon icon-left hidden-print pull-left">
+									      New Item Row
+									     <i class="entypo-plus-circled"></i>
+									</div>
+								</div>	
+							</div>
+						
+						</div>
 		    
-		    
+		    <hr />
 		    <div class="row">
 		    	<div class="col-sm-12">   
 				        <table id="bodyTable" class="table table-bordered">
@@ -248,7 +254,143 @@
 <script>
 	$('.datepicker').datepicker({
 		format: 'yyyy-mm-dd',
-		startDate:'<?=$segments[5];?>',
-		endDate:'<?=$segments[6];?>'
+		startDate:'',
+		endDate:''
 	});
+	
+	
+	$("#VTypeMain").mousedown(function(ev){
+		var details_length = $("#bodyTable tbody").children().length;
+		var detail = $(".detail");
+		
+		if(details_length > 0 ){
+			alert("You can't change the voucher type when there is a detail row");
+			detail.css("border","1px red solid");
+			ev.preventDefault();
+		}else{
+			detail.prop("style","");
+		}
+		
+	});
+	
+	$("#VTypeMain").change(function(){
+		
+		var val = $(this).val();
+		add_row();
+		if(val==='CHQ'){
+			$('#ChqNo').removeAttr('readonly');
+		}else{
+			$('#ChqNo').val("");
+			$('#ChqNo').prop('readonly','readonly');
+		}
+	});
+	
+	$("#addrow").click(function(){
+		add_row();
+	});
+	
+	function add_row(){
+		var elem = $("#bodyTable tbody");
+		var VType = $("#VTypeMain");
+		var accounts_option = "";
+		
+				if(VType.val() == "PC"){
+					<?php $accounts_array = json_encode($accounts['expense']);?>
+					var obj = <?=$accounts_array;?>;	
+					for (i=0;i<obj.length;i++){
+					 		accounts_option+="<option value='"+obj[i].AccNo+"'>"+obj[i].AccText+" - "+obj[i].AccName+"</option>";
+					}
+				}
+				else if(VType.val() == "CR"){
+					<?php $accounts_array = json_encode($accounts['revenue']);?>
+					var obj = <?=$accounts_array;?>;	
+					for (i=0;i<obj.length;i++){
+					 		accounts_option+="<option value='"+obj[i].AccNo+"'>"+obj[i].AccText+" - "+obj[i].AccName+"</option>";
+					}
+				}
+				
+				else if(VType.val() == "CHQ"){
+					<?php $accounts_array = json_encode($accounts['expense']);?>
+					var obj = <?=$accounts_array;?>;	
+					for (i=0;i<obj.length;i++){
+					 		accounts_option+="<option value='"+obj[i].AccNo+"'>"+obj[i].AccText+" - "+obj[i].AccName+"</option>";
+					}
+				}
+				
+				else if(VType.val() == "BCHG"){
+					<?php $accounts_array = json_encode($accounts['expense']);?>
+					var obj = <?=$accounts_array;?>;	
+					for (i=0;i<obj.length;i++){
+					 		accounts_option+="<option value='"+obj[i].AccNo+"'>"+obj[i].AccText+" - "+obj[i].AccName+"</option>";
+					}
+				}
+				
+				else if(VType.val() == "PCR"){
+					<?php $accounts_array = json_encode($accounts['rebanking']);?>
+					var obj = <?=$accounts_array;?>;	
+					for (i=0;i<obj.length;i++){
+					 		accounts_option+="<option value='"+obj[i].AccNo+"'>"+obj[i].AccText+" - "+obj[i].AccName+"</option>";
+					}
+				}	
+				
+								 
+					
+				
+		
+		var row = "<tr>"
+					+"<td><input type='checkbox' class='check detail'/></td>"
+					+"<td><input type='text' class='form-control detail'/></td>"
+					+"<td><input type='text' class='form-control detail'/></td>"
+					+"<td><input type='text' class='form-control detail'/></td>"
+					+"<td><input type='text' class='form-control detail' readonly='readonly'/></td>"
+					+"<td><select class='form-control detail accounts'>"
+					+"<option value=''>Select Account</option>"
+					+accounts_option
+					+"</select></td>"
+					+"<td><select class='form-control detail'>"
+					+"<option value=''>Select Bugdet Item</option>"
+					+"</select></td>"
+					+"<td><input type='text' class='form-control detail' readonly='readonly'/></td>"
+					+"</tr>";
+		
+		
+		if(VType.val()){
+			elem.append(row);
+			VType.prop("style","");
+		}else{
+			VType.css("border","1px red solid");
+			alert("Please choose an account");
+		}
+
+	}
+
+
+	$(".accounts").change(function(){
+		alert("Hello");	
+	});
+	
+	
+	$(".check").change(function(){
+		alert("Yes");
+	});
+	
+	
+	function del_selected_rows(){
+		var elem = $("#bodyTable tbody");
+		
+		
+	}
+	
+	
+	$(window).keyup(function(e) {
+	  	if (e.ctrlKey) {
+	        if (e.keyCode == 73) { //CTRL + i
+	            add_row();
+	        }
+	        if(e.keyCode == 88){// CTRL + x
+	        	$("#bodyTable tbody tr:last").remove();
+	        	
+	        }
+	    }
+	});		
 </script>
