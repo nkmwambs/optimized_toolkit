@@ -274,6 +274,18 @@ class Journal extends Journal_Layout{
 		return $this->basic_model->get_voucher_date_picker_control($this->get_project_id());
 	}
 	
+	protected function get_coded_cheques_utilized(){
+		return $this->basic_model->get_cheques_utilized_with_bank_code($this->get_project_id());
+	}
+	
+	protected function get_project_details(){
+		return $this->basic_model->get_project_details($this->get_project_id());
+	}
+	
+	protected function insert_voucher_to_database($post_array=array()){
+		return $this->basic_model->insert_voucher_to_database($post_array);
+	}
+	
 	/**
 	 * This is a getter that retrieve records from the database to populate vouchers
 	 */
@@ -597,6 +609,13 @@ class Journal extends Journal_Layout{
 		$data['approved_budget'] = $this->budget_grouped_items();
 		$data['voucher_number'] = $this->get_next_voucher_number();
 		$data['voucher_date_range'] = $this->get_voucher_date_picker_control();
+		$data['cheques_utilized'] = array_column($this->get_coded_cheques_utilized(),"ChqNo");
+		$project_details = $this->get_project_details();
+		$data['bank_code'] = $project_details->bankID;
+		$data['success'] = "";
+		if(isset($_POST) && sizeof($_POST)>0){
+			$data['success'] = $this->insert_voucher_to_database($_POST);
+		}
 		return $data;
 	}
 

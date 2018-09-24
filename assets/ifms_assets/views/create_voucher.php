@@ -1,6 +1,6 @@
 <?php
-//print_r($approved_budget);
-//echo $this->get_next_voucher_number();
+//print_r($cheques_utilized);
+//echo $success;
 ?>
 <hr/>
 <div class="row">
@@ -46,7 +46,7 @@
 		
 						<div class="row">	
 						<div class="col-sm-12">		
-						            <input type="hidden" value="<?php echo $this->get_project_id();?>" id="KENo" name="KENo"/>
+						            <input type="hidden" value="<?php echo $this->get_project_id();?>" id="icpNo" name="icpNo"/>
 						            
 						            <table id='tblVch' class='table'>
 						            	<thead>
@@ -59,8 +59,8 @@
 											<tr>
 												<td id="error_msg" style="color:red;text-align: center;">
 													<?php
-													if (isset($msg))
-														echo $msg;
+													if (isset($success))
+														echo $success;
 													?>
 												</td>
 											</tr>
@@ -70,7 +70,7 @@
 													<label class="control-label"><span style="font-weight: bold;">Date: </span></label>
 													
 														<div class="input-group">
-															<input type="text" name="TDate" id="TDate" class="form-control datepicker accNos" 
+															<input type="text" name="TDate" id="TDate" class="form-control datepicker required" 
 															data-validate="required" data-provide="datepicker" data-date-format="yyyy-mm-dd" 
 															data-date-start-date="<?=date('Y-m-d',$voucher_date_range['end_date']);?>" 
 															data-date-end-date="<?=date('Y-m-t',$voucher_date_range['end_date']);?>"  readonly="readonly" 
@@ -87,7 +87,7 @@
 								            <td colspan="3">
 								            	<div class="form-group">
 								            		<label for='VNumber' class="control-label"><span style="font-weight: bold;">Voucher Number</span></label>	
-								            		<input type="text" class="form-control accNos" id="VNumber" name="VNumber" data-validate="required"  value="<?=$voucher_number;?>" readonly/>
+								            		<input type="text" class="form-control required" id="VNumber" name="VNumber" data-validate="required"  value="<?=$voucher_number;?>" readonly/>
 								            	</div>
 								            </td>
 						
@@ -96,7 +96,7 @@
 						                    <td colspan="8">
 						                    	<div class="form-group">
 						                    		<label for="Payee" class="control-label"><span style="font-weight: bold;">Payee/Vendor: </span></label>
-						                    		<input type="text" class="form-control accNos" data-validate="required"  id="Payee" name="Payee"/>
+						                    		<input type="text" class="form-control required" data-validate="required"  id="Payee" name="Payee"/>
 						                    	</div>
 						                    </td>
 						                </tr>
@@ -104,7 +104,7 @@
 						                   <td colspan="8">
 						                    	<div class="form-group">
 						                    			<label for="Address" class="control-label"><span style="font-weight: bold;">Address: </span></label>
-						                    		<input type="text" class="form-control accNos" data-validate="required"  id="Address" name="Address"/>
+						                    		<input type="text" class="form-control required" data-validate="required"  id="Address" name="Address"/>
 						                    	</div>
 						                    </td>
 						                </tr>    
@@ -113,7 +113,7 @@
 						                    <td colspan="4">
 						                    	<div class="col-sm-10 form-group" id='VType'>
 						                    		<label for="VTypeMain" class="control-label"><span style="font-weight: bold;">Voucher Type:</span></label>
-								                        <select name="VTypeMain" id="VTypeMain" class="form-control accNos" data-validate="required">
+								                        <select name="VType" id="VTypeMain" class="form-control required" data-validate="required">
 								                            <option value="">Select Voucher Type</option>
 								                            <option value="PC">Payment By Cash</option>
 								                            <option value="CHQ">Payment By Cheque</option>
@@ -147,7 +147,7 @@
 						                    <td colspan="8">
 						                    	<div class="form-group">
 						                    			<label for="TDescription" class="control-label"><span style="font-weight: bold;">Description</span></label>
-						                    		<input type="text" class="form-control accNos" data-validate="required" id="TDescription" name="TDescription"/>
+						                    		<input type="text" class="form-control required" data-validate="required" id="TDescription" name="TDescription"/>
 						                    	</div>
 						                    	
 						                    </td>
@@ -217,15 +217,13 @@
 						            	<td colspan="5">
 						            		<div class="form-group pull-right">
 						            			<label for='totals' class="control-label"><span style="font-weight: bold;">Totals:</span></label>
-						            			<input class="form-control" type="text" id="totals" name="totals" readonly/>
+						            			<input class="form-control" type="text" id="totals" name="totals" value="0" readonly="readonly" />
 						            		</div>
 						            	</td>
 						            </tr>
 						        </table>
 						    </div> 
-					   </div>
-					        <INPUT type="hidden" id="hidden" value=""/>
-					    
+					   </div>					    
 					
 	
 						</form>    
@@ -339,18 +337,18 @@
 		
 		var row = "<tr>"
 					+"<td><input type='checkbox' class='check detail'/></td>"
-					+"<td><input type='text' class='form-control detail'/></td>"
-					+"<td><input type='text' class='form-control detail'/></td>"
-					+"<td><input type='text' class='form-control detail'/></td>"
-					+"<td><input type='text' class='form-control detail' readonly='readonly'/></td>"
-					+"<td><select class='form-control detail accounts'>"
+					+"<td><input type='text' class='form-control detail qty calculate required' name='Qty[]'/></td>"
+					+"<td><input type='text' class='form-control detail desc required' name='Details[]'/></td>"
+					+"<td><input type='text' class='form-control detail unit calculate required' name='UnitCost[]'/></td>"
+					+"<td><input type='text' class='form-control detail cost required' readonly='readonly' value='0' name='Cost[]'/></td>"
+					+"<td><select class='form-control detail accounts required' name='AccNo[]'>"
 					+"<option value=''>Select Account</option>"
 					+accounts_option
 					+"</select></td>"
-					+"<td><select class='form-control detail'>"
+					+"<td><select class='form-control detail budget_items required' name='scheduleID[]'>"
 					+"<option value=''>Select Bugdet Item</option>"
 					+"</select></td>"
-					+"<td><input type='text' class='form-control detail' readonly='readonly'/></td>"
+					+"<td><input type='text' class='form-control detail civ' name='civaCode[]' readonly='readonly'/></td>"
 					+"</tr>";
 		
 		
@@ -404,7 +402,7 @@
 			budget_item_options_default+="<option value=''>Missing Budget</option>";
 		}
 		
-		budget_item_select.html("<select class='form-control detail'>"
+		budget_item_select.html("<select class='form-control detail required' name='scheduleID[]'>"
 								+"<option value=''>Select Bugdet Item</option>"
 								+budget_item_options_default
 								+"</select>");
@@ -421,7 +419,7 @@
 		}
 				
 		
-		var select_budget_items = 	"<select class='form-control detail'>"
+		var select_budget_items = 	"<select class='form-control detail required' name='scheduleID[]'>"
 									+"<option value=''>Select Bugdet Item</option>"
 									+ budget_item_options
 									+"</select>";
@@ -432,11 +430,26 @@
 	} );
 		
 	
-	function del_selected_rows(){
+	$("#btnDelRow").click(function(){
 		var elem = $("#bodyTable tbody");
 		
+		$(".check").each(function(){
+			if($(this).is(":checked")){
+				$(this).parent().parent().remove();
+			}
+			
+			var checked = $(".check:checked").length;
+			if(checked>0){
+				$("#btnDelRow").removeClass("hidden");	
+			}else{
+				$("#btnDelRow").addClass("hidden");
+			}
+		});
 		
-	}
+		calculate_voucher_totals();
+		
+	});
+	
 	
 	
 	$(window).keyup(function(e) {
@@ -447,7 +460,101 @@
 	        if(e.keyCode == 88){// CTRL + x
 	        	$("#bodyTable tbody tr:last").remove();
 	        	
+	        	calculate_voucher_totals();
 	        }
 	    }
 	});		
+	
+	
+	$("#ChqNo").change(function(){
+		var chqno = $(this).val();
+		var bank_code = <?=$bank_code;?>;
+		var code_chqno = chqno+"-"+bank_code;
+		
+		var obj = <?=json_encode($cheques_utilized);?>;
+		
+		var chqno_exists = false;
+		
+		for(i=0;i<obj.length;i++){
+			if(obj[i] == code_chqno){
+				chqno_exists = true;
+			}
+		}
+		
+		if(chqno_exists){
+			alert("Cheque Number "+chqno+" already exists!");
+			$("#ChqNo").val("");
+		}
+		
+	});
+	
+	$(document).on("change",".calculate",function(){
+
+		var total_input = $("#totals");
+		
+		if($(this).hasClass("qty")){
+			var qty = $(this);
+			var unit = $(this).parent().nextAll().eq(1).children();
+			var cost = $(this).parent().nextAll().eq(2).children();
+		}else if($(this).hasClass("unit")){
+			var unit = $(this);
+			var qty = $(this).parent().prev().prev().children();// To Try prevAll.eq(2)
+			var cost = $(this).parent().next().children();
+		}
+		
+		var total = 0;
+		
+		if($.isNumeric(unit.val()) && $.isNumeric(qty.val())){
+			total = unit.val()*qty.val();
+			cost.val(total);
+		}
+		
+
+		calculate_voucher_totals();
+				
+
+	});
+	
+	
+	function calculate_voucher_totals(){
+		var voucher_total = 0;
+
+		$(".cost").each(function(){
+			if($.isNumeric($(this).val())){
+				voucher_total+=parseFloat($(this).val());
+			}
+					
+		});
+				
+		$("#totals").val(voucher_total);
+	}
+	
+	
+	$(document).on("submit","#frm_voucher",function(){
+		
+		if($("#bodyTable tbody").length == 0){
+			alert("Voucher lacks details");
+			return false;
+		}
+		
+		if($("#VTypeMain").val()=="CHQ" && $("#ChqNo").val()==""){
+			alert("You must provide a cheque number");
+			$("#ChqNo").css("border","1px red solid");
+			return false;
+		}
+		
+		var required_count = 0;
+		
+		$(".required").each(function(){
+			if($(this).val()==""){
+				required_count++;
+				$(this).css("border","1px red solid");
+			}
+		});
+		
+		if(required_count>0){
+			alert(required_count+" required fields are empty");
+			return false;
+		}
+	});
 </script>

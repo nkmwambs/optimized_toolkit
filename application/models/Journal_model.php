@@ -198,6 +198,105 @@ class Journal_model extends CI_Model{
 	}
 	
 	
+	function get_cheques_utilized_with_bank_code($icpNo=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_cheques_utilized(?)",array($icpNo));
+			$result = $query->num_rows()>0?$query->result_array():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function get_cheques_utilized_without_bank_code($icpNo=""){
+		$raw_cheques = $this->get_cheques_utilized_with_bank_code($icpNo);
+		
+		$refined_cheques = array();
+		
+		foreach($raw_cheques as $cheque){
+			$arr = explode("-", $cheque);
+			$refined_cheques[] = $arr[0];
+		}
+		
+		return $refined_cheques;
+	}
+	
+	function get_project_details($icpNo=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_project_details(?)",array($icpNo));
+			$result = $query->num_rows()>0?$query->row():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function insert_voucher_to_database($post_array=array()){
+		
+		$header['icpNo'] = $post_array['icpNo'];
+		$header['TDate'] = $post_array['TDate'];
+		$header['Fy'] = 19;
+		$header['VNumber'] = $post_array['VNumber'];
+		$header['Payee'] = $post_array['Payee'];
+		$header['Address'] = $post_array['Address'];
+		$header['VType'] = $post_array['VType'];
+		$header['ChqNo'] = $post_array['ChqNo'];
+		$header['ChqState'] = 0;
+		$header['clrMonth'] = "0000-00-00";
+		$header['editable'] = 0;
+		$header['TDescription'] = $post_array['TDescription'];
+		$header['totals'] = $post_array['totals'];
+		$header['reqID'] = 0;
+		$header['unixStmp'] = strtotime(date("y-m-d"));
+		
+		$body = array();
+		
+		for($i=0;$i<count($post_array['Qty']);$i++){
+			$body[$i]['icpNo'] = $post_array['icpNo'];
+			$body[$i]['VNumber'] = $post_array['VNumber'];
+			$body[$i]['TDate'] = $post_array['TDate'];
+			$body[$i]['VType'] = $post_array['VType'];
+			
+			$body[$i]['Qty'] = $post_array['Qty'][$i];
+			$body[$i]['Details'] = $post_array['Details'][$i];
+			$body[$i]['UnitCost'] = $post_array['UnitCost'][$i];
+			$body[$i]['Cost'] = $post_array['Cost'][$i];
+			$body[$i]['AccNo'] = $post_array['AccNo'][$i];
+			$body[$i]['scheduleID'] = $post_array['scheduleID'][$i];
+			$body[$i]['civaCode'] = $post_array['civaCode'][$i];
+		}
+		
+		
+		$query = $this->db->get_where("voucher_header",array("VNumber"=>$post_array['VNumber'],"icpNo"=>$post_array['icpNo']));
+		
+		if($query->num_rows() == 0){
+			$this->db->trans_start();
+				$this->db->insert("voucher_header",$header);
+				
+				$hID = $this->db->insert_id();
+				
+				for($i=0;$i<count($post_array['Qty']);$i++){
+					$body[$i]['hID'] = $hID;
+				}
+				
+				$this->db->insert_batch("voucher_body",$body);
+		
+			$this->db->trans_complete();
+		}
+		
+		$rows = $this->db->affected_rows();
+		
+		if($rows>0){
+			return "Voucher Created Successful";
+		}
+	}
+	
 	function start_cash_balance($icpNo="",$month_start=""){
 		
 		$last_month_cash_balance = "";
