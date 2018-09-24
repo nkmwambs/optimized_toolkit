@@ -605,6 +605,10 @@ class Journal extends Journal_Layout{
 	
 	private function pre_render_create_voucher(){
 		$data['view'] = "create_voucher";
+		$data['success'] = "";
+		if(isset($_POST) && sizeof($_POST)>0){
+			$data['success'] = $this->insert_voucher_to_database($_POST);
+		}
 		$data['accounts'] = $this->group_accounts();
 		$data['approved_budget'] = $this->budget_grouped_items();
 		$data['voucher_number'] = $this->get_next_voucher_number();
@@ -612,10 +616,7 @@ class Journal extends Journal_Layout{
 		$data['cheques_utilized'] = array_column($this->get_coded_cheques_utilized(),"ChqNo");
 		$project_details = $this->get_project_details();
 		$data['bank_code'] = $project_details->bankID;
-		$data['success'] = "";
-		if(isset($_POST) && sizeof($_POST)>0){
-			$data['success'] = $this->insert_voucher_to_database($_POST);
-		}
+		
 		return $data;
 	}
 
