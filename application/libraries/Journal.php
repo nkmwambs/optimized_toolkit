@@ -29,6 +29,13 @@ class Journal_Layout{
 		$this->CI->config->load('ifms');
 		$this->CI->load->helper('url');
 		$this->CI->load->database();
+		
+		/*cache control*/
+		$this->CI->output->cache(10);
+		
+		$this->CI->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
+		$this->CI->output->set_header("Cache-Control: post-check=0, pre-check=0");
+		$this->CI->output->set_header("Pragma: no-cache"); 
 				
 	}
 	
@@ -67,27 +74,27 @@ class Journal_Layout{
 	
 	protected function load_js()
 	{
-		$this->set_js_files($this->default_javascript_path.'/jquery-3.3.1.min.js');
-		$this->set_js_files($this->default_javascript_path.'/bootstrap/bootstrap.min.js');
-		$this->set_js_files($this->default_javascript_path.'/jquery.dataTables.min.js');
-		$this->set_js_files($this->default_javascript_path.'/buttons.bootstrap.js');
-		$this->set_js_files($this->default_javascript_path.'/dataTables.bootstrap.min.js');
-		$this->set_js_files($this->default_javascript_path.'/jquery-ui.min.js');
-		$this->set_js_files($this->default_javascript_path.'/printThis.js');
-		$this->set_js_files($this->default_javascript_path.'/datepicker/js/bootstrap-datepicker.min.js');
-		$this->set_js_files($this->default_javascript_path.'/custom.js');
+		$this->set_js_files($this->default_javascript_path.'jquery-3.3.1.min.js');
+		$this->set_js_files($this->default_javascript_path.'bootstrap/bootstrap.min.js');
+		$this->set_js_files($this->default_javascript_path.'jquery.dataTables.min.js');
+		$this->set_js_files($this->default_javascript_path.'buttons.bootstrap.js');
+		$this->set_js_files($this->default_javascript_path.'dataTables.bootstrap.min.js');
+		$this->set_js_files($this->default_javascript_path.'jquery-ui.min.js');
+		$this->set_js_files($this->default_javascript_path.'printThis.js');
+		$this->set_js_files($this->default_javascript_path.'datepicker/js/bootstrap-datepicker.min.js');
+		$this->set_js_files($this->default_javascript_path.'custom.js');
 	}
 	
 	protected function load_css(){
-		$this->set_css_files($this->default_css_path.'/bootstrap/bootstrap.css');
-		$this->set_css_files($this->default_css_path.'/dataTables.bootstrap.css');
-		$this->set_css_files($this->default_css_path.'/custom.css');
-		$this->set_css_files($this->default_css_path.'/jquery-ui-themes/base/jquery-ui.min.css');
-		$this->set_css_files($this->default_css_path.'/jquery-ui-themes/base/theme.css');
-		$this->set_css_files($this->default_css_path.'/font-icons/font-awesome/css/font-awesome.css');
-		$this->set_css_files($this->default_css_path.'/font-icons/entypo/css/entypo.css');
-		$this->set_css_files($this->default_css_path.'/font-icons/font-awesome/css/font-awesome.css');
-		$this->set_css_files($this->default_css_path.'/datepicker/css/bootstrap-datepicker.min.css');
+		$this->set_css_files($this->default_css_path.'bootstrap/bootstrap.min.css');
+		$this->set_css_files($this->default_css_path.'dataTables.bootstrap.min.css');
+		$this->set_css_files($this->default_css_path.'custom.css');
+		$this->set_css_files($this->default_css_path.'jquery-ui-themes/base/jquery-ui.min.css');
+		$this->set_css_files($this->default_css_path.'jquery-ui-themes/base/theme.css');
+		$this->set_css_files($this->default_css_path.'font-icons/font-awesome/css/font-awesome.css');
+		$this->set_css_files($this->default_css_path.'font-icons/entypo/css/entypo.css');
+		$this->set_css_files($this->default_css_path.'font-icons/font-awesome/css/font-awesome.css');
+		$this->set_css_files($this->default_css_path.'datepicker/css/bootstrap-datepicker.min.css');
 	}
 	
 	
@@ -105,12 +112,17 @@ class Journal_Layout{
 	
 		
 	protected function get_layout(){
+		
+		//ob_start("ob_gzhandler");
+		
 		$js_files = $this->get_js_files();
 		$css_files =  $this->get_css_files();
 		
 		$this->CI->benchmark->mark('profiler_end');
 		
 		$this->profiler = $this->CI->benchmark->elapsed_time('profiler_start', 'profiler_end');
+		
+		//ob_end_flush(); 
 		
 		return (object) array(
 					'js_files' => $js_files,
@@ -684,7 +696,7 @@ class Journal extends Journal_Layout{
 		
 		$output = $this->get_layout();
 		
-		return $output;
+		return $output; 
 	}
 	
 }
