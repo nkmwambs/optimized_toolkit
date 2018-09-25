@@ -4,46 +4,50 @@
 ?>
 <hr/>
 <div class="row">
-	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
+	<div class="<?=$this->column_set();?>">
 		<div class="well" style="text-align: center;"><?=$this->get_project_id();?> Cash Journal
 			for the month ending <?=date("j<\s\u\p>S</\s\u\p> F Y",$this->get_end_date_epoch());?></div>
 	</div>	
 </div>
 
 <hr />
-<div class="row">
-	<div class="col-sm-offset-1 col-sm-5">
-		<div class="btn btn-default btn-icon icon-left hidden-print pull-left" id="select_btn">Select All Vouchers <i class="entypo-mouse"></i></div>
-		<div  class="btn btn-default btn-icon icon-left hidden-print pull-left" id="print_vouchers">Print Selected Vouchers <i class="entypo-print"></i></div>
-		<?php 
-			if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-		?>
-			<a class="btn btn-default btn-icon icon-left hidden-print pull-left" href="<?=base_url();?>Welcome/finance/create_voucher/<?=$this->get_project_id();?>/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>">New Voucher <i class="entypo-list-add"></i></a>		
-		<?php
-			}
-		?>
+
+<div class="<?=$this->column_set();?>">
+	
+	<div class="row">
+		<div class="col-sm-6">
+			<div class="btn btn-default btn-icon icon-left hidden-print pull-left" id="select_btn">Select All Vouchers <i class="entypo-mouse"></i></div>
+			<div  class="btn btn-default btn-icon icon-left hidden-print pull-left" id="print_vouchers">Print Selected Vouchers <i class="entypo-print"></i></div>
+			<?php 
+				if($transacting_month['start_date'] == $this->get_start_date_epoch()){
+			?>
+				<a class="btn btn-default btn-icon icon-left hidden-print pull-left" href="<?=base_url();?>Welcome/finance/create_voucher/<?=$this->get_project_id();?>/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>">New Voucher <i class="entypo-list-add"></i></a>		
+			<?php
+				}
+			?>
+		</div>
+	
+	
+		<div class="col-sm-6">
+			<form id="scroll" role="form" class="form-horizontal form-groups-bordered">
+				<div class="form-group">
+					<label class="col-sm-3 control-label">Scroll Months: </label>	
+						<div class="col-sm-5">
+							<input type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_first_extra_segment();?>" readonly="readonly"/>
+										
+						</div>
+					<div class="col-sm-4">
+						<button class="btn btn-default" id="spinner_btn">Go</button>
+					</div>	
+				</div>
+			</form>
+		</div>
 	</div>
-
-
-	<div class="col-sm-5 col-sm-offset-1">
-		<form id="scroll" role="form" class="form-horizontal form-groups-bordered">
-			<div class="form-group">
-				<label class="col-sm-3 control-label">Scroll Months: </label>	
-					<div class="col-sm-5">
-						<input type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_first_extra_segment();?>" readonly="readonly"/>
-									
-					</div>
-				<div class="col-sm-4">
-					<button class="btn btn-default" id="spinner_btn">Go</button>
-				</div>	
-			</div>
-		</form>
-	</div>
-</div>
-<hr />		
+</div>	
+		
 
 <div class="row">
-	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1" id="display">
+	<div class="<?=$this->column_set();?>" id="display">
 		<form id="frm_vouchers">
 
 		<table class="table table-striped" id="ifms_journal_view">
@@ -153,17 +157,12 @@
 </div>
 <hr />
 <div class="row">
-	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
+	<div class="<?=$this->column_set();?>">
 		<?php echo "Time Elapsed to load page: ".$this->get_layout()->profiler." seconds";?>
 	</div>
 </div>
 
 <hr />
-<?php
-//echo $this->start_date;
-?>
-
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 
 
 <script>

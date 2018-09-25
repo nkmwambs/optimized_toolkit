@@ -104,6 +104,10 @@ class Journal_Layout{
 				
 	}
 	
+	protected function column_set(){
+		return "col-sm-offset-1 col-sm-10 col-sm-offset-1";//Default is col-sm-offset-1 col-sm-10 col-sm-offset-1
+	}
+	
 	/**
 	 * Set View Buffer - Set the view as string parameter that hold the views content as plain text
 	 *
@@ -379,6 +383,9 @@ class Journal extends Journal_Layout{
 		return $account_groups;
 	}
 	
+	private function current_voucher_date(){
+		return $this->basic_model->get_current_voucher_date($this->get_project_id());
+	}
 	
 	protected function accounts_with_open_icp_civs(){
 		$raw_accounts = $this->account_for_vouchers();
@@ -390,7 +397,12 @@ class Journal extends Journal_Layout{
 			foreach($open_civs as $civ){
 				if($account->accID == $civ->accID){
 					$icps_impacted = explode(",", $civ->allocate);
-					if(in_array($this->get_project_id(), $icps_impacted)){
+					
+					// $control_dates = $this->get_voucher_date_picker_control();
+					// if(in_array($this->get_project_id(), $icps_impacted) && strtotime($civ->closureDate) > $control_dates['end_date']){
+						// $combined_account_civ_array[$account->AccNo][$civ->AccNoCIVA] = array("AccNo"=>$account->AccNo,"civaCode"=>$civ->civaID,"AccText"=>$civ->AccNoCIVA,"AccName"=>"(".$account->AccText.") ".$account->AccName,"closureDate"=>$civ->closureDate,"allocate"=>explode(",", $civ->allocate));	
+					// }
+					if(in_array($this->get_project_id(), $icps_impacted) && $civ->closureDate > $this->current_voucher_date()){
 						$combined_account_civ_array[$account->AccNo][$civ->AccNoCIVA] = array("AccNo"=>$account->AccNo,"civaCode"=>$civ->civaID,"AccText"=>$civ->AccNoCIVA,"AccName"=>"(".$account->AccText.") ".$account->AccName,"closureDate"=>$civ->closureDate,"allocate"=>explode(",", $civ->allocate));	
 					}
 					
@@ -413,7 +425,6 @@ class Journal extends Journal_Layout{
 			if($account->Active == 1){
 				$grouped[$AccGrps[$account->AccGrp]][] = $account;
 			}else{
-				//$grouped[$AccGrps[$account->AccGrp]][] = $account->AccNo;
 				if(isset($accounts_with_civs[$account->AccNo])){
 					foreach($accounts_with_civs[$account->AccNo] as $civ_account){
 						$grouped[$AccGrps[$account->AccGrp]][] = (object)$civ_account;
@@ -472,7 +483,7 @@ class Journal extends Journal_Layout{
 		$cnt = 0;
 		
 		foreach($all_transactions as $rows){
-			$removeKeys = array("AccNo","AccText","AccGrp","Qty","Details","UnitCost","Cost","scheduleID");
+			$removeKeys = array("AccNo","AccText","AccGrp","Qty","Details","UnitCost","Cost","scheduleID","civaCode");
 			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
 			
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Qty'] = $rows['Qty'];
@@ -481,7 +492,7 @@ class Journal extends Journal_Layout{
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Cost'] = $rows['Cost'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['AccNo'] = $rows['AccText'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['scheduleID'] = $rows['scheduleID'];
-			
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['civaCode'] = $rows['civaCode'];
 			$cnt ++;
 		}
 		

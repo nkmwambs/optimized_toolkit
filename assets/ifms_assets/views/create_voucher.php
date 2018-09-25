@@ -1,11 +1,11 @@
 <?php
 //print_r($cheques_utilized);
-//print_r($civ_accounts);
+//print_r($accounts);
 //print_r($accounts['revenue']);
 ?>
 <hr/>
 <div class="row">
-	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
+	<div class="<?=$this->column_set();?>">
 		
 		<div class="row">
 			<div class="col-sm-6" style="text-align: center;">
@@ -342,14 +342,14 @@
 					+"<td><input type='text' class='form-control detail desc required' name='Details[]'/></td>"
 					+"<td><input type='text' class='form-control detail unit calculate required' name='UnitCost[]'/></td>"
 					+"<td><input type='text' class='form-control detail cost required' readonly='readonly' value='0' name='Cost[]'/></td>"
-					+"<td><select class='form-control detail accounts accs required' name='AccNo[]'>"
+					+"<td><select class='form-control detail accounts required' name='AccNo[]'>"
 					+"<option value=''>Select Account</option>"
 					+accounts_option
 					+"</select></td>"
 					+"<td><select class='form-control detail budget_items required' name='scheduleID[]'>"
 					+"<option value=''>Select Bugdet Item</option>"
 					+"</select></td>"
-					+"<td><input type='text' class='form-control detail civ' name='civaCode[]' readonly='readonly'/></td>"
+					+"<td><input type='text' class='form-control detail civ' name='civaCode[]' readonly='readonly' value='0'/></td>"
 					+"</tr>";
 		
 		
@@ -377,6 +377,25 @@
 	$(document).on("change", ".accounts", function(){
 		
 		var account = $(this).val();
+		
+		var civa_input = $(this).parent().next().next().children();
+		
+		var all_accounts = <?=json_encode($accounts);?>
+		
+		var civaCode = 0;
+		
+		$.each(all_accounts,function(i,elem){
+			$.each(elem,function(j,el){
+				if(el.AccNo == account && el.civaCode){
+					civaCode = el.civaCode;
+				}
+			});
+		});
+		
+		civa_input.val(civaCode);
+		
+		
+		
 		var budget_item_select = $(this).parent().next();
 		
 		var budget_item_options = "";

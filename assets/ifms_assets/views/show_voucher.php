@@ -3,7 +3,7 @@
 //print_r($voucher);
 ?>
 <div class="row">
-	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">						
+	<div class="<?=$this->column_set();?>">						
 			
 			<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/show_journal/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_first_extra_segment();?>" class="btn btn-default">Back</a>
 			
@@ -46,11 +46,12 @@
 								
 								<tr style="font-weight: bold;">
 									<td>Quantity</td>
-									<td colspan="3">Items Purchased/ Service Received</td>
+									<td colspan="2">Items Purchased/ Service Received</td>
 									<td style="text-align: right;">Unit Cost</td>
 									<td style="text-align: right;">Cost</td>
 									<td  style="text-align: right;">Account</td>
 									<td  style="text-align: right;">Budget Item</td>
+									<td  style="text-align: right;">CIV Code</td>
 								</tr>
 								<?php
 									$total = 0;
@@ -58,11 +59,12 @@
 								?>
 									<tr>
 										<td><?=$row['Qty'];?></td>
-										<td colspan="3"><?=$row['Details']?></td>
+										<td colspan="2"><?=$row['Details']?></td>
 										<td style="text-align: right;"><?=number_format($row['UnitCost'],2);?></td>
 										<td style="text-align: right;"><?=number_format($row['Cost'],2);?></td>
 										<td style="text-align: right;"><?=$row['AccNo'];?></td>
 										<td style="text-align: right;"><?=$row['scheduleID'];?></td>
+										<td style="text-align: right;"><?=$row['civaCode'];?></td>
 									</tr>
 								<?php
 										$total+=$row['Cost'];

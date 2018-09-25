@@ -7,7 +7,7 @@ foreach($selected_vouchers['vouchers'] as $selected) $to_print[] = $all_vouchers
 ?>
 <hr />
 <div class="row">
-	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
+	<div class="<?=$this->column_set();?>">
 			<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/show_journal/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_end_date_epoch();?>/<?=$this->get_first_extra_segment();?>" class="btn btn-default">Back</a>
 			
 			<!-- <center> -->
@@ -25,7 +25,7 @@ foreach($to_print as $voucher){
 ?>
 
 <div class="row">
-	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">						
+	<div class="<?=$this->column_set();?>">						
 			
 			    <br><br>			    	
 					   <div id=""> 	
@@ -120,7 +120,7 @@ foreach($to_print as $voucher){
 ?>
 </div>
 <div class="row">
-	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
+	<div class="<?=$this->column_set();?>">
 		<?php echo "Time Elapsed to load page: ".$this->get_layout()->profiler." seconds";?>
 	</div>
 </div>
