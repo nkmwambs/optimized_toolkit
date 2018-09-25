@@ -31,7 +31,7 @@ class Journal_Layout{
 		$this->CI->load->database();
 		
 		/*cache control*/
-		$this->CI->output->cache(10);
+		//$this->CI->output->cache(10);
 		
 		$this->CI->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
 		$this->CI->output->set_header("Cache-Control: post-check=0, pre-check=0");
@@ -47,21 +47,21 @@ class Journal_Layout{
  * return void
  */
 	
-	protected function set_view($view,$data){
+	protected function set_view($data){
 		
 		//Create variable from the data array
 		extract($data);
 		
 		ob_start();
 		
-		include ($this->default_view_path.$view.".php");
+		include_once ($this->default_view_path.$view.".php");
 		
-		$view = ob_get_contents();
+		$buffered_view = ob_get_contents();
 		
 		ob_end_clean();
 		
 		
-		$this->view_as_string .= $view;
+		$this->view_as_string .= $buffered_view;
 	}
 	
 	private function set_css_files($css_file){
@@ -83,6 +83,8 @@ class Journal_Layout{
 		$this->set_js_files($this->default_javascript_path.'printThis.js');
 		$this->set_js_files($this->default_javascript_path.'datepicker/js/bootstrap-datepicker.min.js');
 		$this->set_js_files($this->default_javascript_path.'custom.js');
+		
+		return $this->js_files;
 	}
 	
 	protected function load_css(){
@@ -95,34 +97,17 @@ class Journal_Layout{
 		$this->set_css_files($this->default_css_path.'font-icons/entypo/css/entypo.css');
 		$this->set_css_files($this->default_css_path.'font-icons/font-awesome/css/font-awesome.css');
 		$this->set_css_files($this->default_css_path.'datepicker/css/bootstrap-datepicker.min.css');
-	}
-	
-	
-	private function get_css_files()
-	{
-		$this->load_css();	
+		
 		return $this->css_files;
-	}
-
-	private function get_js_files()
-	{
-		$this->load_js();	
-		return $this->js_files;
 	}
 	
 		
 	protected function get_layout(){
 		
-		//ob_start("ob_gzhandler");
-		
-		$js_files = $this->get_js_files();
-		$css_files =  $this->get_css_files();
+		$js_files = $this->load_js();
+		$css_files =  $this->load_css();
 		
 		$this->CI->benchmark->mark('profiler_end');
-		
-		$this->profiler = $this->CI->benchmark->elapsed_time('profiler_start', 'profiler_end');
-		
-		//ob_end_flush(); 
 		
 		return (object) array(
 					'js_files' => $js_files,
@@ -264,15 +249,54 @@ class Journal extends Journal_Layout{
 		return $account_groups;
 	}
 	
+
+
+	protected function get_civs(){
+		return $this->basic_model->get_civs();
+	}	
+	
+	protected function accounts_with_open_icp_civs(){
+		$raw_accounts = $this->account_for_vouchers();
+		$open_civs  = $this->get_civs();
+		
+		$combined_account_civ_array = array();
+		
+		foreach($raw_accounts as $account){
+			foreach($open_civs as $civ){
+				if($account->accID == $civ->accID){
+					$icps_impacted = explode(",", $civ->allocate);
+					if(in_array($this->get_project_id(), $icps_impacted)){
+						$combined_account_civ_array[$account->AccNo][$civ->AccNoCIVA] = array("AccNo"=>$account->AccNo,"civaCode"=>$civ->civaID,"AccText"=>$civ->AccNoCIVA,"AccName"=>"(".$account->AccText.") ".$account->AccName,"closureDate"=>$civ->closureDate,"allocate"=>explode(",", $civ->allocate));	
+					}
+					
+				}
+			}
+		}
+		
+		return $combined_account_civ_array;
+	}
+
 	protected function group_accounts(){
 		$raw_accounts = $this->account_for_vouchers();
+		$accounts_with_civs = $this->accounts_with_open_icp_civs();
 		
 		$AccGrps = array("expense","revenue","bankbalance","pcdeposits","rebanking");
 		
 		$grouped = array();
 		
 		foreach($raw_accounts as $account){
-			$grouped[$AccGrps[$account->AccGrp]][] = $account;
+			if($account->Active == 1){
+				$grouped[$AccGrps[$account->AccGrp]][] = $account;
+			}else{
+				//$grouped[$AccGrps[$account->AccGrp]][] = $account->AccNo;
+				if(isset($accounts_with_civs[$account->AccNo])){
+					foreach($accounts_with_civs[$account->AccNo] as $civ_account){
+						$grouped[$AccGrps[$account->AccGrp]][] = (object)$civ_account;
+					}
+				}
+				
+			}
+			
 		}
 		
 		return $grouped;
@@ -298,16 +322,17 @@ class Journal extends Journal_Layout{
 		return $this->basic_model->insert_voucher_to_database($post_array);
 	}
 	
+	
 	/**
 	 * This is a getter that retrieve records from the database to populate vouchers
 	 */
-    public function get_current_month_transactions_for_voucher()
+    private function get_current_month_transactions_for_voucher()
     {	
 		return $this->basic_model
 		->get_voucher_transactions($this->icpNo,$this->start_date,$this->end_date);
     }
 	
-	function transactions(){
+	private function transactions(){
 		$transactions_container = array();
 		$all_transactions =  $this->get_current_month_transactions();
 		
@@ -629,6 +654,7 @@ class Journal extends Journal_Layout{
 		$data['cheques_utilized'] = array_column($this->get_coded_cheques_utilized(),"ChqNo");
 		$project_details = $this->get_project_details();
 		$data['bank_code'] = $project_details->bankID;
+		$data['civ_accounts'] = $this->accounts_with_open_icp_civs();// To be removed
 		
 		return $data;
 	}
@@ -683,20 +709,13 @@ class Journal extends Journal_Layout{
 		
 		}elseif($this->CI->uri->segment(3) == "create_voucher"){
 			
-			$start_date = date("Y-m-01",$this->CI->uri->segment(5));
-			$end_date = date("Y-m-t",$this->CI->uri->segment(6));
-		
-			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
-		
 			$preference_data = $this->pre_render_create_voucher();	
 		
 		}
 		
-		$this->set_view($preference_data['view'],$preference_data);
+		$this->set_view($preference_data);
 		
-		$output = $this->get_layout();
-		
-		return $output; 
+		return $this->get_layout(); 
 	}
 	
 }

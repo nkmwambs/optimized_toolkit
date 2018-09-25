@@ -30,6 +30,7 @@ class Welcome extends CI_Controller {
 		$data['item'] = "Welcome";
 		$this->load->view('welcome_message',$data);
 		
+		
 	}
 	
 	/**
@@ -40,9 +41,9 @@ class Welcome extends CI_Controller {
 	 * d) Call the set_date method. This is a setter method of the Journal Library. It receives the argument as an array with START_DATE and END_DATE keys. 
 	 **/
 	
-	public function finance($view_type="",$icp="",$start_date="",$end_date=""){
+	public function finance(){
 					
-		$this->load->library('journal');
+		$this->load->library('Journal');
 				
 		$output = $this->journal->render();
 	

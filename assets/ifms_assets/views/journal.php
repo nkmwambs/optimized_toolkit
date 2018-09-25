@@ -1,12 +1,12 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
 <?php
-	//print_r($transacting_month);
+	//print_r($this->get_civs());
 ?>
 <hr/>
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1">
 		<div class="well" style="text-align: center;"><?=$this->get_project_id();?> Cash Journal
-			for the month ending <?=date("tS F Y",$this->get_end_date_epoch());?></div>
+			for the month ending <?=date("j<\s\u\p>S</\s\u\p> F Y",$this->get_end_date_epoch());?></div>
 	</div>	
 </div>
 

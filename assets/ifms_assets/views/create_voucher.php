@@ -1,6 +1,7 @@
 <?php
 //print_r($cheques_utilized);
-//echo $success;
+//print_r($civ_accounts);
+//print_r($accounts['revenue']);
 ?>
 <hr/>
 <div class="row">
@@ -341,7 +342,7 @@
 					+"<td><input type='text' class='form-control detail desc required' name='Details[]'/></td>"
 					+"<td><input type='text' class='form-control detail unit calculate required' name='UnitCost[]'/></td>"
 					+"<td><input type='text' class='form-control detail cost required' readonly='readonly' value='0' name='Cost[]'/></td>"
-					+"<td><select class='form-control detail accounts required' name='AccNo[]'>"
+					+"<td><select class='form-control detail accounts accs required' name='AccNo[]'>"
 					+"<option value=''>Select Account</option>"
 					+accounts_option
 					+"</select></td>"
@@ -425,9 +426,20 @@
 									+"</select>";
 		
 									
-		budget_item_select.html(select_budget_items);								
+		budget_item_select.html(select_budget_items);	
+									
 		
 	} );
+	
+	// $(document).on("change",".accs",function(){
+		// alert($(this).val());
+		// var msg = "Revenue";
+		// if($("#VTypeMain").val() == "PC" || $("#VTypeMain").val() == "CHQ"){
+			// msg = "Expense";
+		// }
+			// alert(msg);
+// 		
+	// });
 		
 	
 	$("#btnDelRow").click(function(){

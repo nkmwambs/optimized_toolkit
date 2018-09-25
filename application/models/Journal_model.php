@@ -122,7 +122,7 @@ class Journal_model extends CI_Model{
 		if($current_voucher_date > $current_report_date){
 			$params['start_date'] = strtotime(date("Y-m-01",$current_voucher_date));
 			$params['end_date'] = strtotime(date("Y-m-t",$current_voucher_date));
-		}else{
+		}else{ //MFR = 2018-09-30, Voucher Date = 2018-09-29
 			$params['start_date'] = strtotime(date("Y-m-d",strtotime("first day of next month",$current_report_date)));
 			$params['end_date'] = strtotime(date("Y-m-d",strtotime("first day of next month",$current_report_date)));
 		}
@@ -229,6 +229,19 @@ class Journal_model extends CI_Model{
 			$this->db->reconnect();
 			$query = $this->db->query("CALL get_project_details(?)",array($icpNo));
 			$result = $query->num_rows()>0?$query->row():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function get_civs($status="open"){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_civs(?)",array($status));
+			$result = $query->num_rows()>0?$query->result_object():array();
 			$this->db->close();
 		}catch(Exception $e){
 			echo "Message: ".$e->getMessage();

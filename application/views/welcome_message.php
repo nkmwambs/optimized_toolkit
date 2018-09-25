@@ -33,8 +33,11 @@
 	<hr/>
 	<div class="container">
 			
-			<!-- <p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/">Show Journal</a></p> -->
+			<?php
+				//echo date("Y-m-01",strtotime("first day of next month",strtotime("2018-05-10")));
+			?>
 			
+			<!-- <p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/">Show Journal</a></p> -->			
 			<?php 
 				echo form_open(base_url() . 'Welcome/finance/show_journal/', array('id'=>'frmLoad','class' => 'form-horizontal form-groups-bordered validate',"autocomplete"=>"off",'enctype' => 'multipart/form-data'));
 			?>
