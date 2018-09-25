@@ -45,11 +45,7 @@
 <div class="row">
 	<div class="col-sm-offset-1 col-sm-10 col-sm-offset-1" id="display">
 		<form id="frm_vouchers">
-		<?php
-			if(!isset($records[0])){
-				include("error.php");		
-			}else{
-		?>
+
 		<table class="table table-striped" id="ifms_journal_view">
 			<thead>
 				<tr>
@@ -151,9 +147,7 @@
 								
 			</tbody>
 		</table>
-		<?php
-		}
-		?>
+
 		</form>
 	</div>
 </div>
@@ -193,4 +187,6 @@ $("#print_vouchers").click(function(){
 		$("#frm_vouchers").prop("action",url);
 		$("#frm_vouchers").submit();
 });	
+
+
 </script>	

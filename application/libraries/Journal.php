@@ -87,9 +87,9 @@ class Journal_Layout{
 		$this->CI=& get_instance();
 		
 		/** Initialize default paths */
-		$this->default_javascript_path				= $this->default_assets_path.'/js/';
-		$this->default_css_path						= $this->default_assets_path.'/css/';
-		$this->default_view_path					= $this->default_assets_path.'/views/';
+		$this->default_javascript_path	= $this->default_assets_path.'/js/';
+		$this->default_css_path			= $this->default_assets_path.'/css/';
+		$this->default_view_path		= $this->default_assets_path.'/views/';
 		
 		/** Loading Config and Helpers **/
 		$this->CI->config->load('ifms');
@@ -708,27 +708,30 @@ class Journal extends Journal_Layout{
 	
 	private function pre_render_show_journal(){
 		
-		$data['records'] =  $this->construct_journal();
+		if(count($this->construct_journal())>0){
+			$data['records'] =  $this->construct_journal();
 		
-		$data['end_bank_balance'] = $this->opening_bank;
-		$data['end_petty_balance'] = $this->opening_petty;
-		 		
-		$data['opening_bank_balance'] = $this->get_bank_opening_balance();
-		$data['opening_petty_balance'] = $this->get_petty_opening_balance();
- 		
-		$data['total_bank_deposit'] = $this->get_bank_deposit();
-		$data['total_bank_payment'] = $this->get_bank_payment();
- 		
-		$data['total_cash_deposit'] = $this->get_cash_deposit();
-		$data['total_cash_payment'] = $this->get_cash_payment();
- 		
-		$data['labels'] = $this->readable_labels();
- 		
-		$data['all_accounts_labels'] = $this->linear_accounts_utilized();
+			$data['end_bank_balance'] = $this->opening_bank;
+			$data['end_petty_balance'] = $this->opening_petty;
+			 		
+			$data['opening_bank_balance'] = $this->get_bank_opening_balance();
+			$data['opening_petty_balance'] = $this->get_petty_opening_balance();
+	 		
+			$data['total_bank_deposit'] = $this->get_bank_deposit();
+			$data['total_bank_payment'] = $this->get_bank_payment();
+	 		
+			$data['total_cash_deposit'] = $this->get_cash_deposit();
+			$data['total_cash_payment'] = $this->get_cash_payment();
+	 		
+			$data['labels'] = $this->readable_labels();
+	 		
+			$data['all_accounts_labels'] = $this->linear_accounts_utilized();
+			
+			$data['transacting_month'] = $this->get_transacting_month();
+		}
 		
-		$data['transacting_month'] = $this->get_transacting_month();
 		
-		$data['view'] = $this->get_view();
+		$data['view'] = count($this->construct_journal())>0?$this->get_view():"error";
  		
  		return $data;
 		
@@ -736,27 +739,31 @@ class Journal extends Journal_Layout{
 	
 	private function pre_render_show_voucher(){
 		
-		$vouchers = $this->voucher_transactions();
+		if($this->CI->uri->segment(8)){
+			$vouchers = $this->voucher_transactions();		
+			$data['voucher'] = $vouchers[$this->CI->uri->segment(8)];
+		}
 		
-		$voucher_number = $this->CI->uri->segment(8);
-		
-		$data['view'] = $this->get_view();
-		
-		$data['voucher'] = $vouchers[$voucher_number];
+		$data['view'] = $this->CI->uri->segment(8)?$this->get_view():"error";
 		
 		return $data;
 	}
 
 	private function pre_render_print_vouchers(){
-		$data['view'] = $this->get_view();
-		$data['selected_vouchers'] = $this->CI->input->post();
-		$data['all_vouchers'] = $this->voucher_transactions();	
+		
+		if($this->CI->input->post()){
+			$data['selected_vouchers'] = $this->CI->input->post();
+			$data['all_vouchers'] = $this->voucher_transactions();	
+			$view = $this->get_view();
+		}
+		
+		$data['view'] = $this->CI->input->post()?$this->get_view():"error";
 		
 		return $data;
 	}
 	
 	private function pre_render_create_voucher(){
-		$data['view'] = $this->get_view();
+		
 		$data['success'] = "";
 		if(isset($_POST) && sizeof($_POST)>0){
 			$data['success'] = $this->insert_voucher_to_database($_POST);
@@ -769,6 +776,8 @@ class Journal extends Journal_Layout{
 		$project_details = $this->get_project_details();
 		$data['bank_code'] = $project_details->bankID;
 		$data['civ_accounts'] = $this->accounts_with_open_icp_civs();// To be removed
+		
+		$data['view'] = $this->get_view();
 		
 		return $data;
 	}
