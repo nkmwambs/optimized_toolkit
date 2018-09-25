@@ -1,23 +1,89 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
 
+/************************************************************************************************************
+ * Journal Package
+ * 
+ * This is a Codeigniter Library developed by Compassion Africa GTS to enable portability of the Frontline
+ * Church Partner Finance Application across Codeigniter Installations.
+ * 
+ * This Package comes with 1 Library  (Journal Library), 1 Model (Journal Model), Asset Directory
+ * (ifms_assets) and A Config file (ifms).
+ * 
+ * This software is only developed for use within Compassion Assisted Churches and authorization from the
+ * Compassion would be required to extend or use this piece of software anywhere else.
+ * 
+ * @package	Journal
+ * @author	Compassion Africa
+ * @copyright Copyright (c) 2018 , Compassion International Inc. (https://www.compassion.com/)
+ * @link	https://www.compassion.com
+ * @since	Version 2.0.0
+ * @filesource
+ * 
+ * **********************************************************************************************************/
 
+ defined('BASEPATH') OR exit('No direct script access allowed');
+
+/**
+ * Journal_Layout Class
+ *
+ * This class contains functions that sets the final view output object.
+ *
+ * @package		Journal 
+ * @subpackage	Libraries
+ * @category	Libraries
+ * @author		Compassion International Inc
+ * @link		https://www.compassion.com/
+ */
 class Journal_Layout{
-
+	
+	/**
+	 * Stores the value of CI Instance Object
+	 * 
+	 * @var Object
+	 */
 	protected $CI;
+	
+	/**
+	 * Holds the a buffer of the HTML code/ view to be output to the Controller method
+	 * @var String
+	 */
 	protected $view_as_string;
+	
+	/**
+	 * Stores the Javascript assets path
+	 * @var String
+	 */
 	protected $default_javascript_path;
+	/**
+	 * Stores the Cascading Style Sheets assets path
+	 * @var String
+	 */
 	protected $default_css_path;
+	/**
+	 * Stores the views assets path
+	 * @var String
+	 */
 	protected $default_view_path;
+	/**
+	 * This is the default path to the assets folder
+	 * @var String
+	 */
 	protected $default_assets_path 		= 'assets/ifms_assets';
+	/**
+	 * Hold and array of all the CSS scripts to be used by the final view
+	 * @var String
+	 */
 	protected $css_files				= array();
+	/**
+	 * Hold and array of all the JS scripts to be used by the final view
+	 * @var String
+	 */
 	protected $js_files					= array();
-	protected $state_data = array();
-	protected $profiler;
+
 
 	function __construct($params = array()){
-		/** Initialize Codeigniter Instance **/	
 		
+		/** Initialize Codeigniter Instance **/	
 		$this->CI=& get_instance();
 		
 		/** Initialize default paths */
@@ -31,7 +97,6 @@ class Journal_Layout{
 		$this->CI->load->database();
 		
 		/*cache control*/
-		//$this->CI->output->cache(10);
 		
 		$this->CI->output->set_header("Cache-Control: no-store, no-cache, must-revalidate");
 		$this->CI->output->set_header("Cache-Control: post-check=0, pre-check=0");
@@ -39,17 +104,13 @@ class Journal_Layout{
 				
 	}
 	
-/**
- *  It receives a file name with a view and the data array of what is intended to be used in the view
- *
- * @param String view : File name withouth the file extension. Assuming that its a PHP file
- * @param Array data : Array of dat ato be used in the view
- * return void
- */
-	
+	/**
+	 * Set View Buffer - Set the view as string parameter that hold the views content as plain text
+	 *
+	 * @param	array	$data				A return array from a pre-render 
+	 * @return	void
+	 */
 	protected function set_view($data){
-		
-		//Create variable from the data array
 		extract($data);
 		
 		ob_start();
@@ -64,15 +125,36 @@ class Journal_Layout{
 		$this->view_as_string .= $buffered_view;
 	}
 	
+	/**
+	 * Sets CSS files paths array - Sets the css_files parameter that hold an array of all CSS files
+	 *
+	 * @param	string	$css_file			Absolute path to a CSS file 
+	 * @return	void	
+	 */
+	
 	private function set_css_files($css_file){
 		$this->css_files[sha1($css_file)] = base_url().$css_file;
 	}
+	
+	/**
+	 * Sets JS files paths array - Sets the css_files parameter that hold an array of all JS files
+	 *
+	 * @param	string	$js_file			Absolute path to a JS file 
+	 * @return	void	
+	 */
 	
 	private function set_js_files($js_file){
 		$this->js_files[sha1($js_file)] = base_url().$js_file;		
 	}
 	
-	protected function load_js()
+	/**
+	 * Load JS - Loads all JS files to the js_files parameter
+	 *
+	 * @param	null
+	 * @return	array 	Returns an array of the JS files paths	
+	 */
+	 
+	private function load_js()
 	{
 		$this->set_js_files($this->default_javascript_path.'jquery-3.3.1.min.js');
 		$this->set_js_files($this->default_javascript_path.'bootstrap/bootstrap.min.js');
@@ -87,7 +169,14 @@ class Journal_Layout{
 		return $this->js_files;
 	}
 	
-	protected function load_css(){
+	/**
+	 * Load CSS - Loads all CSS files to the css_files parameter
+	 *
+	 * @param	null
+	 * @return	array 	Returns an array of the CSS files paths	
+	 */
+	
+	private function load_css(){
 		$this->set_css_files($this->default_css_path.'bootstrap/bootstrap.min.css');
 		$this->set_css_files($this->default_css_path.'dataTables.bootstrap.min.css');
 		$this->set_css_files($this->default_css_path.'custom.css');
@@ -101,7 +190,12 @@ class Journal_Layout{
 		return $this->css_files;
 	}
 	
-		
+	/**
+	 * Get Layout - Arranges the output array ready for controller output
+	 *
+	 * @param	null
+	 * @return	object 	Returns an object with the 4 keys to be used to populate the final view
+	 */		
 	protected function get_layout(){
 		
 		$js_files = $this->load_js();
@@ -127,7 +221,8 @@ class Journal extends Journal_Layout{
 	protected $opening_petty;
 	protected $start_bank;
 	protected $start_petty;
-	public $basic_model = null;		
+	private $basic_model = null;
+	private $pre_render;	
 	
 	function __construct(){
 		parent::__construct();
@@ -140,48 +235,85 @@ class Journal extends Journal_Layout{
 		$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
 		$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
 	}
-	
-	protected function get_transacting_month(){
-		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
-	}
 		
-	public function set_project_id($project_id=""){
+	
+		
+	/** Start of Model Wrappers **/
+	
+	private function opening_cash_balance(){
+		return $this->basic_model->start_cash_balance($this->icpNo,$this->start_date);
+	}
+	
+	private function get_transacting_month(){
+		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
+	}	
+	
+    private function get_current_month_transactions()
+    {		
+		return $this->basic_model
+		->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);
+    }
+	
+	private function account_for_vouchers(){
+		return $this->basic_model->account_for_vouchers();
+	}
+	
+	private function get_current_approved_budget(){
+		return $this->basic_model->get_current_approved_budget($this->get_project_id(),$this->get_current_fy());
+	}
+	
+	
+	private function get_civs(){
+		return $this->basic_model->get_civs();
+	}	
+	
+	private function get_next_voucher_number(){
+		return $this->basic_model->get_next_voucher_number($this->get_project_id());
+	}
+	
+	private function get_voucher_date_picker_control(){
+		return $this->basic_model->get_voucher_date_picker_control($this->get_project_id());
+	}
+	
+	private function get_coded_cheques_utilized(){
+		return $this->basic_model->get_cheques_utilized_with_bank_code($this->get_project_id());
+	}
+	
+	private function get_project_details(){
+		return $this->basic_model->get_project_details($this->get_project_id());
+	}
+	
+	private function insert_voucher_to_database($post_array=array()){
+		return $this->basic_model->insert_voucher_to_database($post_array);
+	}
+	
+    private function get_current_month_transactions_for_voucher()
+    {	
+		return $this->basic_model
+		->get_voucher_transactions($this->icpNo,$this->start_date,$this->end_date);
+    }
+		
+	/** End of Model Wrappers **/	
+	
+	/** General setters & getters - Start**/		
+	
+	private function set_project_id($project_id=""){
 		$this->icpNo = $project_id;
 	}
 
-	public function set_date($params=array()){
+	private function set_date($params=array()){
 		$this->start_date	= $params['START_DATE'];
 		$this->end_date 	= $params['END_DATE'];
 	}
 	
-	function opening_cash_balance(){
-		return $this->basic_model->start_cash_balance($this->icpNo,$this->start_date);
-	}
+	/** General setters & getters - End**/	
 	
-	function get_start_bank(){
-		$balance = $this->opening_cash_balance();
-		return $this->opening_bank = $balance['BC']['amount'];
-	}
-	
-	function get_start_petty(){
-		$balance = $this->opening_cash_balance();
-		return $this->opening_petty = $balance['PC']['amount'];
-	}
-
-	function get_bank_opening_balance(){
-		$balance = $this->opening_cash_balance();
-		return $this->start_bank = $balance['BC']['amount'];
-	}
-	
-	private function get_petty_opening_balance(){
-		$balance = $this->opening_cash_balance();
-		return $this->start_petty = $balance['PC']['amount'];
-	}	
 	
 	protected function get_project_id(){
 		return $this->icpNo;
 	}
 	
+	/** Date Related Getters - Start **/
 
 	protected function get_start_date(){
 		return $this->start_date;
@@ -202,40 +334,38 @@ class Journal extends Journal_Layout{
 	protected function get_current_fy(){
 		return 19;
 	}
+
+	/** Date Related Getters - End **/
+	
+	
+	/** URL Segments Getters - Start **/
 	
 	protected function get_controller(){
-		return $this->CI->router->fetch_class();;
+		return $this->CI->router->fetch_class();
 	}
 	
 	protected function get_method(){
-		return $this->CI->router->fetch_method();;
+		return $this->CI->router->fetch_method();
 	}
 	
 	protected function get_first_extra_segment(){
-		return $this->CI->uri->segment(7)?$this->CI->uri->segment(7):"";
+		return $this->CI->uri->segment(7)?$this->CI->uri->segment(7):"0";
 	}
 	
 	protected function get_second_extra_segment(){
 		return $this->CI->uri->segment(8)?$this->CI->uri->segment(8):"";
-	}
-		
-	/**
-	 * This is a getter that retrieves records from the database to popluate the Cash Journal
-	 */
+	}	
 	
-    private function get_current_month_transactions()
-    {		
-		return $this->basic_model
-		->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);
-    }
-	
-	private function account_for_vouchers(){
-		return $this->basic_model->account_for_vouchers();
+	private function get_view(){
+		return $this->CI->uri->segment(3);
 	}
 	
-	private function get_current_approved_budget(){
-		return $this->basic_model->get_current_approved_budget($this->get_project_id(),$this->get_current_fy());
-	}
+	/** URL Segments Getters - End **/
+	
+	
+	/** Data Construction - Start**/
+	
+
 	
 	protected function budget_grouped_items(){
 		$raw_budget = $this->get_current_approved_budget();
@@ -249,11 +379,6 @@ class Journal extends Journal_Layout{
 		return $account_groups;
 	}
 	
-
-
-	protected function get_civs(){
-		return $this->basic_model->get_civs();
-	}	
 	
 	protected function accounts_with_open_icp_civs(){
 		$raw_accounts = $this->account_for_vouchers();
@@ -302,46 +427,35 @@ class Journal extends Journal_Layout{
 		return $grouped;
 	}
 	
-	protected function get_next_voucher_number(){
-		return $this->basic_model->get_next_voucher_number($this->get_project_id());
+
+	private function get_start_bank(){
+		$balance = $this->opening_cash_balance();
+		return $this->opening_bank = $balance['BC']['amount'];
 	}
 	
-	protected function get_voucher_date_picker_control(){
-		return $this->basic_model->get_voucher_date_picker_control($this->get_project_id());
+	private function get_start_petty(){
+		$balance = $this->opening_cash_balance();
+		return $this->opening_petty = $balance['PC']['amount'];
+	}
+
+	private function get_bank_opening_balance(){
+		$balance = $this->opening_cash_balance();
+		return $this->start_bank = $balance['BC']['amount'];
 	}
 	
-	protected function get_coded_cheques_utilized(){
-		return $this->basic_model->get_cheques_utilized_with_bank_code($this->get_project_id());
+	private function get_petty_opening_balance(){
+		$balance = $this->opening_cash_balance();
+		return $this->start_petty = $balance['PC']['amount'];
 	}
-	
-	protected function get_project_details(){
-		return $this->basic_model->get_project_details($this->get_project_id());
-	}
-	
-	protected function insert_voucher_to_database($post_array=array()){
-		return $this->basic_model->insert_voucher_to_database($post_array);
-	}
-	
-	
-	/**
-	 * This is a getter that retrieve records from the database to populate vouchers
-	 */
-    private function get_current_month_transactions_for_voucher()
-    {	
-		return $this->basic_model
-		->get_voucher_transactions($this->icpNo,$this->start_date,$this->end_date);
-    }
-	
+		
 	private function transactions(){
 		$transactions_container = array();
 		$all_transactions =  $this->get_current_month_transactions();
 		
 		foreach($all_transactions as $rows){
-			$transactions_container[$rows['VNumber']]['details'] = $rows;
-			unset($transactions_container[$rows['VNumber']]['details']['AccNo']);
-			unset($transactions_container[$rows['VNumber']]['details']['AccText']);
-			unset($transactions_container[$rows['VNumber']]['details']['AccGrp']);
-			unset($transactions_container[$rows['VNumber']]['details']['Cost']);
+
+			$removeKeys = array("AccNo","AccText","AccGrp","Cost");
+			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
 			
 			$transactions_container[$rows['VNumber']][$rows['AccGrp']][$rows['AccNo']] = $rows['Cost'];
 			
@@ -349,23 +463,17 @@ class Journal extends Journal_Layout{
 		
 		return $transactions_container;
 	}
+	
 
-	private function voucher_transactions(){
+	 function voucher_transactions(){
 		$transactions_container = array();
 		$all_transactions =  $this->get_current_month_transactions_for_voucher();
 		
 		$cnt = 0;
 		
 		foreach($all_transactions as $rows){
-			$transactions_container[$rows['VNumber']]['details'] = $rows;
-			unset($transactions_container[$rows['VNumber']]['details']['AccNo']);
-			unset($transactions_container[$rows['VNumber']]['details']['AccText']);
-			unset($transactions_container[$rows['VNumber']]['details']['AccGrp']);
-			unset($transactions_container[$rows['VNumber']]['details']['Qty']);
-			unset($transactions_container[$rows['VNumber']]['details']['Details']);
-			unset($transactions_container[$rows['VNumber']]['details']['UnitCost']);
-			unset($transactions_container[$rows['VNumber']]['details']['Cost']);
-
+			$removeKeys = array("AccNo","AccText","AccGrp","Qty","Details","UnitCost","Cost","scheduleID");
+			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
 			
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Qty'] = $rows['Qty'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Details'] = $rows['Details'];
@@ -521,6 +629,8 @@ class Journal extends Journal_Layout{
 		return $records;
 	}
 
+	/** Cash Journal Getters (Used in Journal Related Pre-renders) - Start**/
+
 	private function get_bank_deposit(){
 		$bank = 0;	
 		foreach($this->construct_journal() as $row){
@@ -581,6 +691,12 @@ class Journal extends Journal_Layout{
 		
 	}
 	
+	/** Cash Journal Getters (Used in Journal Related Pre-renders) - Start**/
+	
+	/** Data Construction - End **/
+	
+
+	
 	/**
 	 * Pre-render methods:
 	 * These are private methods that set the variables to be used in a particular view i.e.
@@ -590,7 +706,7 @@ class Journal extends Journal_Layout{
 	 * - pre_render_create_voucher
 	 */
 	
-	private function pre_render_journal(){
+	private function pre_render_show_journal(){
 		
 		$data['records'] =  $this->construct_journal();
 		
@@ -612,21 +728,19 @@ class Journal extends Journal_Layout{
 		
 		$data['transacting_month'] = $this->get_transacting_month();
 		
-		$data['view'] = "journal";
+		$data['view'] = $this->get_view();
  		
  		return $data;
 		
 	}
 	
-	private function pre_render_view_voucher(){
+	private function pre_render_show_voucher(){
 		
 		$vouchers = $this->voucher_transactions();
 		
-		$voucher_number = $this->CI->uri->segment(7);
+		$voucher_number = $this->CI->uri->segment(8);
 		
-		$data['view'] = "voucher_view";
-		
-		$data['segments'] = $this->CI->uri->segment_array();
+		$data['view'] = $this->get_view();
 		
 		$data['voucher'] = $vouchers[$voucher_number];
 		
@@ -634,7 +748,7 @@ class Journal extends Journal_Layout{
 	}
 
 	private function pre_render_print_vouchers(){
-		$data['view'] = "print_vouchers";
+		$data['view'] = $this->get_view();
 		$data['selected_vouchers'] = $this->CI->input->post();
 		$data['all_vouchers'] = $this->voucher_transactions();	
 		
@@ -642,7 +756,7 @@ class Journal extends Journal_Layout{
 	}
 	
 	private function pre_render_create_voucher(){
-		$data['view'] = "create_voucher";
+		$data['view'] = $this->get_view();
 		$data['success'] = "";
 		if(isset($_POST) && sizeof($_POST)>0){
 			$data['success'] = $this->insert_voucher_to_database($_POST);
@@ -660,9 +774,7 @@ class Journal extends Journal_Layout{
 	}
 
 	/**
-	 * Render Method:
-	 * Its set the appropriate pre-render based on the 3rd segment of the url, 
-	 * reset the set_date() method and render output to the Controller
+	 * Render 
 	 * 
 	 */
 	
@@ -672,46 +784,13 @@ class Journal extends Journal_Layout{
 		
 		$preference_data = array();
 		
-		if($this->CI->uri->segment(3) == "show_voucher"){
-		
-			if($this->CI->uri->segment(8)){
-				$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(8)." months",strtotime($this->get_start_date())));
-				$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(8)." months",strtotime($this->get_end_date())));
-			}else{	
-				$start_date = date("Y-m-01",$this->CI->uri->segment(5));
-				$end_date = date("Y-m-t",$this->CI->uri->segment(6));
-			}
-		
-			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
-		
-			$preference_data = $this->pre_render_view_voucher();
-		
-		}elseif($this->CI->uri->segment(3) == "show_journal"){
-		
-			$preference_data = $this->pre_render_journal();	
-		
-		}elseif($this->CI->uri->segment(3) == "scroll_journal"){
-		
+		if($this->CI->uri->segment(7)){
 			$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(7)." months",strtotime($this->get_start_date())));
 			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(7)." months",strtotime($this->get_end_date())));
 			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
-			
-			$preference_data = $this->pre_render_journal();		
-		
-		}elseif($this->CI->uri->segment(3) == "print_vouchers"){
-			
-			$start_date = date("Y-m-01",$this->CI->uri->segment(5));
-			$end_date = date("Y-m-t",$this->CI->uri->segment(6));
-		
-			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
-		
-			$preference_data = $this->pre_render_print_vouchers();	
-		
-		}elseif($this->CI->uri->segment(3) == "create_voucher"){
-			
-			$preference_data = $this->pre_render_create_voucher();	
-		
 		}
+		
+		$preference_data = call_user_func(array($this, "pre_render_".$this->get_view()));
 		
 		$this->set_view($preference_data);
 		
