@@ -79,7 +79,15 @@ class Journal_Layout{
 	 * @var String
 	 */
 	protected $js_files					= array();
+	
+	
+	protected $echo_and_die				= false;
 
+	protected $locale					= "english";
+	
+	protected $language_phrases;
+	
+	protected $config;
 
 	function __construct($params = array()){
 		
@@ -104,9 +112,17 @@ class Journal_Layout{
 				
 	}
 	
-	protected function column_set(){
-		return "col-sm-offset-1 col-sm-10 col-sm-offset-1";//Default is col-sm-offset-1 col-sm-10 col-sm-offset-1
-	}
+	protected function _initialize_variables()
+	{
+
+		$this->CI->load->config('ifms');
+		
+		$this->config = (object)array();
+		
+		/** Initialize all the config variables into this object */
+		$this->config->default_language 	= $this->CI->config->item('ifms_default_language');
+		
+	}	
 	
 	/**
 	 * Set View Buffer - Set the view as string parameter that hold the views content as plain text
@@ -115,6 +131,9 @@ class Journal_Layout{
 	 * @return	void
 	 */
 	protected function set_view($data){
+		
+		if(empty($data)) die();
+		
 		extract($data);
 		
 		ob_start();
@@ -168,6 +187,7 @@ class Journal_Layout{
 		$this->set_js_files($this->default_javascript_path.'jquery-ui.min.js');
 		$this->set_js_files($this->default_javascript_path.'printThis.js');
 		$this->set_js_files($this->default_javascript_path.'datepicker/js/bootstrap-datepicker.min.js');
+		$this->set_js_files($this->default_javascript_path.'bootstrap-toggle/js/bootstrap-toggle.min.js');
 		$this->set_js_files($this->default_javascript_path.'custom.js');
 		
 		return $this->js_files;
@@ -190,6 +210,7 @@ class Journal_Layout{
 		$this->set_css_files($this->default_css_path.'font-icons/entypo/css/entypo.css');
 		$this->set_css_files($this->default_css_path.'font-icons/font-awesome/css/font-awesome.css');
 		$this->set_css_files($this->default_css_path.'datepicker/css/bootstrap-datepicker.min.css');
+		$this->set_css_files($this->default_css_path.'bootstrap-toggle/css/bootstrap-toggle.min.css');
 		
 		return $this->css_files;
 	}
@@ -207,12 +228,19 @@ class Journal_Layout{
 		
 		$this->CI->benchmark->mark('profiler_end');
 		
-		return (object) array(
+		if($this->echo_and_die == false){
+			return (object) array(
 					'js_files' => $js_files,
 					'css_files' => $css_files,
 					'output' => $this->view_as_string,
 					'profiler'=>$this->CI->benchmark->elapsed_time('profiler_start', 'profiler_end'),
-		);
+			);
+		}elseif($this->echo_and_die == true){
+			echo $this->view_as_string;
+			die();
+		}
+		
+		
 	}
 }
 
@@ -227,6 +255,10 @@ class Journal extends Journal_Layout{
 	protected $start_petty;
 	private $basic_model = null;
 	private $pre_render;	
+	private $column_size = "col-sm-offset-1 col-sm-10 col-sm-offset-1";
+	private $lang_strings = array();
+	private $language;
+	private $default_language_path = 'assets/ifms_assets/languages';
 	
 	function __construct(){
 		parent::__construct();
@@ -234,12 +266,56 @@ class Journal extends Journal_Layout{
 		$this->basic_model 	= new Journal_model();
 		
 		/**Initialization**/
-		$transaction_month = $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
-		$this->icpNo = $this->CI->uri->segment(4);
-		$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
-		$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
-	}
+		if(substr($this->get_view(),0,4) !== "ajax"){
+			$transaction_month = $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
+			$this->icpNo = $this->CI->uri->segment(4);
+			$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
+			$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
+		}else{
+			$this->echo_and_die = true;
+		}
 		
+	}
+	
+	public function set_column_size($col_size=""){
+		$this->column_size = $col_size;
+		return $this;
+	}
+	
+	protected function get_column_size(){
+		return $this->column_size;
+	}
+	
+	public function set_language($locale="english"){
+		$this->language = $locale;
+		return $this;
+	}
+	
+	
+	protected function _load_language()
+	{
+		if($this->language === null)
+		{
+			$this->language = strtolower($this->config->default_language);
+		}
+		include($this->default_language_path.'/'.$this->language.'.php');
+
+		foreach($lang as $handle => $lang_string)
+			if(!isset($this->lang_strings[$handle]))
+				$this->lang_strings[$handle] = $lang_string;
+
+	}
+	
+	// public function set_lang_string($handle, $lang_string){
+		// $this->lang_strings[$handle] = $lang_string;
+// 
+		// return $this;
+	// }
+		
+	
+	public function l($handle){
+		return $this->lang_strings[$handle];
+	}	
 	
 		
 	/** Start of Model Wrappers **/
@@ -684,19 +760,20 @@ class Journal extends Journal_Layout{
 	private function readable_labels(){
 		
 		return $labels = array(
-			"VType"=>"Voucher Type",
-			"TDate"=>"Date",
-			"VNumber"=>"Voucher Number",
-			"Payee"=>"Payee/ Source",
-			"Address"=>"Address",
-			"TDescription"=>"Details",
-			"bank_inc"=>"Bank Deposits",
-			"bank_exp"=>"Bank Payments",
-			"bank_bal"=>"Bank Balance",
-			"petty_inc"=>"Cash Deposits",
-			"petty_exp"=>"Cash Payments",
-			"petty_bal"=>"Cash Balance",
-			"ChqNo"=>"Cheque Number"
+			"VType"=>$this->l("voucher_type"),
+			"TDate"=>$this->l('date'),
+			
+			"VNumber"=>$this->l("voucher_number"),
+			"Payee"=>$this->l("payee"),
+			"Address"=>$this->l("address"),
+			"TDescription"=>$this->l("details"),
+			"bank_inc"=>$this->l("bank_deposits"),
+			"bank_exp"=>$this->l("bank_payments"),
+			"bank_bal"=>$this->l("bank_balance"),
+			"petty_inc"=>$this->l("cash_deposits"),
+			"petty_exp"=>$this->l("cash_payments"),
+			"petty_bal"=>$this->l("cash_balance"),
+			"ChqNo"=>$this->l("cheque_number")
 		);
 		
 		
@@ -779,11 +856,12 @@ class Journal extends Journal_Layout{
 		if(isset($_POST) && sizeof($_POST)>0){
 			$data['success'] = $this->insert_voucher_to_database($_POST);
 		}
+		
 		$data['accounts'] = $this->group_accounts();
 		$data['approved_budget'] = $this->budget_grouped_items();
 		$data['voucher_number'] = $this->get_next_voucher_number();
 		$data['voucher_date_range'] = $this->get_voucher_date_picker_control();
-		$data['cheques_utilized'] = array_column($this->get_coded_cheques_utilized(),"ChqNo");
+		$data['cheques_utilized'] = $this->get_coded_cheques_utilized();
 		$project_details = $this->get_project_details();
 		$data['bank_code'] = $project_details->bankID;
 		$data['civ_accounts'] = $this->accounts_with_open_icp_civs();// To be removed
@@ -791,6 +869,12 @@ class Journal extends Journal_Layout{
 		$data['view'] = $this->get_view();
 		
 		return $data;
+	}
+
+	function pre_render_ajax_get_cheque_details(){
+		
+		echo json_encode($this->basic_model->get_cheque_details($_POST['icpNo'],$_POST['ChqNo']));
+				
 	}
 
 	/**
@@ -802,6 +886,9 @@ class Journal extends Journal_Layout{
 		
 		$this->CI->benchmark->mark('profiler_start');
 		
+		$this->_initialize_variables();
+		$this->_load_language();
+		
 		$preference_data = array();
 		
 		if($this->CI->uri->segment(7)){
@@ -809,7 +896,7 @@ class Journal extends Journal_Layout{
 			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(7)." months",strtotime($this->get_end_date())));
 			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
 		}
-		
+
 		$preference_data = call_user_func(array($this, "pre_render_".$this->get_view()));
 		
 		$this->set_view($preference_data);

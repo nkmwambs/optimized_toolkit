@@ -1,0 +1,25 @@
+<?php
+	$lang['cash_journal_title'] 		= 'Journal de caisse pour la fin du mois';
+	$lang['select_all_vouchers'] 		= 'Tout sélectionner';
+	$lang['print_selected_vouchers'] 	= 'Pimprimer sélectionner';
+	$lang['new_voucher']				= 'Nouvel enregistrement';
+	$lang['scroll_months']				= 'Scroll Months';
+	$lang['go']							= 'Go';
+	$lang['voucher_type']				= 'Voucher Type';	
+	$lang['date']						= 'Date';	
+	$lang['voucher_number']				= 'Voucher Number';
+	$lang['payee']						= 'Payee/ Source';
+	$lang['address']					= 'Address';
+	$lang['details']					= 'Details';
+	$lang['bank_deposits']				= 'Bank Deposits';
+	$lang['bank_payments']				= 'Bank Payments';
+	$lang['bank_balance']				= 'Bank Balance';
+	$lang['cash_deposits']				= 'Cash Deposits';
+	$lang['cash_payment']				= 'Cash Payments';
+	$lang['cash_Balance']				= 'Cash Balance';
+	$lang['cheque_number']				= 'Cheque Number';
+	$lang['balance_carried_forward']	= 'Balance Carried Forward';
+	$lang['bank']						= 'Bank';
+	$lang['cash']						= 'Cash';
+	$lang['income']						= 'Income';
+	$lang['expenses']					= 'Expenes';

@@ -3,9 +3,10 @@
 //print_r($accounts);
 //print_r($accounts['revenue']);
 ?>
+<style> .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; } .toggle.ios .toggle-handle { border-radius: 20px; } </style>
 <hr/>
 <div class="row">
-	<div class="<?=$this->column_set();?>">
+	<div class="<?=$this->get_column_size();?>">
 		
 		<div class="row">
 			<div class="col-sm-6" style="text-align: center;">
@@ -65,6 +66,43 @@
 													?>
 												</td>
 											</tr>
+										
+										<tr>
+						                    
+						                    <td colspan="2">
+						                    	<div class="col-sm-12 form-group" id='VType'>
+						                    		<label for="VTypeMain" class="control-label"><span style="font-weight: bold;">Voucher Type:</span></label>
+								                        <select name="VType" id="VTypeMain" class="form-control required" data-validate="required">
+								                            <option value="">Select Voucher Type</option>
+								                            <option value="PC">Payment By Cash</option>
+								                            <option value="CHQ">Payment By Cheque</option>
+								                            <option value="BCHG">Bank Adjustments</option>
+								                            <option value="CR">Cash Received</option>					                            
+								                            <option value="PCR">Petty Cash Rebanking</option>
+								                        </select>
+						                        </div>
+						                    </td>
+						                    
+						                    
+						                    <td colspan="2">
+						                    	<div class="col-sm-12 form-group">
+						                    		<label for="ChqNo" class="control-label"><span style="font-weight: bold;">Cheque Number:</span></label>
+						                    			<input class="form-control" type="text" id="ChqNo" name="ChqNo" data-validate="number,minlength[2]"  readonly="readonly"/>
+						                    	</div>
+						                    </td>
+						                    
+						                 	<td colspan="4">
+						                    	<label  for="reversal" class="col-sm-12"><span style="font-weight: bold;">Cheque Reversal</span> 
+													<div class="col-sm-12">
+															<input type="checkbox" data-on="Enabled" data-off="Disabled" data-onstyle="danger" 
+																data-offstyle="info" data-style="ios" data-toggle="toggle" id="reversal" 
+																	disabled name="reversal"/>
+													</div>
+												</label>		
+						                    </td>
+						                    
+						                </tr>
+											
 						                <tr>		               
 								            <td colspan="3">
 								            	<div class="form-group">
@@ -109,39 +147,7 @@
 						                    	</div>
 						                    </td>
 						                </tr>    
-						                <tr>
-						                    
-						                    <td colspan="4">
-						                    	<div class="col-sm-10 form-group" id='VType'>
-						                    		<label for="VTypeMain" class="control-label"><span style="font-weight: bold;">Voucher Type:</span></label>
-								                        <select name="VType" id="VTypeMain" class="form-control required" data-validate="required">
-								                            <option value="">Select Voucher Type</option>
-								                            <option value="PC">Payment By Cash</option>
-								                            <option value="CHQ">Payment By Cheque</option>
-								                            <option value="BCHG">Bank Adjustments</option>
-								                            <option value="CR">Cash Received</option>					                            
-								                            <option value="PCR">Petty Cash Rebanking</option>
-								                        </select>
-						                        </div>
-						                    </td>
-						                    
-						                    
-						                    <td colspan="2">
-						                    	<div class="col-sm-10 form-group">
-						                    		<label for="ChqNo" class="control-label"><span style="font-weight: bold;">Cheque Number:</span></label>
-						                    			<input class="form-control" type="text" id="ChqNo" name="ChqNo" data-validate="number,minlength[2]"  readonly="readonly"/>
-						                    	</div>
-						                    </td>
-						                    
-						                 	<td colspan="2">
-						                    	<div id="label-toggle-switch" for="reversal" class="col-sm-6"><span style="font-weight: bold;">Cheque Reversal</span> 
-													<div class="make-switch switch-small" data-on-label="Yes" data-off-label="No">
-															<input type="checkbox" id="reversal" name="reversal"/>
-													</div>
-												</div>		
-						                    </td>
-						                    
-						                </tr>
+						                
 						                
 						                <tr>
 						                   
@@ -503,18 +509,77 @@
 		var code_chqno = chqno+"-"+bank_code;
 		
 		var obj = <?=json_encode($cheques_utilized);?>;
-		
+
 		var chqno_exists = false;
 		
+		var totals = 0;
+		
 		for(i=0;i<obj.length;i++){
-			if(obj[i] == code_chqno){
+			if(obj[i].ChqNo == code_chqno){
 				chqno_exists = true;
+				//totals = obj[i].totals;
 			}
 		}
 		
 		if(chqno_exists){
-			alert("Cheque Number "+chqno+" already exists!");
-			$("#ChqNo").val("");
+
+			var cnf = confirm("Cheque Number "+chqno+" already exists! Do you want to reverse it?");
+			
+			if(!cnf){
+				alert("Process Aborted!");
+				$("#ChqNo").val("");
+			}else{
+				$("#reversal").removeAttr("disabled");
+				$('#reversal').bootstrapToggle('on')	
+				$("#reversal").prop("disabled","disabled");
+				//alert(totals);
+				$("#Payee").val("<?=$this->get_project_id();?>");$("#Payee").prop("readonly","readonly");
+				$("#Address").val("<?=$this->get_project_id();?>");$("#Address").prop("readonly","readonly");
+				$("#ChqNo").val("0");$("#ChqNo").prop("readonly","readonly");
+				$("#TDescription").val("Reversal of Cheque Number "+chqno);$("#TDescription").prop("readonly","readonly");
+				$("#addrow").addClass("hidden");
+				
+				var body = $("#bodyTable tbody");
+				
+				//Remove extra rows first
+				$("#bodyTable tbody tr:last").remove();
+				
+				if(body.children().length == 0){
+				
+					var data = {"icpNo":"<?=$this->get_project_id();?>","ChqNo":chqno};
+						$.ajax({
+							url:'<?php echo base_url($this->get_controller().'/'.$this->get_method().'/ajax_get_cheque_details/');?>',
+							data:data,
+							type:"POST",
+							success:function(resp){
+								var resp_obj = JSON.parse(resp);
+								var total_cost = 0;
+								var row = "";
+								for(i=0;i<resp_obj.length;i++){
+									total_cost+=parseFloat(resp_obj[i].Cost);
+									row += "<tr>"
+												+"<td><input disabled type='checkbox' class='check detail'/></td>"
+												+"<td><input readonly='readonly' value='"+resp_obj[i].Qty+"' type='text' class='form-control detail qty calculate required' name='Qty[]'/></td>"
+												+"<td><input readonly='readonly' value='"+resp_obj[i].Details+"' type='text' class='form-control detail desc required' name='Details[]'/></td>"
+												+"<td><input readonly='readonly' value='-"+resp_obj[i].UnitCost+"' type='text' class='form-control detail unit calculate required' name='UnitCost[]'/></td>"
+												+"<td><input readonly='readonly' value='-"+resp_obj[i].Cost+"' type='text' class='form-control detail cost required' name='Cost[]'/></td>"
+												+"<td><input readonly='readonly' value='"+resp_obj[i].AccNo+"' type='text' class='form-control detail accounts required' name='AccNo[]' /></td>"
+												+"<td><input readonly='readonly' value='"+resp_obj[i].scheduleID+"' type='text' class='form-control detail budget_items required' name='scheduleID[]' /></td>"
+												+"<td><input readonly='readonly' value='"+resp_obj[i].civaCode+"' type='text' class='form-control detail civ' name='civaCode[]'/></td>"
+												+"</tr>";
+									body.append(row);			
+								}
+								$("#TDescription").val($("#TDescription").val()+". Voucher Number "+resp_obj[0].VNumber);
+								$("#totals").val(-total_cost);
+							},
+							error:function(xhr,msg,error){
+								alert(error);
+							}	
+						});	
+				}
+				
+				
+			}
 		}
 		
 	});
@@ -588,4 +653,11 @@
 			return false;
 		}
 	});
+	
+	$("#reversal").change(function(){
+		//alert($(this).is(":checked"));
+	});
+	
 </script>
+
+<script> $(function() { $('#reversal').bootstrapToggle(); }) </script>

@@ -1,27 +1,23 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
-<?php
-	//print_r($this->voucher_transactions());
-?>
 <hr/>
 <div class="row">
-	<div class="<?=$this->column_set();?>">
-		<div class="well" style="text-align: center;"><?=$this->get_project_id();?> Cash Journal
-			for the month ending <?=date("j<\s\u\p>S</\s\u\p> F Y",$this->get_end_date_epoch());?></div>
+	<div class="<?=$this->get_column_size();?>">
+		<div class="well" style="text-align: center;"><?=$this->get_project_id()." ".$this->l('cash_journal_title')." ".date("j<\s\u\p>S</\s\u\p> F Y",$this->get_end_date_epoch());?></div>
 	</div>	
 </div>
 
 <hr />
 
-<div class="<?=$this->column_set();?>">
+<div class="<?=$this->get_column_size();?>">
 	
 	<div class="row">
 		<div class="col-sm-6">
-			<div class="btn btn-default btn-icon icon-left hidden-print pull-left" id="select_btn">Select All Vouchers <i class="entypo-mouse"></i></div>
-			<div  class="btn btn-default btn-icon icon-left hidden-print pull-left" id="print_vouchers">Print Selected Vouchers <i class="entypo-print"></i></div>
+			<div class="btn btn-default btn-icon icon-left hidden-print pull-left" id="select_btn"><?=$this->l('select_all_vouchers');?><i class="entypo-mouse"></i></div>
+			<div  class="btn btn-default btn-icon icon-left hidden-print pull-left" id="print_vouchers"><?=$this->l('print_selected_vouchers')?><i class="entypo-print"></i></div>
 			<?php 
 				if($transacting_month['start_date'] == $this->get_start_date_epoch()){
 			?>
-				<a class="btn btn-default btn-icon icon-left hidden-print pull-left" href="<?=base_url();?>Welcome/finance/create_voucher/<?=$this->get_project_id();?>/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>">New Voucher <i class="entypo-list-add"></i></a>		
+				<a class="btn btn-default btn-icon icon-left hidden-print pull-left" href="<?=base_url();?>Welcome/finance/create_voucher/<?=$this->get_project_id();?>/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i></a>		
 			<?php
 				}
 			?>
@@ -31,13 +27,13 @@
 		<div class="col-sm-6">
 			<form id="scroll" role="form" class="form-horizontal form-groups-bordered">
 				<div class="form-group">
-					<label class="col-sm-3 control-label">Scroll Months: </label>	
+					<label class="col-sm-3 control-label"><?=$this->l('scroll_months')?>: </label>	
 						<div class="col-sm-5">
 							<input type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_first_extra_segment();?>" readonly="readonly"/>
 										
 						</div>
 					<div class="col-sm-4">
-						<button class="btn btn-default" id="spinner_btn">Go</button>
+						<button class="btn btn-default" id="spinner_btn"><?=$this->l('go');?></button>
 					</div>	
 				</div>
 			</form>
@@ -47,7 +43,7 @@
 		
 
 <div class="row">
-	<div class="<?=$this->column_set();?>" id="display">
+	<div class="<?=$this->get_column_size();?>" id="display">
 		<form id="frm_vouchers">
 
 		<table class="table table-striped" id="ifms_journal_view">
@@ -70,11 +66,11 @@
 					?>
 				</tr>
 				<tr>
-					<th colspan="<?=count($details);?>">Balance Carried Forward: </th>
-					<th colspan="2">Bank:</th>
+					<th colspan="<?=count($details);?>"><?=$this->l('balance_carried_forward');?>: </th>
+					<th colspan="2"><?=$this->l('bank');?>:</th>
 					<th><?=number_format($opening_bank_balance,2);?></th>
 					
-					<th colspan="2">Cash:</th>
+					<th colspan="2">C<?=$this->l('cash');?>ash:</th>
 					<th><?=number_format($opening_petty_balance,2);?></th>
 					
 					<th colspan="<?=count($income);?>" rowspan="2" style="border-left:1px black solid;border-right:1px black solid;">Income</th>
@@ -157,7 +153,7 @@
 </div>
 <hr />
 <div class="row">
-	<div class="<?=$this->column_set();?>">
+	<div class="<?=$this->get_column_size();?>">
 		<?php echo "Time Elapsed to load page: ".$this->get_layout()->profiler." seconds";?>
 	</div>
 </div>

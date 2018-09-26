@@ -3,7 +3,7 @@
 //print_r($voucher);
 ?>
 <div class="row">
-	<div class="<?=$this->column_set();?>">						
+	<div class="<?=$this->get_column_size();?>">						
 			
 			<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/show_journal/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_first_extra_segment();?>" class="btn btn-default">Back</a>
 			

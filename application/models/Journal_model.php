@@ -309,6 +309,19 @@ class Journal_model extends CI_Model{
 			return "Voucher Created Successful";
 		}
 	}
+
+	function get_cheque_details($icp="",$chqno=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_cheque_details(?,?)",array($icp,$chqno));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
 	
 	function start_cash_balance($icpNo="",$month_start=""){
 		

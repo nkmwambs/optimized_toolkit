@@ -33,19 +33,18 @@ class Welcome extends CI_Controller {
 		
 	}
 	
-	/**
-	 * To use the Journal library, you need to:
-	 * a) Create a method in the class. In this scenario its finance.
-	 * b) Load the Jourmal Library i.e. $this->load->library('journal');
-	 * c) Call the set_project_id method of the Journal libarary class. This is a setter method of the Jornal Library. It received the argument of ICP ID
-	 * d) Call the set_date method. This is a setter method of the Journal Library. It receives the argument as an array with START_DATE and END_DATE keys. 
-	 **/
 	
 	public function finance(){
+		
+		$this->load->library('Journal');			
 					
-		$this->load->library('Journal');
+		$ifms = new Journal();
+		
+		//$ifms->set_language("french");
+		
+		//$ifms->set_column_size("col-sm-offset-1 col-sm-10");
 				
-		$output = $this->journal->render();
+		$output = $ifms->render();
 	
 		$this->load->view("finance",$output);
 	}
