@@ -19,6 +19,7 @@ class Welcome extends CI_Controller {
 		
 		$this->load->helper("url");
 		
+		
 	}	 
 	 
 	 /**
@@ -34,18 +35,30 @@ class Welcome extends CI_Controller {
 	}
 	
 	
-	public function finance(){
+	public function journal(){
 		
-		$this->load->library('Journal');			
-					
-		$ifms = new Journal();
-		
-		//$ifms->set_language("french");
-		
-		//$ifms->set_column_size("col-sm-offset-1 col-sm-10");
+		$this->load->library('Finance',array('mod_name'=>'journal'));			
 				
-		$output = $ifms->render();
+		$output = $this->finance->render();
 	
-		$this->load->view("finance",$output);
+		$this->load->view("main",$output);
+	}
+
+	public function report(){
+		
+		$this->load->library('Finance',array('mod_name'=>'report'));			
+				
+		$output = $this->finance->render();
+	
+		$this->load->view("main",$output);
+	}	
+	
+	public function budget(){
+		
+		$this->load->library('Finance',array('mod_name'=>'budget'));			
+				
+		$output = $this->finance->render();
+	
+		$this->load->view("main",$output);
 	}
 }

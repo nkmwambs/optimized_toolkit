@@ -25,6 +25,9 @@ $(document).ready(function(){
 		
 	});	
     
+    function go_back(){
+		window.history.back();
+	}
         
 });
 

@@ -22,7 +22,13 @@
 	$lang['bank']						= 'Bank';
 	$lang['cash']						= 'Cash';
 	$lang['income']						= 'Income';
-	$lang['expenses']					= 'Expenes';
+	$lang['expenses']					= 'Expenses';
+	$lang['add_cheque_booklet']			= 'Add Cheque Booklet';
+	$lang['select']						= 'Select';
+	$lang['back']						= 'Back';
+	$lang['start_serial_number']		= 'Start Serial Number';
+	$lang['number_of_leaves']			= 'Number Of Leaves';
+	$lang['create']						= 'Create';
 	
 	
 

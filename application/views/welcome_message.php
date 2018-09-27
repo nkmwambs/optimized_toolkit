@@ -39,7 +39,7 @@
 			
 			<!-- <p><a class="btn btn-default" href="<?=base_url();?>Welcome/finance/show_journal/KE345/">Show Journal</a></p> -->			
 			<?php 
-				echo form_open(base_url() . 'Welcome/finance/show_journal/', array('id'=>'frmLoad','class' => 'form-horizontal form-groups-bordered validate',"autocomplete"=>"off",'enctype' => 'multipart/form-data'));
+				echo form_open('', array('id'=>'frmLoad','class' => 'form-horizontal form-groups-bordered validate',"autocomplete"=>"off",'enctype' => 'multipart/form-data'));
 			?>
 				<div class="form-group">
 					<label for="" class="control-label col-sm-2">Project</label>
@@ -47,7 +47,13 @@
 						<input type="text" class="form-control" name="icpNo" id="icpNo" />
 					</div>
 					<div class="col-sm-2">
-						<button id="submit" class="btn btn-default">Go</button>
+						<button id="journal" class="btn btn-default submit pull-left">Go To Journal</button>
+					</div>
+					<div class="col-sm-2">
+						<button id="report" class="btn btn-default submit pull-left">Go To Report</button>
+					</div>
+					<div class="col-sm-2">
+						<button id="budget" class="btn btn-default submit pull-left">Go To Budget</button>
 					</div>
 				</div>
 				
@@ -59,9 +65,13 @@
 <hr/>
 	
 <script>
-	$("#submit").click(function(ev){
-		
-		var url = $("#frmLoad").attr('action')+$("#icpNo").val();
+	$(".submit").click(function(ev){
+		var url = '<?=base_url();?>welcome/journal/show_journal/'+$("#icpNo").val();
+		if($(this).attr("id") == "report"){
+			url = '<?=base_url();?>welcome/report/show_report/'+$("#icpNo").val();
+		}else if($(this).attr("id") == "budget"){
+			url = '<?=base_url();?>welcome/budget/show_budget/'+$("#icpNo").val();
+		}
 		
 		$("#frmLoad").prop('action',url);
 		$("#frmLoad").submit();

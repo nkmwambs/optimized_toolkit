@@ -11,29 +11,31 @@
 <div class="<?=$this->get_column_size();?>">
 	
 	<div class="row">
-		<div class="col-sm-6">
-			<div class="btn btn-default btn-icon icon-left hidden-print pull-left" id="select_btn"><?=$this->l('select_all_vouchers');?><i class="entypo-mouse"></i></div>
-			<div  class="btn btn-default btn-icon icon-left hidden-print pull-left" id="print_vouchers"><?=$this->l('print_selected_vouchers')?><i class="entypo-print"></i></div>
+		<div class="col-xs-12">
+			<div class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="select_btn"><?=$this->l('select_all_vouchers');?><i class="entypo-mouse"></i></div>
+			<div  class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="print_vouchers"><?=$this->l('print_selected_vouchers')?><i class="entypo-print"></i></div>
 			<?php 
 				if($transacting_month['start_date'] == $this->get_start_date_epoch()){
 			?>
-				<a class="btn btn-default btn-icon icon-left hidden-print pull-left" href="<?=base_url();?>Welcome/finance/create_voucher/<?=$this->get_project_id();?>/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i></a>		
+				<a class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" href="<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/create_voucher/<?=$this->get_project_id();?>/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i></a>		
 			<?php
 				}
 			?>
+			<a href="<?=$this->get_url('cheque_book');?>" class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id=""><?=$this->l('add_cheque_booklet');?> <i class="entypo-book"></i></a>
 		</div>
-	
-	
-		<div class="col-sm-6">
+	</div>
+	<hr />
+	<div class="row">
+		<div class="col-xs-6">
 			<form id="scroll" role="form" class="form-horizontal form-groups-bordered">
-				<div class="form-group">
-					<label class="col-sm-3 control-label"><?=$this->l('scroll_months')?>: </label>	
-						<div class="col-sm-5">
-							<input type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_first_extra_segment();?>" readonly="readonly"/>
+				<div class="form-group hidden-print">
+					<label class="col-xs-3 pull-left control-label"><?=$this->l('scroll_months')?>: </label>	
+						<div class="col-xs-5">
+							<input class=" pull-left" type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_first_extra_segment();?>" readonly="readonly"/>
 										
 						</div>
-					<div class="col-sm-4">
-						<button class="btn btn-default" id="spinner_btn"><?=$this->l('go');?></button>
+					<div class="col-xs-2">
+						<button class="btn btn-default pull-left" id="spinner_btn"><?=$this->l('go');?></button>
 					</div>	
 				</div>
 			</form>
