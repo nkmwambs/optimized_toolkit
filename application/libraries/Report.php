@@ -2,9 +2,10 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 include_once "Layout.php";
-include "Initialization.php";
+include "Init.php";
 
-class Report extends Layout implements Initialization{
+ 
+final class Journal extends Layout implements Init{
 	/**
  * All modules should have the construct setting the initialize_entry method
  * The initialize entry method initializes the model and set the initial uri

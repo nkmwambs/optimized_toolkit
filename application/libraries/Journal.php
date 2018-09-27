@@ -36,10 +36,10 @@
  */
 
 include_once "Layout.php";
-include "Initialization.php";
+include "Init.php";
 
  
-final class Journal extends Layout implements Initialization{
+final class Journal extends Layout implements Init{
 	protected $icpNo;
 	protected $start_date;
 	protected $end_date;
