@@ -230,7 +230,7 @@ class Layout {
 	}
 	
 	protected function get_current_fy(){
-		return 19;
+		return date('y',strtotime("+6 months",$this->get_start_date_epoch()));
 	}
 	
 	
@@ -293,7 +293,7 @@ class Layout {
 		$this->set_js_files($this->default_js_path.'jquery-3.3.1.min.js');
 		$this->set_js_files($this->default_js_path.'bootstrap/bootstrap.min.js');
 		$this->set_js_files($this->default_js_path.'jquery.dataTables.min.js');
-		$this->set_js_files($this->default_js_path.'buttons.bootstrap.js');
+		//$this->set_js_files($this->default_js_path.'buttons.bootstrap.js');
 		$this->set_js_files($this->default_js_path.'dataTables.bootstrap.min.js');
 		$this->set_js_files($this->default_js_path.'jquery-ui.min.js');
 		$this->set_js_files($this->default_js_path.'printThis.js');
@@ -372,8 +372,8 @@ class Layout {
 		
 		/**Set new date ranges when scrolling out of the current transacting month**/
 		if($this->CI->uri->segment(7)){
-			$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(7)." months",strtotime($this->get_start_date())));
-			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(7)." months",strtotime($this->get_end_date())));
+			$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(7)." months",$this->get_start_date_epoch()));
+			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(7)." months",$this->get_end_date_epoch()));
 			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
 		}
 		

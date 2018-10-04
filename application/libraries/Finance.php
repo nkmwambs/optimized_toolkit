@@ -12,8 +12,8 @@ final class Finance {
 		
 		extract($module);
 		
-		include_once $mod_name.".php";
-		return $this->res = new $mod_name();
+		include $mod_name.".php";
+		$this->res = new $mod_name();
 	}
 	
 	function render(){

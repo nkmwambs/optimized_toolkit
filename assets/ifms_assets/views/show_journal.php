@@ -1,4 +1,5 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
+
 <hr/>
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
@@ -72,7 +73,7 @@
 					<th colspan="2"><?=$this->l('bank');?>:</th>
 					<th><?=number_format($opening_bank_balance,2);?></th>
 					
-					<th colspan="2">C<?=$this->l('cash');?>ash:</th>
+					<th colspan="2"><?=$this->l('cash');?>:</th>
 					<th><?=number_format($opening_petty_balance,2);?></th>
 					
 					<th colspan="<?=count($income);?>" rowspan="2" style="border-left:1px black solid;border-right:1px black solid;">Income</th>

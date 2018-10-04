@@ -174,10 +174,10 @@ class Finance_model extends CI_Model{
 	}
 	
 		
-	function account_for_vouchers(){
+	function account_for_vouchers($param=null){
 		try{
 			$this->db->reconnect();
-			$query = $this->db->query("CALL get_accounts()");
+			$query = $this->db->query("CALL get_accounts(?)",array($param));
 			$result = $query->num_rows()>0?$query->result_object():array();
 			$this->db->close();
 		}catch(Exception $e){
@@ -351,6 +351,62 @@ class Finance_model extends CI_Model{
 		return $result;
 	}	
 	
+	
+	/**Financial Report Methods **/
+
+	
+	function get_month_fund_balance($icp="",$closeDate=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_month_fund_balance(?,?)",array($icp,$closeDate));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function get_special_accounts_sum($icp="",$start_date="",$end_date=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_special_accounts_sum(?,?,?)",array($icp,$start_date,$end_date));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function get_months_sum_per_vtype($icp="",$start_date="",$end_date=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_months_sum_per_vtype(?,?,?)",array($icp,$start_date,$end_date));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}	
+		
+	function get_months_sum_per_account($icp="",$start_date="",$end_date=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_months_sum_per_account(?,?,?)",array($icp,$start_date,$end_date));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}	
+		
 	function start_cash_balance($icpNo="",$month_start=""){
 		
 		$last_month_cash_balance = "";
@@ -358,6 +414,7 @@ class Finance_model extends CI_Model{
 		$this->db->where(array("icpNo"=>$icpNo,"month"=>$last_month));
 		$this->db->select(array("accNo","amount"));
 		$last_month_cash_balance_obj = $this->db->get_where("cashbal");
+		
 		if($last_month_cash_balance_obj->num_rows()>0){
 			$last_month_cash_balance = $last_month_cash_balance_obj->result_array();
 		}else{

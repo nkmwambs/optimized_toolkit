@@ -5,7 +5,7 @@ include_once "Layout.php";
 include "Init.php";
 
  
-final class Journal extends Layout implements Init{
+final class Budget extends Layout implements Init{
 	/**
  * All modules should have the construct setting the initialize_entry method
  * The initialize entry method initializes the model and set the initial uri

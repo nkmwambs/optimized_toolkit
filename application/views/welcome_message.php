@@ -75,7 +75,7 @@
 		
 		$("#frmLoad").prop('action',url);
 		$("#frmLoad").submit();
-
+		
 	});
 </script>	
 </body>
