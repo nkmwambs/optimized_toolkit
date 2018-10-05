@@ -35,6 +35,11 @@ final class Report extends Layout implements Init{
 		}
 	}
 	
+	
+	private function get_transacting_month(){
+		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
+	}
+	
 	/** Develop the Fund Balance Report - Start**/
 		
 	private function get_income_accounts(){
@@ -131,6 +136,8 @@ final class Report extends Layout implements Init{
 
 	/** Develop the Fund Balance Report - End **/
 	
+	/** Develop the Cash Balance Table - Start **/
+	
 	 function get_months_sum_per_vtype(){
 		return $this->basic_model->get_months_sum_per_vtype($this->get_project_id(),
 		$this->get_start_date(),$this->get_end_date());
@@ -202,12 +209,76 @@ final class Report extends Layout implements Init{
 		return 	($open_pc+$pc_deposit)-($pc_payment+$pc_rebanked);				
 	}
 	
+	/** Develop the Cash Balance Table - End **/
+	
+	protected function get_outstanding_effects(){
+		return $this->basic_model->get_outstanding_effects($this->icpNo,$this->start_date,$this->end_date);
+	}
+	
+	protected function get_cleared_effects(){
+		return $this->basic_model->get_cleared_effects($this->icpNo,$this->start_date,$this->end_date);
+	}
+	
+	protected function group_single_transaction_by_vtype(){
+		$singles = $this->get_outstanding_effects();
+		
+		$grouping = array();
+		
+		foreach($singles as $row){
+			
+			$grouping[$row->VType][] = $row;
+		}
+		
+		return $grouping; 
+	}
+	
+	protected function group_cleared_effects_by_vtype(){
+		$singles = $this->get_cleared_effects();
+		
+		$grouping = array();
+		
+		foreach($singles as $row){
+			
+			$grouping[$row->VType][] = $row;
+		}
+		
+		return $grouping; 
+	}
+	
+	protected function outstanding_cheques(){
+		$grouped = $this->group_single_transaction_by_vtype();
+		
+		return isset($grouped['CHQ'])?$grouped['CHQ']:array();
+	}
+	
+	protected function cleared_cheques(){
+		$grouped = $this->group_cleared_effects_by_vtype();
+		
+		return isset($grouped['CHQ'])?$grouped['CHQ']:array();
+	}
+	
+	protected function deposit_transit(){
+		$grouped = $this->group_single_transaction_by_vtype();
+		
+		return isset($grouped['CR'])?$grouped['CR']:array();
+	}
+	
+	protected function cleared_deposit_transit(){
+		$grouped = $this->group_cleared_effects_by_vtype();
+		
+		return isset($grouped['CR'])?$grouped['CR']:array();
+	}
 	
 	protected function pre_render_show_report(){
-		$data['fund_balances'] 	= $this->get_fund_balances();
-		$data['bank_balance'] 	= $this->get_end_bank_balance();
-		$data['petty_balance']	= $this->get_end_petty_balance();
-		$data['sum_cash']		= $this->get_end_bank_balance() + $this->get_end_petty_balance();
+		$data['transacting_month'] 	= $this->get_transacting_month();
+		$data['fund_balances'] 		= $this->get_fund_balances();
+		$data['bank_balance'] 		= $this->get_end_bank_balance();
+		$data['petty_balance']		= $this->get_end_petty_balance();
+		$data['sum_cash']			= $this->get_end_bank_balance() + $this->get_end_petty_balance();
+		$data['oustanding_cheques'] = $this->outstanding_cheques();
+		$data['cleared_cheques']	= $this->cleared_cheques();
+		$data['deposit_transit'] 	= $this->deposit_transit();
+		$data['cleared_deposits']	= $this->cleared_deposit_transit();
 		
 		$data['view'] = "show_report";
 		

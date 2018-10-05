@@ -381,6 +381,46 @@ class Finance_model extends CI_Model{
 		return $result;
 	}
 	
+	// function get_vnumber_grouped_month_transaction($icp="",$start_date="",$end_date=""){
+		// try{
+			// $this->db->reconnect();
+			// $query = $this->db->query("CALL get_vnumber_grouped_month_transaction(?,?,?)",array($icp,$start_date,$end_date));
+			// $result = $query->num_rows()>0?$query->result_object():array();
+			// $this->db->close();
+		// }catch(Exception $e){
+			// echo "Message: ".$e->getMessage();
+		// }
+// 		
+		// return $result;
+	// }
+	
+	function get_outstanding_effects($icp="",$start_date="",$end_date=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_outstanding_effects(?,?,?)",array($icp,$start_date,$end_date));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function get_cleared_effects($icp="",$start_date="",$end_date=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_cleared_effects(?,?,?)",array($icp,$start_date,$end_date));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}	
+		
+	
 	function get_months_sum_per_vtype($icp="",$start_date="",$end_date=""){
 		try{
 			$this->db->reconnect();

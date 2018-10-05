@@ -15,7 +15,7 @@ final class Finance {
 		include $mod_name.".php";
 		$this->res = new $mod_name();
 	}
-	
+		
 	function render(){
 		return $this->res->rendering();
 	}

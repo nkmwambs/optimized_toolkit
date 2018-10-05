@@ -80,6 +80,10 @@ final class Journal extends Layout implements Init{
 	
 		
 	/** Start of Model Wrappers **/
+	private function get_transacting_month(){
+		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));;
+	}
+	
 	
 	private function _get_banks(){
 		return $this->basic_model->get_banks();
@@ -89,9 +93,7 @@ final class Journal extends Layout implements Init{
 		return $this->basic_model->start_cash_balance($this->icpNo,$this->start_date);
 	}
 	
-	private function get_transacting_month(){
-		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
-	}	
+		
 	
     private function get_current_month_transactions()
     {		
