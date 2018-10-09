@@ -5,15 +5,16 @@ final class Finance {
 
 	private $CI ;
 	private $res;
-	private $mod ;
+	//private $mod ;
 	
 	function __construct($module){
 		$this->CI =& get_instance();
 		
 		extract($module);
 		
-		include $mod_name.".php";
+		include ucfirst($mod_name).".php";
 		$this->res = new $mod_name();
+		
 	}
 		
 	function render(){

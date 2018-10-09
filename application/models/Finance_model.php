@@ -65,7 +65,7 @@ class Finance_model extends CI_Model{
 	public function get_current_financial_report_date($icp=""){
 		extract((array)$this->get_max_report_submitted($icp));
 		
-		return $closureDate;
+		return isset($closureDate)?$closureDate:date("Y-m-t");
 	} 
 	
 	public function get_current_financial_report_validated($icp=""){
@@ -95,7 +95,7 @@ class Finance_model extends CI_Model{
 	public function get_current_voucher_date($icp=""){
 		extract((array)$this->get_icp_max_voucher($icp));
 		
-		return $TDate;
+		return isset($TDate)?$TDate:date("Y-m-d");
 	}
 	
 	public function get_current_voucher_number($icp=""){

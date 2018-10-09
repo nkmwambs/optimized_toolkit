@@ -3,7 +3,12 @@
 defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Layout {
-
+	
+	protected $icpNo;
+	protected $start_date;
+	protected $end_date;
+	protected $asset_view_group;
+	
 	/**
 	 * Stores the value of CI Instance Object
 	 * 
@@ -70,6 +75,10 @@ class Layout {
 		/** Initialize Codeigniter Instance **/	
 		$this->CI=& get_instance();
 		
+		/** Load Finance Model **/
+		$this->CI->load->model("Finance_model");
+		$this->basic_model 	= new Finance_model();
+		
 		/** Initialize default paths */
 		$this->default_js_path	= $this->default_assets_path.'/js/';
 		$this->default_css_path			= $this->default_assets_path.'/css/';
@@ -79,6 +88,16 @@ class Layout {
 		$this->CI->config->load('finance');
 		$this->CI->load->helper('url');
 		$this->CI->load->database();
+		
+		/**Initialization of url segments **/
+		if(substr($this->get_view(),0,4) !== "ajax"){
+			$transaction_month = $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
+			$this->icpNo = $this->CI->uri->segment(4);
+			$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
+			$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
+		}else{
+			$this->echo_and_die = true;
+		}
 		
 		/*cache control*/
 		
@@ -147,6 +166,15 @@ class Layout {
 	 * @param string	extra_segment_one 	This is an extra uri segment. Can be empty
 	 * @param string 	extra_segment_two   This is an extra uri segment. Can be empty
 	 */
+	
+	protected function set_asset_view_group($group=""){
+		$this->asset_view_group = $group;
+		return $this;
+	}
+	
+	protected function get_asset_view_group(){
+		return $this->asset_view_group;
+	}
 	
 	protected function get_url($pre_render_control,$start_date="",$end_date="",$extra_segment_one="",$extra_segment_two=""){
 			
@@ -233,6 +261,10 @@ class Layout {
 		return date('y',strtotime("+6 months",$this->get_start_date_epoch()));
 	}
 	
+		/** Start of Model Wrappers **/
+	protected function get_transacting_month(){
+		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));;
+	}
 	
 	/**
 	 * Set View Buffer - Set the view as string parameter that hold the views content as plain text
@@ -248,7 +280,11 @@ class Layout {
 		
 		ob_start();
 		
-		include_once ($this->default_view_path.$view.".php");
+		if(file_exists($this->default_view_path.$this->asset_view_group.'/'.$view.".php"))
+			include_once ($this->default_view_path.$this->asset_view_group.'/'.$view.".php");
+		else 
+			include_once ($this->default_view_path.$view.".php");
+		
 		
 		$buffered_view = ob_get_contents();
 		

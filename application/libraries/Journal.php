@@ -36,18 +36,14 @@
  */
 
 include_once "Layout.php";
-include "Init.php";
+include "Initialization.php";
 
  
-final class Journal extends Layout implements Init{
-	protected $icpNo;
-	protected $start_date;
-	protected $end_date;
+final class Journal extends Layout implements Initialization{
 	protected $opening_bank;
 	protected $opening_petty;
 	protected $start_bank;
 	protected $start_petty;
-	private $pre_render;	
 
 /**
  * All modules should have the construct setting the initialize_entry method
@@ -62,28 +58,10 @@ final class Journal extends Layout implements Init{
 	}
 	
 	function initilize_entry(){
-		
-		/** Load the Model - To be place in all Modules**/
-		$this->CI->load->model("Finance_model");
-		$this->basic_model 	= new Finance_model();
-		
-		/**Initialization of url segments **/
-		if(substr($this->get_view(),0,4) !== "ajax"){
-			$transaction_month = $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
-			$this->icpNo = $this->CI->uri->segment(4);
-			$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
-			$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
-		}else{
-			$this->echo_and_die = true;
-		}
+		$this->asset_view_group = get_class();
 	}
 	
-		
-	/** Start of Model Wrappers **/
-	private function get_transacting_month(){
-		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));;
-	}
-	
+	/** Start of Model Wrapper methods**/
 	
 	private function _get_banks(){
 		return $this->basic_model->get_banks();
@@ -93,13 +71,15 @@ final class Journal extends Layout implements Init{
 		return $this->basic_model->start_cash_balance($this->icpNo,$this->start_date);
 	}
 	
-		
+	
 	
     private function get_current_month_transactions()
     {		
 		return $this->basic_model
 		->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);
     }
+  
+    
 	
 	private function account_for_vouchers(){
 		return $this->basic_model->account_for_vouchers();
@@ -139,6 +119,10 @@ final class Journal extends Layout implements Init{
 		return $this->basic_model
 		->get_voucher_transactions($this->icpNo,$this->start_date,$this->end_date);
     }
+	
+	private function current_voucher_date(){
+		return $this->basic_model->get_current_voucher_date($this->get_project_id());
+	}
 		
 	/** End of Model Wrappers **/		
 
@@ -153,10 +137,6 @@ final class Journal extends Layout implements Init{
 		}
 		
 		return $account_groups;
-	}
-	
-	private function current_voucher_date(){
-		return $this->basic_model->get_current_voucher_date($this->get_project_id());
 	}
 	
 	protected function accounts_with_open_icp_civs(){
