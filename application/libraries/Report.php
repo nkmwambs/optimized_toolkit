@@ -366,7 +366,7 @@ final class Report extends Layout implements Initialization{
 			
 			$this->check_transacting_month();
 			
-			$data['month'] 					= date("Y-m-d",strtotime("last day of this month",$this->get_start_date_epoch()));
+			$data['month'] 					= $this->get_end_date();
 			$data['statement_balance'] 		= $this->get_statementbal_amount();
 			$data['outstanding_cheques'] 	= array_sum(array_column($this->outstanding_cheques(),"Cost"));
 			$data['transit_deposit']		= array_sum(array_column($this->deposit_transit(),"Cost"));

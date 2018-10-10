@@ -110,7 +110,10 @@ class Layout {
 		$this->CI->output->set_header("Pragma: no-cache"); 
 		
 	}
-	
+	function test(){
+		$transaction_month = $this->basic_model->get_transacting_month($this->CI->input->get("project"));
+		return  date("Y-m-d",$transaction_month['start_date'])." - ".date("Y-m-d",$transaction_month['end_date']);
+	}
 	public function set_column_size($col_size=""){
 		$this->column_size = $col_size;
 		return $this;
@@ -209,15 +212,7 @@ class Layout {
 	
 	protected function get_method(){
 		return $this->CI->router->fetch_method();
-	}
-	
-	// protected function get_first_extra_segment(){
-		// return $this->CI->input->get("extraone")?$this->CI->input->get("extraone"):"0";
-	// }
-// 	
-	// protected function get_second_extra_segment(){
-		// return $this->CI->input->get("extratwo")?$this->CI->input->get("extratwo"):"";
-	// }	
+	}	
 	
 	protected function get_scroll(){
 		return $this->CI->input->get("scroll")?$this->CI->input->get("scroll"):"0";
@@ -430,9 +425,8 @@ class Layout {
 		/**Set new date ranges when scrolling out of the current transacting month**/
 		if($this->CI->input->get("scroll")){
 			$start_date = date("Y-m-01",strtotime($this->CI->input->get("scroll")." months",$this->get_start_date_epoch()));
-			$end_date = date("Y-m-t",strtotime($this->CI->input->get("scroll")." months",$this->get_end_date_epoch()));
+			$end_date = date("Y-m-t",strtotime($this->CI->input->get("scroll")." months",$this->get_start_date_epoch()));
 			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
-
 		}
 		
 		/**Call the appropriate pre-render method based on the uri segment 3 set in the get_view method**/

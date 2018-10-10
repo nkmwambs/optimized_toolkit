@@ -226,12 +226,6 @@ final class Journal extends Layout implements Initialization{
 		return $this->basic_model->insert_voucher_to_database($post_array);
 	}
 	
-    // protected function get_current_month_transactions_for_voucher()
-    // {	
-		// return $this->basic_model
-		// ->get_voucher_transactions($this->icpNo,$this->start_date,$this->end_date);
-    // }
-	
 	private function current_voucher_date(){
 		return $this->basic_model->get_current_voucher_date($this->get_project_id());
 	}

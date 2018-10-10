@@ -1,7 +1,6 @@
 <?php
 include "utility_open_standalone.php";
 //print_r($this->get_statementbal());
-//echo $this->get_end_date();
 ?>
 <div class="panel panel-primary"data-collapsed="1">
         	<div class="panel-heading">

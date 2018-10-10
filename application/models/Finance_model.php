@@ -126,12 +126,12 @@ class Finance_model extends CI_Model{
 		
 		$params = array();
 		
-		if($current_voucher_date > $current_report_date){
+		if($current_voucher_date > $current_report_date){//MFR = 2018-09-30, Voucher Date = 2018-10-15
 			$params['start_date'] = strtotime(date("Y-m-01",$current_voucher_date));
 			$params['end_date'] = strtotime(date("Y-m-t",$current_voucher_date));
 		}else{ //MFR = 2018-09-30, Voucher Date = 2018-09-29
-			$params['start_date'] = strtotime(date("Y-m-d",strtotime("first day of next month",$current_report_date)));
-			$params['end_date'] = strtotime(date("Y-m-d",strtotime("first day of next month",$current_report_date)));
+			$params['start_date'] = strtotime("first day of next month",$current_report_date);
+			$params['end_date'] = strtotime("last day of next month",$current_report_date);
 		}
 		
 		return $params;
