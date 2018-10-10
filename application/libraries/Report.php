@@ -120,10 +120,15 @@ final class Report extends Layout implements Initialization{
 	
 	/** Develop the Cash Balance Table - Start **/
 	
-	 function get_months_sum_per_vtype(){
+	function get_months_sum_per_vtype(){
 		return $this->basic_model->get_months_sum_per_vtype($this->get_project_id(),
 		$this->get_start_date(),$this->get_end_date());
 	}
+	
+	 function get_statementbal(){
+		return $this->basic_model->get_statementbal($this->get_project_id(),date("Y-m-d",strtotime("last day of this month",$this->get_start_date_epoch())));
+	}
+	
 	
 	protected function get_special_accounts_sum(){
 		return $this->basic_model->get_special_accounts_sum($this->icpNo,$this->start_date,$this->end_date);
@@ -265,6 +270,12 @@ final class Report extends Layout implements Initialization{
 		return isset($grouped['CR'])?$grouped['CR']:array();
 	}
 	
+	private function get_statementbal_amount(){
+		$statementbal = $this->get_statementbal();
+		
+		return empty($statementbal)? 0 : $statementbal->amount;
+	}
+	
 	protected function pre_render_show_report(){
 		$data['transacting_month'] 	= $this->get_transacting_month();
 		$data['fund_balances'] 		= $this->get_fund_balances();
@@ -353,7 +364,10 @@ final class Report extends Layout implements Initialization{
 	protected function pre_render_show_bankreconcile(){
 			$data['transacting_month'] 	= $this->get_transacting_month();
 			
-			$data['statement_balance'] 		= 0;
+			$this->check_transacting_month();
+			
+			$data['month'] 					= date("Y-m-d",strtotime("last day of this month",$this->get_start_date_epoch()));
+			$data['statement_balance'] 		= $this->get_statementbal_amount();
 			$data['outstanding_cheques'] 	= array_sum(array_column($this->outstanding_cheques(),"Cost"));
 			$data['transit_deposit']		= array_sum(array_column($this->deposit_transit(),"Cost"));
 			$data['journal_balance'] 		= $this->get_end_bank_balance();

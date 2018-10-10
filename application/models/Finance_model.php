@@ -423,6 +423,19 @@ class Finance_model extends CI_Model{
 		
 		return $result;
 	}	
+	
+	function get_statementbal($icp="",$end_date=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_statementbal(?,?)",array($icp,$end_date));
+			$result = $query->num_rows()>0?$query->row():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}	
 		
 	
 	function get_months_sum_per_vtype($icp="",$start_date="",$end_date=""){

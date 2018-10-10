@@ -1,6 +1,7 @@
 <?php
 include "utility_open_standalone.php";
-//echo array_sum(array_column($this->outstanding_cheques(),"Cost"));
+//print_r($this->get_statementbal());
+//echo $this->get_end_date();
 ?>
 <div class="panel panel-primary"data-collapsed="1">
         	<div class="panel-heading">
@@ -19,14 +20,14 @@ include "utility_open_standalone.php";
                 	<div class="form-group">
                 		<label class="control-label col-xs-4">Reconciliation Month</label>
                 		<div class="col-xs-8">
-                			<input type="text" class="form-control datepicker" readonly="readonly" id="month" name="month" />
+                			<input type="text" class="form-control datepicker" readonly="readonly" value="<?=$month;?>" id="month" name="month" />
                 		</div>
                 	</div>
                 	
                 	<div class="form-group">
                 		<label class="control-label col-xs-4">Bank Statement Balance</label>
                 		<div class="col-xs-8">
-                			<input type="number" class="form-control" value="<?=$statement_balance;?>" id="statementbal" name="statementbal" />
+                			<input type="number" class="form-control" value="<?=$statement_balance;?>" id="statementbal" name="statementbal" <?php if(!$this->is_transacting_month) echo "readonly='readonly'";?> />
                 		</div>
                 	</div>
                 	
@@ -64,12 +65,17 @@ include "utility_open_standalone.php";
                 			<div class="label label-danger">Incorrect</div>
                 		</div>
                 	</div>
-                	
-                	<div class="form-group">
-                		<div class="col-xs-12">
-                			<div class="btn btn-default">Save</div>
-                		</div>
-                	</div>	
+                	<?php
+                		if($this->is_transacting_month){
+                	?>
+	                	<div class="form-group">
+	                		<div class="col-xs-12">
+	                			<div class="btn btn-default">Save</div>
+	                		</div>
+	                	</div>
+                	<?php
+						}
+                	?>	
                 </form>         			
 			</div>
 </div>		

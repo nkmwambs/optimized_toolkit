@@ -182,3 +182,12 @@ WHERE voucher_header.icpNo = icpNo AND voucher_header.TDate BETWEEN start_date A
 
 END$$
 DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `get_statementbal`(IN `icp` VARCHAR(6), IN `end_date` DATE)
+BEGIN
+
+SELECT * FROM statementbal WHERE icpNo = icp AND month = end_date;
+
+END$$
+DELIMITER ;
