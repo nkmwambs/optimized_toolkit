@@ -1,6 +1,7 @@
 <?php
 include "utility_open_standalone.php";
 //print_r($this->get_statementbal());
+//echo $this->get_end_date();
 ?>
 <div class="panel panel-primary"data-collapsed="1">
         	<div class="panel-heading">
@@ -101,7 +102,7 @@ include "utility_close_standalone.php";
 		var journalbal = $("#journalbal").val();
 		var oschq = $("#oschq").val();
 		var deptrans = $("#deptrans").val();
-		var adjbal = parseFloat(statementbal)+ parseFloat(deptrans) - parseFloat(oschq);
+		var adjbal = (parseFloat(statementbal)+ parseFloat(deptrans) - parseFloat(oschq)).toFixed(2);
 			if(!isNaN(adjbal)) {
 				$("#adjbal").val(adjbal)
 			} else {
@@ -109,7 +110,7 @@ include "utility_close_standalone.php";
 				adjbal = 0;	
 			} 
 			
-		if(adjbal == parseFloat(journalbal)){
+		if(adjbal == parseFloat(journalbal).toFixed(2)){
 			$(".label").removeClass("label-danger").addClass("label-success");
 			$(".label").html("Correct");
 		}else{
