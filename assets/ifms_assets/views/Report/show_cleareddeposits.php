@@ -45,12 +45,12 @@ include "utility_open_standalone.php";
 											<td><div class="btn btn-danger">Undo</div></td>
 											<?php
 												}
-												$os_total +=$row->Cost;
+												$os_total +=$row['Cost'];
 											?>
-											<td><?=$row->TDate;?></td>
-											<td><?=$row->VNumber;?></td>
-											<td><?=$row->TDescription;?></td>
-											<td><?=number_format($row->Cost,2);?></td>
+											<td><?=$row['TDate'];?></td>
+											<td><?=$row['VNumber'];?></td>
+											<td><?=$row['TDescription'];?></td>
+											<td><?=number_format($row['Cost'],2);?></td>
 										</tr>
 									<?php
 										}

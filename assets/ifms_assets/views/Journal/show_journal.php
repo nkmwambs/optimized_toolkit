@@ -32,6 +32,8 @@
 									<li><a href="<?=$this->get_url(array("assetview"=>"show_clearedcheques","lib"=>"report","scroll"=>$this->get_scroll()));?>">Cleared Cheques</a></li>
 									<li class="divider"></li>
 									<li><a href="<?=$this->get_url(array("assetview"=>"show_cleareddeposits","lib"=>"report","scroll"=>$this->get_scroll()));?>">Cleared Deposits</a></li>
+									<li class="divider"></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_bankreconcile","lib"=>"report","scroll"=>$this->get_scroll()));?>">Bank Reconciliation</a></li>
 								</ul>
 							</div>
 				

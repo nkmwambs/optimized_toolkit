@@ -46,14 +46,14 @@ include "utility_open_standalone.php";
 											<td><div class="btn btn-danger">Clear</div></td>
 											<?php
 												}
-												$os_total +=$row->Cost;
+												$os_total +=$row['Cost'];
 											?>
-											<td><?=$row->TDate;?></td>
-											<td><?=$row->VNumber;?></td>
-											<?php $chqno = explode("-",$row->ChqNo);?>
+											<td><?=$row['TDate'];?></td>
+											<td><?=$row['VNumber'];?></td>
+											<?php $chqno = explode("-",$row['ChqNo']);?>
 											<td><?=$chqno[0];?></td>
-											<td><?=$row->TDescription;?></td>
-											<td><?=$row->Cost;?></td>
+											<td><?=$row['TDescription'];?></td>
+											<td><?=$row['Cost'];?></td>
 										</tr>
 									<?php
 										}

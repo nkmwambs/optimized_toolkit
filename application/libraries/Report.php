@@ -222,7 +222,7 @@ final class Report extends Layout implements Initialization{
 		
 		foreach($singles as $row){
 			
-			$grouping[$row->VType][] = $row;
+			$grouping[$row['VType']][] = $row;
 		}
 		
 		return $grouping; 
@@ -235,7 +235,7 @@ final class Report extends Layout implements Initialization{
 		
 		foreach($singles as $row){
 			
-			$grouping[$row->VType][] = $row;
+			$grouping[$row['VType']][] = $row;
 		}
 		
 		return $grouping; 
@@ -277,6 +277,11 @@ final class Report extends Layout implements Initialization{
 		$data['cleared_cheques']	= $this->cleared_cheques();
 		$data['deposit_transit'] 	= $this->deposit_transit();
 		$data['cleared_deposits']	= $this->cleared_deposit_transit();
+		
+		$data['statement_balance'] 		= 0;
+		$data['outstanding_cheques'] 	= array_sum(array_column($this->outstanding_cheques(),"Cost"));
+		$data['transit_deposit']		= array_sum(array_column($this->deposit_transit(),"Cost"));
+		$data['journal_balance'] 		= $this->get_end_bank_balance();
 		
 		$data['view'] = "show_report";
 		
@@ -343,5 +348,20 @@ final class Report extends Layout implements Initialization{
 		$data['view'] = "show_cleareddeposits";
 		
 		return $data;
+	}
+
+	protected function pre_render_show_bankreconcile(){
+			$data['transacting_month'] 	= $this->get_transacting_month();
+			
+			$data['statement_balance'] 		= 0;
+			$data['outstanding_cheques'] 	= array_sum(array_column($this->outstanding_cheques(),"Cost"));
+			$data['transit_deposit']		= array_sum(array_column($this->deposit_transit(),"Cost"));
+			$data['journal_balance'] 		= $this->get_end_bank_balance();
+			
+			$this->load_alone = TRUE;
+			
+			$data['view'] = "show_bankreconcile";
+			
+			return $data;
 	}
 }

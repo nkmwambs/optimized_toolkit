@@ -402,7 +402,7 @@ class Finance_model extends CI_Model{
 		try{
 			$this->db->reconnect();
 			$query = $this->db->query("CALL get_outstanding_effects(?,?,?)",array($icp,$start_date,$end_date));
-			$result = $query->num_rows()>0?$query->result_object():array();
+			$result = $query->num_rows()>0?$query->result_array():array();
 			$this->db->close();
 		}catch(Exception $e){
 			echo "Message: ".$e->getMessage();
@@ -415,7 +415,7 @@ class Finance_model extends CI_Model{
 		try{
 			$this->db->reconnect();
 			$query = $this->db->query("CALL get_cleared_effects(?,?,?)",array($icp,$start_date,$end_date));
-			$result = $query->num_rows()>0?$query->result_object():array();
+			$result = $query->num_rows()>0?$query->result_array():array();
 			$this->db->close();
 		}catch(Exception $e){
 			echo "Message: ".$e->getMessage();
