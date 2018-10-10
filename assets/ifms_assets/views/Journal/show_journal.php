@@ -13,8 +13,45 @@
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
 		<ul class="nav nav-pills">
-			<li><a href="<?=$this->get_url(array("assetview"=>"show_report","lib"=>"report"));?>">Report</a></li>
-			<li><a href="<?=$this->get_url(array("assetview"=>"show_budget","lib"=>"budget"));?>">Budget</a></li>
+			<li>
+				<div class="btn-group left-dropdown">
+								<a class="btn btn-default" href="<?=$this->get_url(array("assetview"=>"show_report","lib"=>"report","scroll"=>$this->get_scroll()));?>">Report</a>
+								<button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown">
+									<span class="caret"></span>
+								</button>
+								
+								<ul class="dropdown-menu dropdown-green" role="menu">
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_fundbalance","lib"=>"report","scroll"=>$this->get_scroll()));?>">Fund Balance Report</a></li>
+									<li class="divider"></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_proofcash","lib"=>"report","scroll"=>$this->get_scroll()));?>">Proof Of Cash</a></li>
+									<li class="divider"></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_outstandingcheques","lib"=>"report","scroll"=>$this->get_scroll()));?>">Outstanding Cheques</a></li>
+									<li class="divider"></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_transitdeposit","lib"=>"report","scroll"=>$this->get_scroll()));?>">Transit Deposit</a></li>
+									<li class="divider"></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_clearedcheques","lib"=>"report","scroll"=>$this->get_scroll()));?>">Cleared Cheques</a></li>
+									<li class="divider"></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_cleareddeposits","lib"=>"report","scroll"=>$this->get_scroll()));?>">Cleared Deposits</a></li>
+								</ul>
+							</div>
+				
+			</li>
+			<li>
+				<div class="btn-group left-dropdown">
+					<a class="btn btn-default" href="<?=$this->get_url(array("assetview"=>"show_budget","lib"=>"budget"));?>">Budget</a>
+					<button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown">
+									<span class="caret"></span>
+								</button>
+								
+								<ul class="dropdown-menu dropdown-green" role="menu">
+									<li><a href="#">Budget Summary</a></li>
+									<li class="divider"></li>
+									<li><a href="#">Budget Schedules</a></li>
+									
+								</ul>
+							</div>
+				</div>
+			</li>
 		</ul>
 	</div>
 </div>
@@ -27,7 +64,7 @@
 			<div class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="select_btn"><?=$this->l('select_all_vouchers');?><i class="entypo-mouse"></i></div>
 			<a href="#"  class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="print_vouchers"><?=$this->l('print_selected_vouchers')?><i class="entypo-print"></i></a>
 			<?php 
-				if($transacting_month['start_date'] == $this->get_start_date_epoch()){
+				if($this->is_transacting_month){
 			?>
 				<a class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" href="<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=create_voucher&project=<?=$this->get_project_id();?>&startdate<?=$transacting_month['start_date'];?>&enddate=<?=$transacting_month['end_date'];?>&lib=journal"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i></a>		
 			<?php

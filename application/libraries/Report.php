@@ -282,4 +282,66 @@ final class Report extends Layout implements Initialization{
 		
 		return $data;
 	}
+	
+	protected function pre_render_show_fundbalance(){
+		$data['transacting_month'] 	= $this->get_transacting_month();
+		$data['fund_balances'] 		= $this->get_fund_balances();
+		$this->load_alone = TRUE;
+		
+		$data['view'] = "show_fundbalance";
+		
+		return $data;
+	}	
+	
+	protected function pre_render_show_proofcash(){
+		$data['transacting_month'] 	= $this->get_transacting_month();
+		$data['bank_balance'] 		= $this->get_end_bank_balance();
+		$data['petty_balance']		= $this->get_end_petty_balance();
+		$data['sum_cash']			= $this->get_end_bank_balance() + $this->get_end_petty_balance();
+		$this->load_alone = TRUE;
+		
+		$data['view'] = "show_proofcash";
+		
+		return $data;
+	}	
+	
+	protected function pre_render_show_outstandingcheques(){
+		$data['transacting_month'] 	= $this->get_transacting_month();
+		$data['oustanding_cheques'] = $this->outstanding_cheques();
+		$this->load_alone = TRUE;
+		
+		$data['view'] = "show_outstandingcheques";
+		
+		return $data;
+	}	
+	
+	protected function pre_render_show_transitdeposit(){
+		$data['transacting_month'] 	= $this->get_transacting_month();
+		$data['deposit_transit'] 	= $this->deposit_transit();
+		$this->load_alone = TRUE;
+		
+		$data['view'] = "show_transitdeposit";
+		
+		return $data;
+	}
+	
+	protected function pre_render_show_clearedcheques(){
+		$data['transacting_month'] 	= $this->get_transacting_month();
+		$data['cleared_cheques']	= $this->cleared_cheques();
+		$this->load_alone = TRUE;
+		
+		$data['view'] = "show_clearedcheques";
+		
+		return $data;
+	}
+	
+	protected function pre_render_show_cleareddeposits(){
+		$data['transacting_month'] 	= $this->get_transacting_month();
+		$data['cleared_deposits']	= $this->cleared_deposit_transit();
+		$this->load_alone = TRUE;
+		
+		$data['view'] = "show_cleareddeposits";
+		
+		return $data;
+	}
 }

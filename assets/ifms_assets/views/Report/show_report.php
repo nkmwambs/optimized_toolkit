@@ -63,305 +63,41 @@
 			
 			<div class="tab-content">
 				<div class="tab-pane active" id="funds">
-					<table class="table table-striped table-bordered" id="report">				
-						<theading>
-							<tr><th colspan="5">Fund Balance Report</th></tr>
-								<tr>
-									<th>Account</th>
-									<th>Beginining Balance</th>
-									<th>Month Income</th>
-									<th>Month Expense</th>
-									<th>Ending Balance</th>
-								</tr>
-						</theading>
-						<tbody>
-							<?php
-								foreach($fund_balances as $row){
-							?>
-								<tr>
-									<td><?=$row['AccText'];?> - <?=$row['AccName'];?></td>
-									<td class="align-right"><?=number_format($row['Opening'],2);?></td>
-									<td class="align-right"><?=number_format($row['Income'],2);?></td>
-									<td class="align-right"><?=number_format($row['Expense'],2);?></td>
-									<td class="align-right"><?=number_format($row['Ending'],2);?></td>
-								</tr>
-							<?php
-								}
-							?>
-						</tbody>
-						<tfoot>
-							<tr>
-								<th>Totals</td>
-								<th class="align-right"><?=number_format(array_sum(array_column($fund_balances, 'Opening')),2);?></td>
-								<th class="align-right"><?=number_format(array_sum(array_column($fund_balances, 'Income')),2);?></td>
-								<th class="align-right"><?=number_format(array_sum(array_column($fund_balances, 'Expense')),2);?></td>
-								<th class="align-right"><?=number_format(array_sum(array_column($fund_balances, 'Ending')),2);?></td>
-							</tr>
-						</tfoot>
-					</table>
-					
+					<?php include "show_fundbalance.php";?>
 					<hr />
-					
-					<table class="table table-striped table-bordered">
-						<theading>
-							<tr><th colspan="2">Proof Of Cash</th></tr>
-							<tr>
-								<th>Cash At Bank</th>
-								<td class="align-right"><?=number_format($bank_balance,2);?></td>
-							</tr>
-						</theading>
-						<tbody>
-							<tr>	
-								<th>Cash At Hand</th>
-								<td class="align-right"><?=number_format($petty_balance,2);?></td>
-							</tr>	
-						</tbody>
-						<tfoot>
-							<tr>
-								<th>Total</th><th class="align-right"><?=number_format($sum_cash,2);?></th>
-							</tr>
-						</tfoot>
-					</table>
-					
+					<?php include "show_proofcash.php";?>					
 				</div>
 				
 				<div class="tab-pane" id="reconcile">
+					
 					<div class="row">
 						<div class="col-sm-12">
-							<table class="table table-striped table-bordered">
-								<theading>
-									<tr>
-										<th colspan="6">Outstanding Cheques</th>
-									</tr>
-									<tr>
-										<?php 
-											if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-										?>
-										<th>Action</th>
-										<?php
-											}
-										?>
-										<th>Date</th>
-										<th>Voucher Number</th>
-										<th>Cheque Number</th>
-										<th>Description</th>
-										<th>Amount</th>
-									</tr>
-								</theading>
-								<tbody>
-									<?php
-										$os_total = 0;
-										foreach($oustanding_cheques as $row){
-									?>
-										<tr>
-											<?php 
-												if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-											?>
-											<td><div class="btn btn-danger">Clear</div></td>
-											<?php
-												}
-												$os_total +=$row->Cost;
-											?>
-											<td><?=$row->TDate;?></td>
-											<td><?=$row->VNumber;?></td>
-											<?php $chqno = explode("-",$row->ChqNo);?>
-											<td><?=$chqno[0];?></td>
-											<td><?=$row->TDescription;?></td>
-											<td><?=$row->Cost;?></td>
-										</tr>
-									<?php
-										}
-									?>
-								</tbody>
-								<tfoot>
-									<tr>
-										<?php 
-											$colspan = 4;
-											if($transacting_month['start_date'] == $this->get_start_date_epoch()) $colspan = 5;
-										?>
-										<th colspan="<?=$colspan;?>">Total</th>
-										<th><?=number_format($os_total,2);?></th>
-									</tr>
-								</tfoot>
-							</table>
+							<?php include "show_bankreconcile.php";?>
 						</div>
 					</div>
 					
 					<div class="row">
 						<div class="col-sm-12">
-							<table class="table table-striped table-bordered cleared-effects">
-								<theading>
-									<tr>
-										<th colspan="6">Cleared Cheques</th>
-									</tr>
-									<tr>
-										<?php 
-											if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-										?>
-										<th>Action</th>
-										<?php
-											}
-										?>
-										<th>Date</th>
-										<th>Voucher Number</th>
-										<th>Cheque Number</th>
-										<th>Description</th>
-										<th>Amount</th>
-									</tr>
-								</theading>
-								<tbody>
-									<?php
-										$os_total = 0;
-										foreach($cleared_cheques as $row){
-									?>
-										<tr>
-											<?php 
-												if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-											?>
-											<td><div class="btn btn-danger">Undo</div></td>
-											<?php
-												}
-												$os_total +=$row->Cost;
-											?>
-											<td><?=$row->TDate;?></td>
-											<td><?=$row->VNumber;?></td>
-											<?php $chqno = explode("-",$row->ChqNo);?>
-											<td><?=$chqno[0];?></td>
-											<td><?=$row->TDescription;?></td>
-											<td><?=$row->Cost;?></td>
-										</tr>
-									<?php
-										}
-									?>
-								</tbody>
-								<tfoot>
-									<tr>
-										<?php 
-											$colspan = 4;
-											if($transacting_month['start_date'] == $this->get_start_date_epoch()) $colspan = 5;
-										?>
-										<th colspan="<?=$colspan;?>">Total</th>
-										<th><?=number_format($os_total,2);?></th>
-									</tr>
-								</tfoot>
-							</table>
+							<?php include "show_outstandingcheques.php";?>
+						</div>
+					</div>
+					
+					<div class="row">
+						<div class="col-sm-12">
+							<?php include "show_clearedcheques.php";?>
 						</div>
 					</div>
 					
 					
 					<div class="row">
 						<div class="col-sm-12">
-							<table class="table table-striped table-bordered">
-								<theading>
-									<tr>
-										<th colspan="5">In Transit Deposit</th>
-									</tr>
-									<tr>
-										<?php 
-											if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-										?>
-										<th>Action</th>
-										<?php
-											}
-										?>
-										<th>Date</th>
-										<th>Voucher Number</th>
-										<th>Description</th>
-										<th>Amount</th>
-									</tr>
-								</theading>
-								<tbody>
-									<?php
-										$os_total = 0;
-										foreach($deposit_transit as $row){
-									?>
-										<tr>
-											<?php 
-												if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-											?>
-											<td><div class="btn btn-danger">Clear</div></td>
-											<?php
-												}
-												$os_total +=$row->Cost;
-											?>
-											<td><?=$row->TDate;?></td>
-											<td><?=$row->VNumber;?></td>
-											<td><?=$row->TDescription;?></td>
-											<td><?=$row->Cost;?></td>
-										</tr>
-									<?php
-										}
-									?>
-								</tbody>
-								<tfoot>
-									<tr>
-										<?php 
-											$colspan = 3;
-											if($transacting_month['start_date'] == $this->get_start_date_epoch()) $colspan = 4;
-										?>
-										<th colspan="<?=$colspan;?>">Total</th>
-										<th><?=number_format($os_total,2);?></th>
-									</tr>
-								</tfoot>
-							</table>
+							<?php include "show_transitdeposit.php";?>
 						</div>
 					</div>
 					
 					<div class="row">
 						<div class="col-sm-12">
-							<table class="table table-striped table-bordered cleared-effects">
-								<theading>
-									<tr>
-										<th colspan="5">Cleared Deposit</th>
-									</tr>
-									<tr>
-										<?php 
-											if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-										?>
-										<th>Action</th>
-										<?php
-											}
-										?>
-										<th>Date</th>
-										<th>Voucher Number</th>
-										<th>Description</th>
-										<th>Amount</th>
-									</tr>
-								</theading>
-								<tbody>
-									<?php
-										$os_total = 0;
-										foreach($cleared_deposits as $row){
-									?>
-										<tr>
-											<?php 
-												if($transacting_month['start_date'] == $this->get_start_date_epoch()){
-											?>
-											<td><div class="btn btn-danger">Undo</div></td>
-											<?php
-												}
-												$os_total +=$row->Cost;
-											?>
-											<td><?=$row->TDate;?></td>
-											<td><?=$row->VNumber;?></td>
-											<td><?=$row->TDescription;?></td>
-											<td><?=number_format($row->Cost,2);?></td>
-										</tr>
-									<?php
-										}
-									?>
-								</tbody>
-								<tfoot>
-									<tr>
-										<?php 
-											$colspan = 3;
-											if($transacting_month['start_date'] == $this->get_start_date_epoch()) $colspan = 4;
-										?>
-										<th colspan="<?=$colspan;?>">Total</th>
-										<th><?=number_format($os_total,2);?></th>
-									</tr>
-								</tfoot>
-							</table>
+							<?php include "show_cleareddeposits.php";?>
 						</div>
 					</div>
 					
@@ -408,4 +144,19 @@
 	 function go_back(){
 		window.history.back();
 	}
+	
+	$(document).ready(function(){
+		 if (location.hash) {
+			        $("a[href='" + location.hash + "']").tab("show");
+			    }
+			    $(document.body).on("click", "a[data-toggle]", function(event) {
+			        location.hash = this.getAttribute("href");
+			    });
+
+			$(window).on("popstate", function() {
+			    var anchor = location.hash || $("a[data-toggle='tab']").first().attr("href");
+			    $("a[href='" + anchor + "']").tab("show");
+
+		});
+	});
 </script>

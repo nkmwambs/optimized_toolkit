@@ -489,6 +489,9 @@ final class Journal extends Layout implements Initialization{
 	protected function pre_render_show_journal(){
 		
 		if(count($this->construct_journal())>0){
+				
+			$this->check_transacting_month();
+			
 			$data['records'] =  $this->construct_journal();
 		
 			$data['end_bank_balance'] = $this->end_bank;

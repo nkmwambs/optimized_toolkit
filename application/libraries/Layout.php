@@ -69,6 +69,10 @@ class Layout {
 	private $lib_url;
 	
 	protected $basic_model = null;
+	
+	private $is_transacting_month = FALSE;
+	
+	protected $load_alone = FALSE;
 
 	function __construct($params = array()){
 		
@@ -272,9 +276,15 @@ class Layout {
 		return date('y',strtotime("+6 months",$this->get_start_date_epoch()));
 	}
 	
-		/** Start of Model Wrappers **/
+	
 	protected function get_transacting_month(){
 		return $this->basic_model->get_transacting_month($this->CI->input->get("project"));;
+	}
+	
+	protected function check_transacting_month(){
+		$transacting_month = $this->get_transacting_month();
+		return $this->is_transacting_month  = 
+		$transacting_month['start_date'] == $this->get_start_date_epoch()?TRUE:FALSE;
 	}
 	
 	/**
