@@ -23,6 +23,18 @@ final class Report extends Layout implements Initialization{
 	}
 	
 	/** Develop the Fund Balance Report - Start**/
+	private function get_month_transactions()
+    {		
+		return $this->basic_model->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);
+    }
+	
+	private function get_approved_budget_spread(){
+		return $this->basic_model->get_approved_budget_spread($this->icpNo,$this->get_current_fy());
+	}
+	
+	private function get_fy_transactions(){
+		return $this->basic_model->get_journal_transactions($this->icpNo,$this->get_fy_start_date(),$this->end_date);;
+	}
 		
 	private function get_income_accounts(){
 		return $this->basic_model->account_for_vouchers(1);
@@ -276,6 +288,156 @@ final class Report extends Layout implements Initialization{
 		return empty($statementbal)? 0 : $statementbal->amount;
 	}
 	
+	private function revenue_accounts(){
+		return $this->basic_model->account_for_vouchers(1);
+	}
+	
+	private function expense_accounts(){
+		return $this->basic_model->account_for_vouchers(0);
+	}
+	
+	private function budgeted_accounts(){
+		$all_accounts = $this->revenue_accounts();
+		
+		$budgeted = array();
+		
+		foreach($all_accounts as $rows){
+			if($rows->budget == 1){
+				$budgeted[] = $rows;
+			}
+		}
+		
+		return $budgeted;
+	}
+	
+	private function get_expense_accounts_by_accid(){
+		$all_accounts = $this->expense_accounts();
+		
+		$grouped = array();
+		
+		foreach($all_accounts as $row){
+			$grouped[$row->parentAccID][] = array("AccNo"=>$row->AccNo,"AccText"=>$row->AccText,"AccName"=>$row->AccName);
+		}
+		
+		return $grouped;
+	}
+	
+	 function month_transactions_by_accno(){
+		$transactions = $this->get_month_transactions();
+		
+		$grouped = array();
+		
+		foreach($transactions as $rows){
+			
+			if($rows['AccGrp'] == 0){
+				$grouped[$rows['AccNo']][] = $rows['Cost'];
+			}
+		}
+		
+		$summed_grouped = array();
+		
+		foreach($grouped as $key=>$value){
+			$summed_grouped[$key] = array_sum($value);
+		}
+		
+		return $summed_grouped;
+	}
+	 
+	 function fy_transactions_by_accno(){
+		$transactions = $this->get_fy_transactions();
+		
+		$grouped = array();
+		
+		foreach($transactions as $rows){
+			
+			if($rows['AccGrp'] == 0){
+				$grouped[$rows['AccNo']][] = $rows['Cost'];
+			}
+		}
+		
+		$summed_grouped = array();
+		
+		foreach($grouped as $key=>$value){
+			$summed_grouped[$key] = array_sum($value);
+		}
+		
+		return $summed_grouped;
+	} 
+	 
+	 /**
+	  * A callback function to get_budget_to_date method
+	  */
+	 function calculate_budget_to_date($schedules_row){
+	 	$month = $this->get_months_elapsed();
+	 	$arr = array();
+		
+		foreach($schedules_row as $key=>$value){
+			if($key <= $month){
+				$arr[$key] = $value;
+			}
+		}
+		
+		return array_sum($arr);
+	 }
+	 
+	 function get_budget_to_date(){
+	 	return array_map(array($this,"calculate_budget_to_date"), $this->group_budget_spread_by_accno());
+	 }
+	 
+	 function group_budget_spread_by_accno(){
+	 	$spread = $this->get_approved_budget_spread();
+		
+		$grouped = array();
+		
+		foreach($spread as $row){
+			for($i=1;$i<=12;$i++){
+				$grouped[$row['AccNo']][$i][] =  $row['month_'.$i.'_amount'];
+			}	
+					
+		}
+		
+		$summed = array();
+		
+		foreach($grouped as $key=>$value){
+			foreach($value as $k=>$v){
+				$summed[$key][$k] = array_sum($v);
+			}
+		}
+		
+		return $summed;
+	 }
+	 
+	
+	private function get_variancegrid($parentaccid){
+		$grouped_expense_accounts = $this->get_expense_accounts_by_accid();
+		$month_expenses = $this->month_transactions_by_accno();
+		$fy_expenses = $this->fy_transactions_by_accno();
+		$budget_to_date = $this->get_budget_to_date();
+		
+		$grid = array();
+		
+		foreach($grouped_expense_accounts[$parentaccid] as $row){
+			$grid[$row['AccNo']]['account'] = $row;//fy_transactions_by_accno
+			$grid[$row['AccNo']]['month_expenses'] = isset($month_expenses[$row['AccNo']])?$month_expenses[$row['AccNo']]:0;
+			$grid[$row['AccNo']]['expenses_to_date'] = isset($fy_expenses[$row['AccNo']])?$fy_expenses[$row['AccNo']]:0;
+			$grid[$row['AccNo']]['budget_to_date'] = isset($budget_to_date[$row['AccNo']])?$budget_to_date[$row['AccNo']]:0;
+			$variance = $grid[$row['AccNo']]['budget_to_date'] - $grid[$row['AccNo']]['expenses_to_date'];
+			$grid[$row['AccNo']]['variance'] = $variance;
+			
+			$per_variance = 0;
+			
+			if($grid[$row['AccNo']]['budget_to_date']!== 0){
+				$per_variance = number_format(($variance/$grid[$row['AccNo']]['budget_to_date'])*100,2);
+			}elseif($grid[$row['AccNo']]['budget_to_date']== 0 && $variance!== 0){
+				$per_variance = -100;
+			}
+			
+			$grid[$row['AccNo']]['per_variance'] = $per_variance;
+		}
+		
+		return $grid;
+	}	
+	
 	protected function pre_render_show_report(){
 		$data['transacting_month'] 	= $this->get_transacting_month();
 		$data['fund_balances'] 		= $this->get_fund_balances();
@@ -289,10 +451,13 @@ final class Report extends Layout implements Initialization{
 		$data['deposit_transit'] 	= $this->deposit_transit();
 		$data['cleared_deposits']	= $this->cleared_deposit_transit();
 		
-		$data['statement_balance'] 		= 0;
+		$data['month'] 					= $this->get_end_date();
+		$data['statement_balance'] 		= $this->get_statementbal_amount();
 		$data['outstanding_cheques'] 	= array_sum(array_column($this->outstanding_cheques(),"Cost"));
 		$data['transit_deposit']		= array_sum(array_column($this->deposit_transit(),"Cost"));
 		$data['journal_balance'] 		= $this->get_end_bank_balance();
+		
+		$data['revenue_accounts'] = $this->budgeted_accounts();
 		
 		$data['view'] = "show_report";
 		
@@ -378,4 +543,32 @@ final class Report extends Layout implements Initialization{
 			
 			return $data;
 	}
+	
+	protected function pre_render_ajax_variancereport(){
+		$post_array = $this->CI->input->post();
+		$grouped_expense_accounts = $this->get_expense_accounts_by_accid();
+		$expenses = $this->month_transactions_by_accno();
+		
+		$data['transacting_month'] 	= $this->get_transacting_month();
+		$data['expense_accounts'] = $grouped_expense_accounts[$post_array['accID']];
+		$data['month_expenses'] = $this->month_transactions_by_accno();
+		$data['variancegrid'] = $this->get_variancegrid($post_array['accID']);
+		
+		$data['view'] = "ajax_variancereport";
+		
+		return $data;
+	}
+	
+	protected function pre_render_show_budgetvariance(){
+			$this->check_transacting_month();
+			$data['transacting_month'] 	= $this->get_transacting_month();
+		
+			$data['revenue_accounts'] = $this->budgeted_accounts();
+			
+			
+			$this->load_alone = TRUE;
+			$data['view'] = "show_budgetvariance";
+			
+			return $data;
+	}	
 }

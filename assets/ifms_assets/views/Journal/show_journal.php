@@ -3,6 +3,7 @@
 <?php
 //print_r($this->test());
 //echo $this->end_bank;
+//print_r($this->account_for_vouchers());
 ?>
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
@@ -34,6 +35,8 @@
 									<li><a href="<?=$this->get_url(array("assetview"=>"show_cleareddeposits","lib"=>"report","scroll"=>$this->get_scroll()));?>">Cleared Deposits</a></li>
 									<li class="divider"></li>
 									<li><a href="<?=$this->get_url(array("assetview"=>"show_bankreconcile","lib"=>"report","scroll"=>$this->get_scroll()));?>">Bank Reconciliation</a></li>
+									<li class="divider"></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_budgetvariance","lib"=>"report","scroll"=>$this->get_scroll()));?>">Budget Variance</a></li>
 								</ul>
 							</div>
 				

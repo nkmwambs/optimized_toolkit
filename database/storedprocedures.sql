@@ -191,3 +191,13 @@ SELECT * FROM statementbal WHERE icpNo = icp AND month = end_date;
 
 END$$
 DELIMITER ;
+
+DELIMITER $$
+CREATE PROCEDURE `get_approved_budget_spread`(IN `icp` VARCHAR(6), IN `fyr` INT(5))
+BEGIN
+
+SELECT plansschedule.scheduleID,planheader.icpNo,planheader.fy,plansschedule.AccNo,plansschedule.totalCost,plansschedule.details,plansschedule.approved,month_1_amount,month_2_amount,month_3_amount,month_4_amount,month_5_amount,month_6_amount,month_7_amount,month_8_amount,month_9_amount,month_10_amount,month_11_amount,month_12_amount 
+FROM planheader LEFT JOIN plansschedule ON planheader.planHeaderID=plansschedule.planHeaderID WHERE planheader.fy = fyr AND planheader.icpNo = icp AND plansschedule.approved = 2;
+
+END$$
+DELIMITER ;

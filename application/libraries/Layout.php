@@ -73,6 +73,8 @@ class Layout {
 	private $is_transacting_month = FALSE;
 	
 	protected $load_alone = FALSE;
+	
+	//private $fy_start_month = 7; 
 
 	function __construct($params = array()){
 		
@@ -94,14 +96,13 @@ class Layout {
 		$this->CI->load->database();
 		
 		/**Initialization of url segments **/
-		if(substr($this->get_view(),0,4) !== "ajax"){
-			$transaction_month = $this->basic_model->get_transacting_month($this->CI->input->get("project"));
-			$this->icpNo = $this->CI->input->get("project");
-			$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
-			$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
-		}else{
-			$this->echo_and_die = true;
-		}
+		
+		$transaction_month = $this->basic_model->get_transacting_month($this->CI->input->get("project"));
+		$this->icpNo = $this->CI->input->get("project");
+		$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
+		$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
+		
+		if(substr($this->get_view(),0,4) == "ajax")	$this->echo_and_die = true;
 		
 		/*cache control*/
 		
@@ -110,10 +111,11 @@ class Layout {
 		$this->CI->output->set_header("Pragma: no-cache"); 
 		
 	}
-	function test(){
-		$transaction_month = $this->basic_model->get_transacting_month($this->CI->input->get("project"));
-		return  date("Y-m-d",$transaction_month['start_date'])." - ".date("Y-m-d",$transaction_month['end_date']);
+
+	protected function preloader(){
+		return "<img style='position:relative;left:50%;width:65px;height:65px;' src='".base_url().$this->default_assets_path."/images/preloader4.gif'/>";
 	}
+	
 	public function set_column_size($col_size=""){
 		$this->column_size = $col_size;
 		return $this;
@@ -158,6 +160,7 @@ class Layout {
 		
 		/** Initialize all the config variables into this object */
 		$this->config->default_language 	= $this->CI->config->item('finance_default_language');
+		$this->config->fy_start_month	 	= $this->CI->config->item('fy_start_month');
 		
 	}	
 	
@@ -267,10 +270,36 @@ class Layout {
 		return strtotime($this->end_date);
 	}
 	
+	/**
+	 * Test this part with the finance config
+	 */
 	protected function get_current_fy(){
-		return date('y',strtotime("+6 months",$this->get_start_date_epoch()));
+		$count = $this->config->fy_start_month - 1;
+		return date('y',strtotime("+".$count." months",$this->get_start_date_epoch()));
 	}
 	
+	protected function get_fy_start_date(){
+		$count = $this->config->fy_start_month -1;
+				
+		$month = $this->config->fy_start_month < 10 ? "0".$this->config->fy_start_month : $this->config->fy_start_month;
+		
+		return date('Y-'.$month.'-01',strtotime("-".$count." months",$this->get_start_date_epoch()));
+	}
+	
+	protected function get_months_elapsed(){
+	 	// @link http://www.php.net/manual/en/class.datetime.php
+		$d1 = new DateTime($this->get_fy_start_date());
+		$d2 = new DateTime($this->get_start_date());
+		
+		// @link http://www.php.net/manual/en/class.dateinterval.php
+		$interval = $d2->diff($d1);
+		
+		return $interval->format('%m')+1;
+	 }
+	
+	/**
+	 * Test this part with the finance config
+	 */
 	
 	protected function get_transacting_month(){
 		return $this->basic_model->get_transacting_month($this->CI->input->get("project"));;

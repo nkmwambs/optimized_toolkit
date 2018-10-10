@@ -104,7 +104,7 @@
 				</div>
 				
 				<div class="tab-pane" id="variance">
-					Variance Tables
+					<?php include "show_budgetvariance.php";?>
 				</div>
 				
 				<div class="tab-pane" id="ratios">

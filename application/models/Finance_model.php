@@ -10,7 +10,7 @@ class Finance_model extends CI_Model{
 	
     }
 	
-	public function get_journal_transactions($icpNo="",$start_date="",$end_date='')
+	function get_journal_transactions($icpNo="",$start_date="",$end_date='')
     {
 		try{
 			$this->db->reconnect();
@@ -196,6 +196,19 @@ class Finance_model extends CI_Model{
 			$this->db->reconnect();
 			$query = $this->db->query("CALL get_current_budget(?,?)",array($icpNo,$fy));
 			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function get_approved_budget_spread($icpNo="",$fy=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_approved_budget_spread(?,?)",array($icpNo,$fy));
+			$result = $query->num_rows()>0?$query->result_array():array();
 			$this->db->close();
 		}catch(Exception $e){
 			echo "Message: ".$e->getMessage();
