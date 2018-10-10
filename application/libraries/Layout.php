@@ -411,6 +411,7 @@ class Layout {
 			$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(7)." months",$this->get_start_date_epoch()));
 			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(7)." months",$this->get_end_date_epoch()));
 			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
+
 		}
 		
 		/**Call the appropriate pre-render method based on the uri segment 3 set in the get_view method**/

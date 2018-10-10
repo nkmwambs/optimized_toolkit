@@ -40,11 +40,10 @@ include "Initialization.php";
 
  
 final class Journal extends Layout implements Initialization{
-	protected $opening_bank;
-	protected $opening_petty;
+	protected $end_bank;
+	protected $end_petty;
 	protected $start_bank;
 	protected $start_petty;
-
 /**
  * All modules should have the construct setting the initialize_entry method
  * The initialize entry method initializes the model and set the initial uri
@@ -67,19 +66,132 @@ final class Journal extends Layout implements Initialization{
 		return $this->basic_model->get_banks();
 	}
 	
-	private function opening_cash_balance(){
+	function start_cash_balance(){
 		return $this->basic_model->start_cash_balance($this->icpNo,$this->start_date);
 	}
 	
+	private function opening_cash_balance(){
+		$last_month_cash_balance = $this->start_cash_balance();
+		
+		if(count($last_month_cash_balance) == 0){
+			$last_month_cash_balance = array(
+				array('accNo'=>'PC',"amount"=>0),
+				array('accNo'=>'BC',"amount"=>0)
+			);
+		}
+		
+		$cash_balance_columns = array_column($last_month_cash_balance, "accNo");
+		return array_combine($cash_balance_columns, $last_month_cash_balance);
+	}
 	
-	
+	/**
+	 * This method returns all voucher transactions in the selected month.
+	 */	
     private function get_current_month_transactions()
     {		
-		return $this->basic_model
-		->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);
+		return $this->basic_model->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);;
     }
-  
+  	
+	/**
+	 * This method groups the results of the get_current_month_transactions method by Voucher Number. Each voucher number row
+	 * has a details key holding the VType,TDate,VNumber,Payee,ChqNo and TDescription columns. Voucher number rows has the transaction costs
+	 * grouped with the AccGrp as keys; the values being AccNo => Cost
+	 * 
+	 * Account Type		 		AccGrp
+	 * --------------------------------
+	 * Expense Accounts			0
+	 * Income Accounts			1
+	 * Petty Cash Deposit		3
+	 * Petty Cash Rebanking		4
+	 */
     
+	private function transactions(){
+		$transactions_container = array();
+		$all_transactions =  $this->get_current_month_transactions();
+		
+		foreach($all_transactions as $rows){
+			/**Columns to be removed in the details element value**/
+			$removeKeys = array("AccNo","AccText","AccGrp","Cost","scheduleID","civaCode","Qty","Details","UnitCost");
+			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
+			
+			$transactions_container[$rows['VNumber']][$rows['AccGrp']][$rows['AccNo']] = $rows['Cost'];
+			
+		}
+		
+		return $transactions_container;
+	}
+	
+	/**
+	 * Creates an array of accounts that have been transacted in the month gropued by their AccGrp value
+	 */
+	
+	private function get_utilized_accounts(){
+		/** Retrieve Income Accounts **/
+		$income_accounts_rows = array_column($this->transactions(), 1);
+		$income_accounts_unsort = array();
+		
+		foreach($income_accounts_rows as $value){
+			$income_accounts_unsort = array_merge($income_accounts_unsort,array_keys($value));
+		}
+		
+		$income_accounts = array_unique($income_accounts_unsort);
+		sort($income_accounts);
+		
+		/** Retrieve Expense Accounts **/
+		$expense_accounts_rows = array_column($this->transactions(), 0);
+		$expense_accounts_unsort = array();
+		foreach($expense_accounts_rows as $value){
+			$expense_accounts_unsort = array_merge($expense_accounts_unsort,array_keys($value));
+		}
+		
+		$expense_accounts = array_unique($expense_accounts_unsort);
+		sort($expense_accounts);
+		
+		/** All accounts **/
+
+		$all_utilized_accounts = array("1"=>$income_accounts,"0"=>$expense_accounts);
+		
+		return $all_utilized_accounts;
+	}
+	
+	/**
+	 * Creates an ungrouped array of all accounts that were trnsacted in the month
+	 */
+	
+	private function linear_accounts_utilized(){
+		$all_transactions = $this->get_current_month_transactions();
+		
+		$linear_accounts_text = array();
+		
+		foreach($all_transactions as $row){
+			$linear_accounts_text[$row['AccNo']] = $row['AccText']; 
+		}
+		
+		return $linear_accounts_text;
+	}
+
+	 function voucher_transactions(){
+		$transactions_container = array();
+		$all_transactions =  $this->get_current_month_transactions();
+		
+		$cnt = 0;
+		
+		foreach($all_transactions as $rows){
+			$removeKeys = array("AccNo","AccText","AccGrp","Qty","Details","UnitCost","Cost","scheduleID","civaCode");
+			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
+			
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['Qty'] = $rows['Qty'];
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['Details'] = $rows['Details'];
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['UnitCost'] = $rows['UnitCost'];
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['Cost'] = $rows['Cost'];
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['AccNo'] = $rows['AccText'];
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['scheduleID'] = $rows['scheduleID'];
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['civaCode'] = $rows['civaCode'];
+			$cnt ++;
+		}
+		
+		return $transactions_container;
+	}
 	
 	private function account_for_vouchers(){
 		return $this->basic_model->account_for_vouchers();
@@ -114,11 +226,11 @@ final class Journal extends Layout implements Initialization{
 		return $this->basic_model->insert_voucher_to_database($post_array);
 	}
 	
-    private function get_current_month_transactions_for_voucher()
-    {	
-		return $this->basic_model
-		->get_voucher_transactions($this->icpNo,$this->start_date,$this->end_date);
-    }
+    // protected function get_current_month_transactions_for_voucher()
+    // {	
+		// return $this->basic_model
+		// ->get_voucher_transactions($this->icpNo,$this->start_date,$this->end_date);
+    // }
 	
 	private function current_voucher_date(){
 		return $this->basic_model->get_current_voucher_date($this->get_project_id());
@@ -150,10 +262,6 @@ final class Journal extends Layout implements Initialization{
 				if($account->accID == $civ->accID){
 					$icps_impacted = explode(",", $civ->allocate);
 					
-					// $control_dates = $this->get_voucher_date_picker_control();
-					// if(in_array($this->get_project_id(), $icps_impacted) && strtotime($civ->closureDate) > $control_dates['end_date']){
-						// $combined_account_civ_array[$account->AccNo][$civ->AccNoCIVA] = array("AccNo"=>$account->AccNo,"civaCode"=>$civ->civaID,"AccText"=>$civ->AccNoCIVA,"AccName"=>"(".$account->AccText.") ".$account->AccName,"closureDate"=>$civ->closureDate,"allocate"=>explode(",", $civ->allocate));	
-					// }
 					if(in_array($this->get_project_id(), $icps_impacted) && $civ->closureDate > $this->current_voucher_date()){
 						$combined_account_civ_array[$account->AccNo][$civ->AccNoCIVA] = array("AccNo"=>$account->AccNo,"civaCode"=>$civ->civaID,"AccText"=>$civ->AccNoCIVA,"AccName"=>"(".$account->AccText.") ".$account->AccName,"closureDate"=>$civ->closureDate,"allocate"=>explode(",", $civ->allocate));	
 					}
@@ -189,17 +297,6 @@ final class Journal extends Layout implements Initialization{
 		
 		return $grouped;
 	}
-	
-
-	private function get_start_bank(){
-		$balance = $this->opening_cash_balance();
-		return $this->opening_bank = $balance['BC']['amount'];
-	}
-	
-	private function get_start_petty(){
-		$balance = $this->opening_cash_balance();
-		return $this->opening_petty = $balance['PC']['amount'];
-	}
 
 	private function get_bank_opening_balance(){
 		$balance = $this->opening_cash_balance();
@@ -210,94 +307,18 @@ final class Journal extends Layout implements Initialization{
 		$balance = $this->opening_cash_balance();
 		return $this->start_petty = $balance['PC']['amount'];
 	}
-		
-	private function transactions(){
-		$transactions_container = array();
-		$all_transactions =  $this->get_current_month_transactions();
-		
-		foreach($all_transactions as $rows){
 
-			$removeKeys = array("AccNo","AccText","AccGrp","Cost");
-			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
-			
-			$transactions_container[$rows['VNumber']][$rows['AccGrp']][$rows['AccNo']] = $rows['Cost'];
-			
-		}
-		
-		return $transactions_container;
-	}
 	
-
-	 function voucher_transactions(){
-		$transactions_container = array();
-		$all_transactions =  $this->get_current_month_transactions_for_voucher();
-		
-		$cnt = 0;
-		
-		foreach($all_transactions as $rows){
-			$removeKeys = array("AccNo","AccText","AccGrp","Qty","Details","UnitCost","Cost","scheduleID","civaCode");
-			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
-			
-			$transactions_container[$rows['VNumber']]['body'][$cnt]['Qty'] = $rows['Qty'];
-			$transactions_container[$rows['VNumber']]['body'][$cnt]['Details'] = $rows['Details'];
-			$transactions_container[$rows['VNumber']]['body'][$cnt]['UnitCost'] = $rows['UnitCost'];
-			$transactions_container[$rows['VNumber']]['body'][$cnt]['Cost'] = $rows['Cost'];
-			$transactions_container[$rows['VNumber']]['body'][$cnt]['AccNo'] = $rows['AccText'];
-			$transactions_container[$rows['VNumber']]['body'][$cnt]['scheduleID'] = $rows['scheduleID'];
-			$transactions_container[$rows['VNumber']]['body'][$cnt]['civaCode'] = $rows['civaCode'];
-			$cnt ++;
-		}
-		
-		return $transactions_container;
-	}
-		
-	private function get_utilized_accounts(){
-		/** Retrieve Income Accounts **/
-		$income_accounts_rows = array_column($this->transactions(), 1);
-		$income_accounts_unsort = array();
-		foreach($income_accounts_rows as $value){
-			foreach($value as $row_key=>$row_value){
-				$income_accounts_unsort[] = $row_key;
-			}
-		}
-		
-		$income_accounts = array_unique($income_accounts_unsort);
-		sort($income_accounts);
-		
-		/** Retrieve Expense Accounts **/
-		$expense_accounts_rows = array_column($this->transactions(), 0);
-		$expense_accounts_unsort = array();
-		foreach($expense_accounts_rows as $value){
-			foreach($value as $row_key=>$row_value){
-				$expense_accounts_unsort[] = $row_key;
-			}
-		}
-		
-		$expense_accounts = array_unique($expense_accounts_unsort);
-		sort($expense_accounts);
-		
-		/** All accounts **/
-		//$all_utilized_accounts = array_merge($income_accounts,$expense_accounts);
-		$all_utilized_accounts = array("1"=>$income_accounts,"0"=>$expense_accounts);
-		
-		return $all_utilized_accounts;
-	}
+	/**
+	 * Compiles the final array to be used to populate the journal. Each row has 5 keys: details, income_spread, bank, petty and expense_spread.
+	 * 
+	 */	
 	
-	function linear_accounts_utilized(){
-		$all_transactions = $this->get_current_month_transactions();
-		
-		$linear_accounts_text = array();
-		
-		foreach($all_transactions as $row){
-			$linear_accounts_text[$row['AccNo']] = $row['AccText']; 
-		}
-		
-		return $linear_accounts_text;
-	}
 	
 	private function construct_journal(){
-		$this->get_start_bank();
-		$this->get_start_petty();
+		$this->end_bank = $this->get_bank_opening_balance();
+		$this->end_petty =  $this->get_petty_opening_balance();
+		
 		$accounts = $this->get_utilized_accounts();
 		$transactions =  $this->transactions();
 		$records = array();
@@ -315,7 +336,7 @@ final class Journal extends Layout implements Initialization{
 					
 				}
 				
-				/** Bnak and Cash Columns **/
+				/** Bank and Cash Columns **/
 				
 				$records[$i]['bank']['bank_inc'] = 0;
 				$records[$i]['bank']['bank_exp'] = 0;
@@ -327,11 +348,11 @@ final class Journal extends Layout implements Initialization{
 				
 				if($value['details']['VType'] == 'CR'){
 					$records[$i]['bank']['bank_inc'] = array_sum($value[1]);	
-					$this->opening_bank+=array_sum($value[1]);
+					$this->end_bank+=array_sum($value[1]);
 				}
 				
-				$records[$i]['bank']['bank_bal'] = $this->opening_bank; 
-				$records[$i]['petty']['petty_bal'] = $this->opening_petty; 
+				$records[$i]['bank']['bank_bal'] = $this->end_bank; 
+				$records[$i]['petty']['petty_bal'] = $this->end_petty; 
 				
 				
 				/**Append Expense accounts **/
@@ -353,27 +374,27 @@ final class Journal extends Layout implements Initialization{
 				
 				if(($value['details']['VType'] == 'CHQ' || $value['details']['VType'] == 'BCHG') && isset($value[0])){
 					$records[$i]['bank']['bank_exp'] = array_sum($value[0]);
-					$this->opening_bank-=array_sum($value[0]);
+					$this->end_bank-=array_sum($value[0]);
 					
 				}elseif($value['details']['VType'] == 'CHQ' && isset($value[3])){
 						
 					$records[$i]['bank']['bank_exp'] = array_sum($value[3]);	
 					$records[$i]['petty']['petty_inc'] = array_sum($value[3]);	
 					
-					$this->opening_bank-=array_sum($value[3]);
-					$this->opening_petty+=array_sum($value[3]);
+					$this->end_bank-=array_sum($value[3]);
+					$this->end_petty+=array_sum($value[3]);
 					
 				}elseif($value['details']['VType'] == 'PC'){
 					$records[$i]['petty']['petty_exp'] = array_sum($value[0]);
-					$this->opening_petty-=array_sum($value[0]);
+					$this->end_petty-=array_sum($value[0]);
 					
 				}elseif($value['details']['VType'] == 'PCR' && isset($value[3])){
 					$records[$i]['petty']['petty_exp'] = array_sum($value[4]);
-					$this->opening_petty-=array_sum($value[4]);
+					$this->end_petty-=array_sum($value[4]);
 				}
 				
-				$records[$i]['bank']['bank_bal'] = $this->opening_bank; 
-				$records[$i]['petty']['petty_bal'] = $this->opening_petty; 
+				$records[$i]['bank']['bank_bal'] = $this->end_bank; 
+				$records[$i]['petty']['petty_bal'] = $this->end_petty; 
 				
 				
 				foreach($accounts[0] as $account){
@@ -392,7 +413,7 @@ final class Journal extends Layout implements Initialization{
 		return $records;
 	}
 
-	/** Cash Journal Getters (Used in Journal Related Pre-renders) - Start**/
+	/** Calculate Running Balances in Cash Journal **/
 
 	private function get_bank_deposit(){
 		$bank = 0;	
@@ -470,8 +491,8 @@ final class Journal extends Layout implements Initialization{
 		if(count($this->construct_journal())>0){
 			$data['records'] =  $this->construct_journal();
 		
-			$data['end_bank_balance'] = $this->opening_bank;
-			$data['end_petty_balance'] = $this->opening_petty;
+			$data['end_bank_balance'] = $this->end_bank;
+			$data['end_petty_balance'] = $this->end_petty;
 			 		
 			$data['opening_bank_balance'] = $this->get_bank_opening_balance();
 			$data['opening_petty_balance'] = $this->get_petty_opening_balance();
@@ -512,6 +533,8 @@ final class Journal extends Layout implements Initialization{
 	}
 
 	protected function pre_render_print_vouchers(){
+		
+		$this->set_current_month_transactions($this->icpNo,$this->start_date,$this->end_date);
 		
 		if($this->CI->input->post()){
 			$data['selected_vouchers'] = $this->CI->input->post();
@@ -565,6 +588,6 @@ final class Journal extends Layout implements Initialization{
 		echo json_encode($this->basic_model->get_cheque_details($_POST['icpNo'],$_POST['ChqNo']));
 				
 	}
-
+	
 }
 

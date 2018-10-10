@@ -4,7 +4,7 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 final class Finance {
 
 	private $CI ;
-	private $res;
+	private $res = null;
 	//private $mod ;
 	
 	function __construct($module){

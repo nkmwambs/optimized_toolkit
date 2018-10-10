@@ -19,7 +19,7 @@ final class Report extends Layout implements Initialization{
 	}
 	
 	public function initilize_entry(){
-		
+		$this->asset_view_group = get_class();
 	}
 	
 	/** Develop the Fund Balance Report - Start**/
@@ -141,8 +141,22 @@ final class Report extends Layout implements Initialization{
 		return $grouping;
 	}
 	
-	protected function get_start_cash_balances(){
+	protected function start_cash_balance(){
 		return $this->basic_model->start_cash_balance($this->icpNo,$this->start_date);
+	}
+	
+	private function opening_cash_balance(){
+		$last_month_cash_balance = $this->start_cash_balance();
+		
+		if(count($last_month_cash_balance) == 0){
+			$last_month_cash_balance = array(
+				array('accNo'=>'PC',"amount"=>0),
+				array('accNo'=>'BC',"amount"=>0)
+			);
+		}
+		
+		$cash_balance_columns = array_column($last_month_cash_balance, "accNo");
+		return array_combine($cash_balance_columns, $last_month_cash_balance);
 	}
 	
 	protected function total_cash_received(){
@@ -162,7 +176,7 @@ final class Report extends Layout implements Initialization{
 	}
 	
 	protected function get_end_bank_balance(){
-		$start_bal = $this->get_start_cash_balances();
+		$start_bal = $this->opening_cash_balance();
 		$special_accounts_transaction = $this->group_special_accounts_transactions();
 		$months_sum_accounts_grouped_by_vtype = $this->months_sum_transaction_grouped_by_vtype();
 		
@@ -178,7 +192,7 @@ final class Report extends Layout implements Initialization{
 	}
 	
 	protected function get_end_petty_balance(){
-		$start_bal = $this->get_start_cash_balances();
+		$start_bal = $this->opening_cash_balance();
 		$special_accounts_transaction = $this->group_special_accounts_transactions();
 		$months_sum_accounts_grouped_by_vtype = $this->months_sum_transaction_grouped_by_vtype();
 		

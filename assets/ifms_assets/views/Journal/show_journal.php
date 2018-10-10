@@ -1,17 +1,20 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
-
 <hr/>
+<?php
+//print_r($this->test());
+//echo $this->end_bank;
+?>
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
 		<div class="well" style="text-align: center;"><?=$this->get_project_id()." ".$this->l('cash_journal_title')." ".date("j<\s\u\p>S</\s\u\p> F Y",strtotime("last day of this month",$this->get_start_date_epoch()));?></div>
 	</div>	
 </div>
-<hr />
+<!-- <hr />
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
 		<a href="<?=$this->get_url("show_report");?>">Report</a>
 	</div>
-</div>
+</div> -->
 <hr />
 
 <div class="<?=$this->get_column_size();?>">
