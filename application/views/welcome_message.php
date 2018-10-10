@@ -47,13 +47,13 @@
 						<input type="text" class="form-control" name="icpNo" id="icpNo" />
 					</div>
 					<div class="col-sm-2">
-						<button id="journal" class="btn btn-default submit pull-left">Go To Journal</button>
+						<a href="#" id="journal" class="btn btn-default submit pull-left">Go To Journal</a>
 					</div>
 					<div class="col-sm-2">
-						<button id="report" class="btn btn-default submit pull-left">Go To Report</button>
+						<a href="#" id="report" class="btn btn-default submit pull-left">Go To Report</a>
 					</div>
 					<div class="col-sm-2">
-						<button id="budget" class="btn btn-default submit pull-left">Go To Budget</button>
+						<a href="#" id="budget" class="btn btn-default submit pull-left">Go To Budget</a>
 					</div>
 				</div>
 				
@@ -66,15 +66,14 @@
 	
 <script>
 	$(".submit").click(function(ev){
-		var url = '<?=base_url();?>welcome/journal/show_journal/'+$("#icpNo").val();
+		var url = '<?=base_url();?>welcome/journal?assetview=show_journal&project='+$("#icpNo").val()+'&lib=journal';
 		if($(this).attr("id") == "report"){
-			url = '<?=base_url();?>welcome/report/show_report/'+$("#icpNo").val();
+			url = '<?=base_url();?>welcome/journal?assetview=show_report&project='+$("#icpNo").val()+'&lib=report';
 		}else if($(this).attr("id") == "budget"){
-			url = '<?=base_url();?>welcome/budget/show_budget/'+$("#icpNo").val();
+			url = '<?=base_url();?>welcome/journal?assetview=show_budget&project='+$("#icpNo").val()+'&lib=budget';
 		}
-		
-		$("#frmLoad").prop('action',url);
-		$("#frmLoad").submit();
+
+		$(this).prop("href",url);
 		
 	});
 </script>	

@@ -3,12 +3,11 @@ $to_print = array();
 
 foreach($selected_vouchers['vouchers'] as $selected) $to_print[] = $all_vouchers[$selected];
 
-//print_r($to_print);
 ?>
 <hr />
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
-			<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/show_journal/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_end_date_epoch();?>/<?=$this->get_first_extra_segment();?>" class="btn btn-default">Back</a>
+			<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>?assetview=show_journal&project=<?=$this->get_project_id();?>&startdate=<?=$this->get_start_date_epoch();?>&enddate=<?=$this->get_end_date_epoch();?>&scroll=<?=$this->get_scroll();?>&lib=journal" class="btn btn-default">Back</a>
 			
 			<!-- <center> -->
 			    <a onclick="PrintElem('#voucher_print')" class="btn btn-default btn-icon icon-left hidden-print pull-right">

@@ -22,7 +22,7 @@
 			</div>
 			
 			<div class="col-sm-6">
-				<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/<?=$this->get_second_extra_segment()!=""?"scroll_journal":"show_journal";?>/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_start_date_epoch();?>/<?=isset($segments[8])?$segments[8]:0;?>" class="btn btn-default btn-icon icon-left hidden-print pull-right" class="btn btn-default">Back <i class="entypo-left-dir"></i></a>
+				<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/?assetview=<?=$this->get_selected_voucher_number()!=""?"scroll_journal":"show_journal";?>&project=<?=$this->get_project_id();?>&startdate=<?=$this->get_start_date_epoch();?>&enddate=<?=$this->get_start_date_epoch();?>&scroll=<?=isset($segments[8])?$segments[8]:0;?>&lib=journal" class="btn btn-default btn-icon icon-left hidden-print pull-right" class="btn btn-default">Back <i class="entypo-left-dir"></i></a>
 			</div>
 				
 		</div>
@@ -548,7 +548,7 @@
 				
 					var data = {"icpNo":"<?=$this->get_project_id();?>","ChqNo":chqno};
 						$.ajax({
-							url:'<?php echo base_url($this->get_controller().'/'.$this->get_method().'/ajax_get_cheque_details/');?>',
+							url:'<?php echo base_url($this->get_controller().'/'.$this->get_method().'/?assetview=ajax_get_cheque_details/');?>',
 							data:data,
 							type:"POST",
 							success:function(resp){

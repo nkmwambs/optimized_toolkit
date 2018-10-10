@@ -268,9 +268,11 @@ final class Report extends Layout implements Initialization{
 	protected function pre_render_show_report(){
 		$data['transacting_month'] 	= $this->get_transacting_month();
 		$data['fund_balances'] 		= $this->get_fund_balances();
+		
 		$data['bank_balance'] 		= $this->get_end_bank_balance();
 		$data['petty_balance']		= $this->get_end_petty_balance();
 		$data['sum_cash']			= $this->get_end_bank_balance() + $this->get_end_petty_balance();
+		
 		$data['oustanding_cheques'] = $this->outstanding_cheques();
 		$data['cleared_cheques']	= $this->cleared_cheques();
 		$data['deposit_transit'] 	= $this->deposit_transit();

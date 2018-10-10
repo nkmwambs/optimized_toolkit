@@ -522,19 +522,17 @@ final class Journal extends Layout implements Initialization{
 	
 	protected function pre_render_show_voucher(){
 		
-		if($this->CI->uri->segment(8)){
+		if($this->CI->input->get("voucher")){
 			$vouchers = $this->voucher_transactions();		
-			$data['voucher'] = $vouchers[$this->CI->uri->segment(8)];
+			$data['voucher'] = $vouchers[$this->CI->input->get("voucher")];
 		}
 		
-		$data['view'] = $this->CI->uri->segment(8)?$this->get_view():"error";
+		$data['view'] = $this->CI->input->get("voucher")?$this->get_view():"error";
 		
 		return $data;
 	}
 
 	protected function pre_render_print_vouchers(){
-		
-		$this->set_current_month_transactions($this->icpNo,$this->start_date,$this->end_date);
 		
 		if($this->CI->input->post()){
 			$data['selected_vouchers'] = $this->CI->input->post();

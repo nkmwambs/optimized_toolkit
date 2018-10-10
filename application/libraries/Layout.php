@@ -91,8 +91,8 @@ class Layout {
 		
 		/**Initialization of url segments **/
 		if(substr($this->get_view(),0,4) !== "ajax"){
-			$transaction_month = $this->basic_model->get_transacting_month($this->CI->uri->segment(4));
-			$this->icpNo = $this->CI->uri->segment(4);
+			$transaction_month = $this->basic_model->get_transacting_month($this->CI->input->get("project"));
+			$this->icpNo = $this->CI->input->get("project");
 			$this->start_date 	= date("Y-m-d",$transaction_month['start_date']);
 			$this->end_date  	= date("Y-m-d",$transaction_month['end_date']);
 		}else{
@@ -176,22 +176,24 @@ class Layout {
 		return $this->asset_view_group;
 	}
 	
-	protected function get_url($pre_render_control,$start_date="",$end_date="",$extra_segment_one="",$extra_segment_two=""){
+	protected function get_url($params=array()){
+		
+		if(is_array($params)) extract($params);
 			
-		if($start_date == "") $start_date = $this->get_start_date_epoch();
-		if($end_date == "") $end_date = $this->get_end_date_epoch();
+		if(!isset($startdate)) $startdate = $this->get_start_date_epoch();
+		if(!isset($enddate)) $enddate = $this->get_end_date_epoch();
+		if(!isset($lib)) $lib = 'journal';
+		if(!isset($scroll)) $scroll = 0;
+		if(!isset($assetview)) $assetview = 'show_journal';
 			
-		$this->lib_url = base_url().$this->get_controller()."/".$this->get_method()."/";
-		$this->lib_url .= $pre_render_control."/".$this->get_project_id()."/";
-		$this->lib_url .= $start_date."/".$end_date."/";
+		$this->lib_url = base_url().$this->get_controller()."/".$this->get_method()."?";
+		$this->lib_url .= "assetview=".$assetview."&project=".$this->get_project_id();
+		$this->lib_url .= "&startdate=".$startdate."&enddate=".$enddate;
+		$this->lib_url .= "&lib=".$lib;
+		$this->lib_url .= "&scroll=".$scroll;
 		
-		
-		if($extra_segment_one!=""){
-			$this->lib_url .= $extra_segment_one."/";
-		}
-		
-		if($extra_segment_two!=""){
-			$this->lib_url .= $extra_segment_two."/";
+		if(isset($voucher)){
+			$this->lib_url .= "&voucher=".$voucher;
 		}
 		
 		return $this->lib_url;
@@ -205,16 +207,25 @@ class Layout {
 		return $this->CI->router->fetch_method();
 	}
 	
-	protected function get_first_extra_segment(){
-		return $this->CI->uri->segment(7)?$this->CI->uri->segment(7):"0";
+	// protected function get_first_extra_segment(){
+		// return $this->CI->input->get("extraone")?$this->CI->input->get("extraone"):"0";
+	// }
+// 	
+	// protected function get_second_extra_segment(){
+		// return $this->CI->input->get("extratwo")?$this->CI->input->get("extratwo"):"";
+	// }	
+	
+	protected function get_scroll(){
+		return $this->CI->input->get("scroll")?$this->CI->input->get("scroll"):"0";
 	}
 	
-	protected function get_second_extra_segment(){
-		return $this->CI->uri->segment(8)?$this->CI->uri->segment(8):"";
-	}	
+	protected function get_selected_voucher_number(){
+		return $this->CI->input->get("voucher")?$this->CI->input->get("voucher"):"";
+	}
 	
 	protected function get_view(){
-		return $this->CI->uri->segment(3);
+		//return $this->CI->uri->segment(3);
+		return $this->CI->input->get('assetview');
 	}
 	
 	/** URL Segments Getters - End **/
@@ -263,7 +274,7 @@ class Layout {
 	
 		/** Start of Model Wrappers **/
 	protected function get_transacting_month(){
-		return $this->basic_model->get_transacting_month($this->CI->uri->segment(4));;
+		return $this->basic_model->get_transacting_month($this->CI->input->get("project"));;
 	}
 	
 	/**
@@ -407,9 +418,9 @@ class Layout {
 		$preference_data = array();
 		
 		/**Set new date ranges when scrolling out of the current transacting month**/
-		if($this->CI->uri->segment(7)){
-			$start_date = date("Y-m-01",strtotime($this->CI->uri->segment(7)." months",$this->get_start_date_epoch()));
-			$end_date = date("Y-m-t",strtotime($this->CI->uri->segment(7)." months",$this->get_end_date_epoch()));
+		if($this->CI->input->get("scroll")){
+			$start_date = date("Y-m-01",strtotime($this->CI->input->get("scroll")." months",$this->get_start_date_epoch()));
+			$end_date = date("Y-m-t",strtotime($this->CI->input->get("scroll")." months",$this->get_end_date_epoch()));
 			$this->set_date(array("START_DATE"=>date("Y-m-01",strtotime($start_date)),"END_DATE"=>date("Y-m-t",strtotime($end_date))));
 
 		}

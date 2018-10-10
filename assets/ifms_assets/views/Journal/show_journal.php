@@ -9,12 +9,15 @@
 		<div class="well" style="text-align: center;"><?=$this->get_project_id()." ".$this->l('cash_journal_title')." ".date("j<\s\u\p>S</\s\u\p> F Y",strtotime("last day of this month",$this->get_start_date_epoch()));?></div>
 	</div>	
 </div>
-<!-- <hr />
+<hr />
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
-		<a href="<?=$this->get_url("show_report");?>">Report</a>
+		<ul class="nav nav-pills">
+			<li><a href="<?=$this->get_url(array("assetview"=>"show_report","lib"=>"report"));?>">Report</a></li>
+			<li><a href="<?=$this->get_url(array("assetview"=>"show_budget","lib"=>"budget"));?>">Budget</a></li>
+		</ul>
 	</div>
-</div> -->
+</div>
 <hr />
 
 <div class="<?=$this->get_column_size();?>">
@@ -22,11 +25,11 @@
 	<div class="row">
 		<div class="col-xs-12">
 			<div class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="select_btn"><?=$this->l('select_all_vouchers');?><i class="entypo-mouse"></i></div>
-			<div  class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="print_vouchers"><?=$this->l('print_selected_vouchers')?><i class="entypo-print"></i></div>
+			<a href="#"  class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="print_vouchers"><?=$this->l('print_selected_vouchers')?><i class="entypo-print"></i></a>
 			<?php 
 				if($transacting_month['start_date'] == $this->get_start_date_epoch()){
 			?>
-				<a class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" href="<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/create_voucher/<?=$this->get_project_id();?>/<?=$transacting_month['start_date'];?>/<?=$transacting_month['end_date'];?>"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i></a>		
+				<a class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" href="<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=create_voucher&project=<?=$this->get_project_id();?>&startdate<?=$transacting_month['start_date'];?>&enddate=<?=$transacting_month['end_date'];?>&lib=journal"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i></a>		
 			<?php
 				}
 			?>
@@ -40,11 +43,11 @@
 				<div class="form-group hidden-print">
 					<label class="col-xs-3 pull-left control-label"><?=$this->l('scroll_months')?>: </label>	
 						<div class="col-xs-5">
-							<input class=" pull-left" type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_first_extra_segment();?>" readonly="readonly"/>
+							<input class=" pull-left" type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_scroll();?>" readonly="readonly"/>
 										
 						</div>
 					<div class="col-xs-2">
-						<button class="btn btn-default pull-left" id="spinner_btn"><?=$this->l('go');?></button>
+						<a href="#" class="btn btn-default pull-left" id="spinner_btn"><?=$this->l('go');?></a>
 					</div>	
 				</div>
 			</form>
@@ -118,7 +121,7 @@
 							foreach($details_values as $key=>$col){
 								if($key == "VNumber"){
 							?>		
-									<td><a href="<?=base_url().$this->get_controller().'/'.$this->get_method().'/show_voucher/'.$this->get_project_id();?>/<?php echo $this->get_start_date_epoch();?>/<?php echo $this->get_end_date_epoch();?>/<?php echo $this->get_first_extra_segment();?>/<?=$col;?>" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
+									<td><a href="<?=base_url().$this->get_controller().'/'.$this->get_method().'?assetview=show_voucher&project='.$this->get_project_id();?>&startdate=<?php echo $this->get_start_date_epoch();?>&enddate=<?php echo $this->get_end_date_epoch();?>&scroll=<?php echo $this->get_scroll();?>&voucher=<?=$col;?>&lib=journal" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
 							
 							<?php
 								}elseif($key == "ChqNo"){
@@ -177,18 +180,15 @@
 	
 	$("#spinner_btn").click(function(ev){
 		//alert($("#spinner").val());
-		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/show_journal/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_end_date_epoch();?>/"+$("#spinner").val();
-		$("#scroll").prop("method","POST");
-		$("#scroll").prop("action",url);
-		$("#scroll").submit();
+		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=show_journal&project=<?=$this->get_project_id();?>&startdate=<?=$this->get_start_date_epoch();?>&enddate=<?=$this->get_end_date_epoch();?>&scroll="+$("#spinner").val()+"&lib=journal";
 		
-		//ev.preventDefault();
+		$(this).prop("href",url);
 	});
 	
 	
 $("#print_vouchers").click(function(){
-		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>/print_vouchers/<?=$this->get_project_id();?>/<?=$this->get_start_date_epoch();?>/<?=$this->get_end_date_epoch();?>/<?=$this->get_first_extra_segment();?>";
-	
+		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=print_vouchers&project=<?=$this->get_project_id();?>&startdate=<?=$this->get_start_date_epoch();?>&enddate=<?=$this->get_end_date_epoch();?>&scroll=<?=$this->get_scroll();?>&lib=journal";
+		
 		$("#frm_vouchers").prop("method","POST");
 		$("#frm_vouchers").prop("action",url);
 		$("#frm_vouchers").submit();
