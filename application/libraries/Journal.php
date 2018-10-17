@@ -105,7 +105,7 @@ final class Journal extends Layout implements Initialization{
 	 * Petty Cash Rebanking		4
 	 */
     
-	private function transactions(){
+	private function get_journal_entries(){
 		$transactions_container = array();
 		$all_transactions =  $this->get_current_month_transactions();
 		
@@ -127,7 +127,7 @@ final class Journal extends Layout implements Initialization{
 	
 	private function get_utilized_accounts(){
 		/** Retrieve Income Accounts **/
-		$income_accounts_rows = array_column($this->transactions(), 1);
+		$income_accounts_rows = array_column($this->get_journal_entries(), 1);
 		$income_accounts_unsort = array();
 		
 		foreach($income_accounts_rows as $value){
@@ -138,7 +138,7 @@ final class Journal extends Layout implements Initialization{
 		sort($income_accounts);
 		
 		/** Retrieve Expense Accounts **/
-		$expense_accounts_rows = array_column($this->transactions(), 0);
+		$expense_accounts_rows = array_column($this->get_journal_entries(), 0);
 		$expense_accounts_unsort = array();
 		foreach($expense_accounts_rows as $value){
 			$expense_accounts_unsort = array_merge($expense_accounts_unsort,array_keys($value));
@@ -313,89 +313,108 @@ final class Journal extends Layout implements Initialization{
 		$this->end_bank = $this->get_bank_opening_balance();
 		$this->end_petty =  $this->get_petty_opening_balance();
 		
-		$accounts = $this->get_utilized_accounts();
-		$transactions =  $this->transactions();
-		$records = array();
+		$utilized_accounts_in_a_month = $this->get_utilized_accounts();
+		$voucher_transactions =  $this->get_journal_entries();
+		$journal_rows = array();
 		$i = 0;
-		foreach($transactions as $value){
-			$records[$i]['details'] = $value['details'];
-			if(isset($value[1])){
-				
-				foreach($accounts[1] as $account){
-					if(isset($value[1][$account])){
-						$records[$i]['income_spread'][$account] = $value[1][$account];
-					}else{
-						$records[$i]['income_spread'][$account] = 0;
+		foreach($voucher_transactions as $voucher_value){
+			//$value['details'] = to row with a key details in transactions
+			$journal_rows[$i]['details'] = $voucher_value['details'];
+			if(isset($voucher_value[1])){
+				/**
+				 * This part of the block picks the income transactions using key value of 1 (Income)
+				 * All Utilized incomes accounts for the month = [1] => Array ( [0] => 100 [1] => 200 [2] => 330 [3] => 410 [4] => 415 [5] => 510 [6] => 520 ) 
+				 * Actual accounts for a particular voucher = [1] => Array ( [100] => 645389.05 [200] => 93801.65 [330] => 15664.00 [410] => 1088.60 [415] => 8111.75 ) ) 
+				 *
+				 * The foreach below builds the income account spread for that particular voucher:
+				 *  [income_spread] => Array ( [100] => 0 [200] => 0 [330] => 0 [410] => 0 [415] => 0 [510] => 0 [520] => 0 )
+				 * 
+				 */
+				foreach($utilized_accounts_in_a_month[1] as $utilized_income_accounts){
+					if(isset($voucher_value[1][$utilized_income_accounts])){//$value['1'][100] == $account['1'][100]
+						$journal_rows[$i]['income_spread'][$utilized_income_accounts] = $voucher_value[1][$utilized_income_accounts];
+					}else{//$value['1'][100] !== $account['1'][100]
+						$journal_rows[$i]['income_spread'][$utilized_income_accounts] = 0;
 					}
 					
 				}
 				
 				/** Bank and Cash Columns **/
 				
-				$records[$i]['bank']['bank_inc'] = 0;
-				$records[$i]['bank']['bank_exp'] = 0;
-				$records[$i]['bank']['bank_bal'] = 0;
+				$journal_rows[$i]['bank']['bank_inc'] = 0;
+				$journal_rows[$i]['bank']['bank_exp'] = 0;
+				$journal_rows[$i]['bank']['bank_bal'] = 0;
 				
-				$records[$i]['petty']['petty_inc'] = 0;
-				$records[$i]['petty']['petty_exp'] = 0;
-				$records[$i]['petty']['petty_bal'] = 0;
+				$journal_rows[$i]['petty']['petty_inc'] = 0;
+				$journal_rows[$i]['petty']['petty_exp'] = 0;
+				$journal_rows[$i]['petty']['petty_bal'] = 0;
 				
-				if($value['details']['VType'] == 'CR'){
-					$records[$i]['bank']['bank_inc'] = array_sum($value[1]);	
-					$this->end_bank+=array_sum($value[1]);
+				if($voucher_value['details']['VType'] == 'CR'){
+					$journal_rows[$i]['bank']['bank_inc'] = array_sum($voucher_value[1]);	
+					$this->end_bank+=array_sum($voucher_value[1]);
 				}
 				
-				$records[$i]['bank']['bank_bal'] = $this->end_bank; 
-				$records[$i]['petty']['petty_bal'] = $this->end_petty; 
+				$journal_rows[$i]['bank']['bank_bal'] = $this->end_bank; 
+				$journal_rows[$i]['petty']['petty_bal'] = $this->end_petty; 
 				
 				
 				/**Append Expense accounts **/
-				foreach($accounts[0] as $account){ $records[$i]['expense_spread'][$account] = 0;}
+				foreach($utilized_accounts_in_a_month[0] as $account_expense_accounts){
+					 $journal_rows[$i]['expense_spread'][$account_expense_accounts] = 0;
+				}
 				
 				
 			}else{
 				/**Append Income accounts **/	
-				foreach($accounts[1] as $account){ $records[$i]['income_spread'][$account] = 0;}
-				
-				/** Bnak and Cash Columns **/
-				$records[$i]['bank']['bank_inc'] = 0;
-				$records[$i]['bank']['bank_exp'] = 0;
-				$records[$i]['bank']['bank_bal'] = 0;
-				
-				$records[$i]['petty']['petty_inc'] = 0;
-				$records[$i]['petty']['petty_exp'] = 0;
-				$records[$i]['petty']['petty_bal'] = 0;
-				
-				if(($value['details']['VType'] == 'CHQ' || $value['details']['VType'] == 'BCHG') && isset($value[0])){
-					$records[$i]['bank']['bank_exp'] = array_sum($value[0]);
-					$this->end_bank-=array_sum($value[0]);
-					
-				}elseif($value['details']['VType'] == 'CHQ' && isset($value[3])){
-						
-					$records[$i]['bank']['bank_exp'] = array_sum($value[3]);	
-					$records[$i]['petty']['petty_inc'] = array_sum($value[3]);	
-					
-					$this->end_bank-=array_sum($value[3]);
-					$this->end_petty+=array_sum($value[3]);
-					
-				}elseif($value['details']['VType'] == 'PC'){
-					$records[$i]['petty']['petty_exp'] = array_sum($value[0]);
-					$this->end_petty-=array_sum($value[0]);
-					
-				}elseif($value['details']['VType'] == 'PCR' && isset($value[3])){
-					$records[$i]['petty']['petty_exp'] = array_sum($value[4]);
-					$this->end_petty-=array_sum($value[4]);
+				foreach($utilized_accounts_in_a_month[1] as $account_income_accounts){
+					 $journal_rows[$i]['income_spread'][$account_income_accounts] = 0;
 				}
 				
-				$records[$i]['bank']['bank_bal'] = $this->end_bank; 
-				$records[$i]['petty']['petty_bal'] = $this->end_petty; 
+				/** Bnak and Cash Columns **/
+				$journal_rows[$i]['bank']['bank_inc'] = 0;
+				$journal_rows[$i]['bank']['bank_exp'] = 0;
+				$journal_rows[$i]['bank']['bank_bal'] = 0;
+				
+				$journal_rows[$i]['petty']['petty_inc'] = 0;
+				$journal_rows[$i]['petty']['petty_exp'] = 0;
+				$journal_rows[$i]['petty']['petty_bal'] = 0;
+				
+				if(($voucher_value['details']['VType'] == 'CHQ' || $voucher_value['details']['VType'] == 'BCHG') && isset($voucher_value[0])){
+					//These are expenses affecting the bank as expenses to accounts and should not be petty cash deposits (Account group = 3) as petty cash deposits are income in petty cash
+					 
+					$journal_rows[$i]['bank']['bank_exp'] = array_sum($voucher_value[0]);
+					$this->end_bank-=array_sum($voucher_value[0]);
+					
+				}elseif($voucher_value['details']['VType'] == 'CHQ' && isset($voucher_value[3])){
+					//These are expenses affecting the bank as petty cash deposits. Money moves from a bank to petty cash. 
+					
+					$journal_rows[$i]['bank']['bank_exp'] = array_sum($voucher_value[3]);	
+					$journal_rows[$i]['petty']['petty_inc'] = array_sum($voucher_value[3]);	
+					
+					$this->end_bank-=array_sum($voucher_value[3]);
+					$this->end_petty+=array_sum($voucher_value[3]);
+					
+				}elseif($voucher_value['details']['VType'] == 'PC'){
+					$journal_rows[$i]['petty']['petty_exp'] = array_sum($voucher_value[0]);
+					$this->end_petty-=array_sum($voucher_value[0]);
+					
+				}elseif($voucher_value['details']['VType'] == 'PCR'){
+					$journal_rows[$i]['petty']['petty_exp'] = array_sum($voucher_value[4]);
+					$journal_rows[$i]['bank']['bank_inc'] = array_sum($voucher_value[4]);
+					
+					$this->end_petty-=array_sum($voucher_value[4]);
+					$this->end_bank+=array_sum($voucher_value[4]);
+				}
+				
+				$journal_rows[$i]['bank']['bank_bal'] = $this->end_bank; 
+				$journal_rows[$i]['petty']['petty_bal'] = $this->end_petty; 
 				
 				
-				foreach($accounts[0] as $account){
-					if(isset($value[0][$account])){
-						$records[$i]['expense_spread'][$account] = $value[0][$account];
+				foreach($utilized_accounts_in_a_month[0] as $account_expense_accounts){
+					if(isset($voucher_value[0][$account_expense_accounts])){
+						$journal_rows[$i]['expense_spread'][$account_expense_accounts] = $voucher_value[0][$account_expense_accounts];
 					}else{
-						$records[$i]['expense_spread'][$account] = 0;
+						$journal_rows[$i]['expense_spread'][$account_expense_accounts] = 0;
 					}
 					
 				}
@@ -404,48 +423,93 @@ final class Journal extends Layout implements Initialization{
 			$i++;
 		}
 		
-		return $records;
+		return $journal_rows;
 	}
 
 	/** Calculate Running Balances in Cash Journal **/
-
+	//This method calculates the total bank deposit for the month
 	private function get_bank_deposit(){
-		$bank = 0;	
-		foreach($this->construct_journal() as $row){
-			$bank+=$row['bank']['bank_inc'];
-		}
 		
-		return $bank;
+		/**
+		* The commented code below works similarly as the returned part of this method
+		*	$bank = 0;	
+		*		foreach($this->construct_journal() as $row){
+		*			$bank+=$row['bank']['bank_inc'];
+		*		}
+		*		
+		*	return $bank;
+		* */
+		
+		return array_sum(array_column(array_column($this->construct_journal(), "bank"),"bank_inc"));
 	}
-
+	
+	//This method calculates the total bank deposit for the month
 	private function get_bank_payment(){
-		$bank = 0;	
-		foreach($this->construct_journal() as $row){
-			$bank+=$row['bank']['bank_exp'];
-		}
+			
+		/**
+		* The commented code below works similarly as the returned part of this method
+		*	$bank = 0;	
+		*		foreach($this->construct_journal() as $row){
+		*			$bank+=$row['bank']['bank_exp'];
+		*		}
+		*		
+		*	return $bank;
+		* */
 		
-		return $bank;
+		return array_sum(array_column(array_column($this->construct_journal(), "bank"),"bank_exp"));
 	}	
 
-
+	//This method calculates the total petty cash deposits for the month
 	private function get_cash_deposit(){
-		$cash= 0;	
-		foreach($this->construct_journal() as $row){
-			$cash+=$row['petty']['petty_inc'];
-		}
+		/**	
+		*	The commented code below works similarly as the returned part of this method
+		*  	$cash= 0;	
+		*		foreach($this->construct_journal() as $row){
+		*			$cash+=$row['petty']['petty_inc'];
+		*		}
+		* 	return $cash;
+		* */
+		return array_sum(array_column(array_column($this->construct_journal(), "petty"),"petty_inc"));
 		
-		return $cash;
 	}
-
+	
+	//This method calculates the total petty cash payments for the month
 	private function get_cash_payment(){
-		$cash = 0;	
-		foreach($this->construct_journal() as $row){
-			$cash+=$row['petty']['petty_exp'];
-		}
-		
-		return $cash;
+		/**
+		 * The commented code below works similarly as the returned part of this method
+		 * 	$cash = 0;	
+		 *	foreach($this->construct_journal() as $row){
+		 *		$cash+=$row['petty']['petty_exp'];
+		 *	}
+		 *
+		 *	return $cash; 
+		 */	
+		return array_sum(array_column(array_column($this->construct_journal(), "petty"),"petty_exp"));
 	}
 
+	 function get_sum_per_income_account(){
+	 	$utilized_accounts =  $this->get_utilized_accounts();
+		
+		$arr = array();
+		
+		foreach($utilized_accounts[1] as $value){
+			$arr[$value] = array_sum(array_column(array_column($this->construct_journal(), "income_spread"),$value));
+		}
+		
+		return $arr;
+	}
+	 
+	 function get_sum_per_expense_account(){
+	 	$utilized_accounts =  $this->get_utilized_accounts();
+		
+		$arr = array();
+		
+		foreach($utilized_accounts[0] as $value){
+			$arr[$value] = array_sum(array_column(array_column($this->construct_journal(), "expense_spread"),$value));
+		}
+		
+		return $arr;
+	}
 	
 	
 	private function readable_labels(){
@@ -499,6 +563,9 @@ final class Journal extends Layout implements Initialization{
 	 		
 			$data['total_cash_deposit'] = $this->get_cash_deposit();
 			$data['total_cash_payment'] = $this->get_cash_payment();
+			
+			$data['sum_incomes'] = $this->get_sum_per_income_account();
+			$data['sum_expenses'] = $this->get_sum_per_expense_account();
 	 		
 			$data['labels'] = $this->readable_labels();
 	 		
@@ -549,10 +616,10 @@ final class Journal extends Layout implements Initialization{
 			$data['success'] = $this->insert_voucher_to_database($_POST);
 		}
 		
+		$data['voucher_date_range'] = $this->get_voucher_date_picker_control();
 		$data['accounts'] = $this->group_accounts();
 		$data['approved_budget'] = $this->budget_grouped_items();
 		$data['voucher_number'] = $this->get_next_voucher_number();
-		$data['voucher_date_range'] = $this->get_voucher_date_picker_control();
 		$data['cheques_utilized'] = $this->get_coded_cheques_utilized();
 		$project_details = $this->get_project_details();
 		$data['bank_code'] = $project_details->bankID;

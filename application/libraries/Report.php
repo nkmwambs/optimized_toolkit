@@ -427,7 +427,7 @@ final class Report extends Layout implements Initialization{
 			$per_variance = 0;
 			
 			if($grid[$row['AccNo']]['budget_to_date']!== 0){
-				$per_variance = number_format(($variance/$grid[$row['AccNo']]['budget_to_date'])*100,2);
+				$per_variance = ($variance/$grid[$row['AccNo']]['budget_to_date'])*100;//number_format(($variance/$grid[$row['AccNo']]['budget_to_date'])*100,2);
 			}elseif($grid[$row['AccNo']]['budget_to_date']== 0 && $variance!== 0){
 				$per_variance = -100;
 			}
@@ -554,7 +554,7 @@ final class Report extends Layout implements Initialization{
 		$data['month_expenses'] = $this->month_transactions_by_accno();
 		$data['variancegrid'] = $this->get_variancegrid($post_array['accID']);
 		
-		$data['view'] = "ajax_variancereport";
+		$data['view'] = "ajax_variancereport"; 
 		
 		return $data;
 	}

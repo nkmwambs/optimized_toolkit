@@ -46,7 +46,7 @@
 			<th style="text-align: right;"><?=number_format($sum_month_expenses,2);?></th>
 			<th style="text-align: right;"><?=number_format($sum_to_date_expenses,2);?></th>
 			<th style="text-align: right;"><?=number_format($sum_to_date_budget,2);?></th>
-			<?=$sum_variance = $sum_to_date_budget- $sum_to_date_expenses;?>
+			<?php $sum_variance = $sum_to_date_budget- $sum_to_date_expenses;?>
 			<th style="text-align: right;"><?=number_format($sum_variance,2)?></th>
 			<?php
 				$sum_per_variance = 0;

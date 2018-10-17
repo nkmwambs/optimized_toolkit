@@ -3,7 +3,7 @@
 <?php
 //print_r($this->test());
 //echo $this->end_bank;
-//print_r($this->account_for_vouchers());
+//print_r($this->get_sum_per_income_account());
 ?>
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
@@ -129,9 +129,9 @@
 					<th colspan="2"><?=$this->l('cash');?>:</th>
 					<th><?=number_format($opening_petty_balance,2);?></th>
 					
-					<th colspan="<?=count($income);?>" rowspan="2" style="border-left:1px black solid;border-right:1px black solid;">Income</th>
+					<th colspan="<?=count($income);?>" rowspan="" style="border-left:1px black solid;border-right:1px black solid;">Income</th>
 					
-					<th colspan="<?=count($expense);?>" rowspan="2">Expenses</th>
+					<th colspan="<?=count($expense);?>" rowspan="" style="border-left:1px black solid;border-right:1px black solid;">Expenses</th>
 					
 				</tr>
 				
@@ -144,6 +144,22 @@
 					<th><?=number_format($total_cash_deposit,2);?></th>
 					<th><?=number_format($total_cash_payment,2);?></th>
 					<th><?=number_format($end_petty_balance,2);?></th>
+					
+					<?php
+						foreach($income as $cell){
+					?>
+						<th><?=number_format($sum_incomes[$cell],2);?></th>
+					<?php
+						}
+					?>
+					
+					<?php
+						foreach($expense as $cell){
+					?>
+						<th><?=number_format($sum_expenses[$cell],2);?></th>
+					<?php
+						}
+					?>
 					
 					
 				</tr>

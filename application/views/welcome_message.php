@@ -76,6 +76,10 @@
 		$(this).prop("href",url);
 		
 	});
+	$(document).ready(function(){
+		//var language = window.navigator.userLanguage || window.navigator.language;
+		//alert(language);
+	});
 </script>	
 </body>
 </html>
