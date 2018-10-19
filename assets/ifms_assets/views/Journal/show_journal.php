@@ -3,7 +3,7 @@
 <?php
 //print_r($this->test());
 //echo $this->end_bank;
-//print_r($this->get_sum_per_income_account());
+//print_r($this->test());
 ?>
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
@@ -16,42 +16,42 @@
 		<ul class="nav nav-pills">
 			<li>
 				<div class="btn-group left-dropdown">
-								<a class="btn btn-default" href="<?=$this->get_url(array("assetview"=>"show_report","lib"=>"report","scroll"=>$this->get_scroll()));?>">Report</a>
+								<a class="btn btn-default" href="<?=$this->get_url(array("assetview"=>"show_report","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('report');?></a>
 								<button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown">
 									<span class="caret"></span>
 								</button>
 								
 								<ul class="dropdown-menu dropdown-green" role="menu">
-									<li><a href="<?=$this->get_url(array("assetview"=>"show_fundbalance","lib"=>"report","scroll"=>$this->get_scroll()));?>">Fund Balance Report</a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_fundbalance","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('fund_balance_report')?></a></li>
 									<li class="divider"></li>
-									<li><a href="<?=$this->get_url(array("assetview"=>"show_proofcash","lib"=>"report","scroll"=>$this->get_scroll()));?>">Proof Of Cash</a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_proofcash","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('proof_of_cash');?></a></li>
 									<li class="divider"></li>
-									<li><a href="<?=$this->get_url(array("assetview"=>"show_outstandingcheques","lib"=>"report","scroll"=>$this->get_scroll()));?>">Outstanding Cheques</a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_outstandingcheques","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('outstanding_cheques');?></a></li>
 									<li class="divider"></li>
-									<li><a href="<?=$this->get_url(array("assetview"=>"show_transitdeposit","lib"=>"report","scroll"=>$this->get_scroll()));?>">Transit Deposit</a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_transitdeposit","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('transit_deposit');?></a></li>
 									<li class="divider"></li>
-									<li><a href="<?=$this->get_url(array("assetview"=>"show_clearedcheques","lib"=>"report","scroll"=>$this->get_scroll()));?>">Cleared Cheques</a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_clearedcheques","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('cleared_cheques');?></a></li>
 									<li class="divider"></li>
-									<li><a href="<?=$this->get_url(array("assetview"=>"show_cleareddeposits","lib"=>"report","scroll"=>$this->get_scroll()));?>">Cleared Deposits</a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_cleareddeposits","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('cleared_deposits');?></a></li>
 									<li class="divider"></li>
-									<li><a href="<?=$this->get_url(array("assetview"=>"show_bankreconcile","lib"=>"report","scroll"=>$this->get_scroll()));?>">Bank Reconciliation</a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_bankreconcile","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('bank_reconcile');?></a></li>
 									<li class="divider"></li>
-									<li><a href="<?=$this->get_url(array("assetview"=>"show_budgetvariance","lib"=>"report","scroll"=>$this->get_scroll()));?>">Budget Variance</a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>"show_budgetvariance","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('expense_report');?></a></li>
 								</ul>
 							</div>
 				
 			</li>
 			<li>
 				<div class="btn-group left-dropdown">
-					<a class="btn btn-default" href="<?=$this->get_url(array("assetview"=>"show_budget","lib"=>"budget"));?>">Budget</a>
+					<a class="btn btn-default" href="<?=$this->get_url(array("assetview"=>"show_budget","lib"=>"budget"));?>"><?=$this->l('budget');?></a>
 					<button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown">
 									<span class="caret"></span>
 								</button>
 								
 								<ul class="dropdown-menu dropdown-green" role="menu">
-									<li><a href="#">Budget Summary</a></li>
+									<li><a href="#"><?=$this->l('budget_summary');?></a></li>
 									<li class="divider"></li>
-									<li><a href="#">Budget Schedules</a></li>
+									<li><a href="#"><?=$this->l('budget_schedules');?></a></li>
 									
 								</ul>
 							</div>
@@ -71,11 +71,14 @@
 			<?php 
 				if($this->is_transacting_month){
 			?>
-				<a class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" href="<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=create_voucher&project=<?=$this->get_project_id();?>&startdate<?=$transacting_month['start_date'];?>&enddate=<?=$transacting_month['end_date'];?>&lib=journal"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i></a>		
+				<!-- href="<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=create_voucher&project=<?=$this->get_project_id();?>&startdate<?=$transacting_month['start_date'];?>&enddate=<?=$transacting_month['end_date'];?>&lib=journal"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i> -->
+				<a class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3"  
+					href="<?=$this->get_url(array("assetview"=>"create_voucher"));?>"> <?=$this->l('new_voucher');?> <i class="entypo-list-add"></i> 
+				</a>		
 			<?php
 				}
 			?>
-			<a href="<?=$this->get_url('cheque_book');?>" class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id=""><?=$this->l('add_cheque_booklet');?> <i class="entypo-book"></i></a>
+			<a href="<?=$this->get_url(array('assetview'=>'cheque_book'));?>" class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id=""><?=$this->l('add_cheque_booklet');?> <i class="entypo-book"></i></a>
 		</div>
 	</div>
 	<hr />
@@ -129,14 +132,14 @@
 					<th colspan="2"><?=$this->l('cash');?>:</th>
 					<th><?=number_format($opening_petty_balance,2);?></th>
 					
-					<th colspan="<?=count($income);?>" rowspan="" style="border-left:1px black solid;border-right:1px black solid;">Income</th>
+					<th colspan="<?=count($income);?>" rowspan="" style="border-left:1px black solid;border-right:1px black solid;"><?=$this->l('income');?></th>
 					
-					<th colspan="<?=count($expense);?>" rowspan="" style="border-left:1px black solid;border-right:1px black solid;">Expenses</th>
+					<th colspan="<?=count($expense);?>" rowspan="" style="border-left:1px black solid;border-right:1px black solid;"><?=$this->l('expense');?></th>
 					
 				</tr>
 				
 				<tr>
-					<th colspan="<?=count($details);?>">End Month Balance: </th>
+					<th colspan="<?=count($details);?>"><?=$this->l('end_month_balance');?>: </th>
 					<th><?=number_format($total_bank_deposit,2);?></th>
 					<th><?=number_format($total_bank_payment,2);?></th>
 					<th><?=number_format($end_bank_balance,2);?></th>
@@ -159,7 +162,10 @@
 						<th><?=number_format($sum_expenses[$cell],2);?></th>
 					<?php
 						}
-					?>
+					?>				
+					
+					<!-- <th colspan="<?=count($income);?>"></th>
+					<th colspan="<?=count($expense);?>"></th> -->
 					
 					
 				</tr>

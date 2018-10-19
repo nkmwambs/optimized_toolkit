@@ -90,10 +90,11 @@ class Layout {
 		$this->default_css_path			= $this->default_assets_path.'/css/';
 		$this->default_view_path		= $this->default_assets_path.'/views/';
 		
-		/** Loading Config and Helpers **/
+		/** Loading Config and Helpers anc Core Libraries**/
 		$this->CI->config->load('finance');
 		$this->CI->load->helper('url');
 		$this->CI->load->database();
+		$this->CI->load->library('session');
 		
 		/**Initialization of url segments **/
 		
@@ -317,6 +318,8 @@ class Layout {
 	 * @param	array	$data				A return array from a pre-render 
 	 * @return	void
 	 */
+	 
+	
 	protected function set_view($data){
 		
 		if(empty($data)) die();
@@ -325,11 +328,12 @@ class Layout {
 		
 		ob_start();
 		
-		if(file_exists($this->default_view_path.$this->asset_view_group.'/'.$view.".php"))
+		if(file_exists($this->default_view_path.$this->asset_view_group.'/'.$view.".php")){
 			include_once ($this->default_view_path.$this->asset_view_group.'/'.$view.".php");
-		else 
+			include_once ($this->default_view_path."/modal.php");
+		}else{ 
 			include_once ($this->default_view_path.$view.".php");
-		
+		}
 		
 		$buffered_view = ob_get_contents();
 		
@@ -380,7 +384,8 @@ class Layout {
 		$this->set_js_files($this->default_js_path.'printThis.js');
 		$this->set_js_files($this->default_js_path.'datepicker/js/bootstrap-datepicker.min.js');
 		$this->set_js_files($this->default_js_path.'bootstrap-toggle/js/bootstrap-toggle.min.js');
-		$this->set_js_files($this->default_js_path.'custom.js');
+		$this->set_js_files($this->default_js_path.'bootstrap-dialog/js/bootstrap-dialog.min.js');
+		$this->set_js_files($this->default_js_path.'sys.js');
 		
 		return $this->js_files;
 	}
@@ -403,6 +408,7 @@ class Layout {
 		$this->set_css_files($this->default_css_path.'font-icons/font-awesome/css/font-awesome.css');
 		$this->set_css_files($this->default_css_path.'datepicker/css/bootstrap-datepicker.min.css');
 		$this->set_css_files($this->default_css_path.'bootstrap-toggle/css/bootstrap-toggle.min.css');
+		$this->set_css_files($this->default_css_path.'bootstrap-dialog/css/bootstrap-dialog.min.css');
 		
 		return $this->css_files;
 	}
@@ -434,6 +440,10 @@ class Layout {
 		
 		
 	}	
+	
+	function modal(){
+		
+	}
 
 	/**
 	 * Render 

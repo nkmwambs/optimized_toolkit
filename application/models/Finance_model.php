@@ -10,11 +10,11 @@ class Finance_model extends CI_Model{
 	
     }
 	
-	function get_journal_transactions($icpNo="",$start_date="",$end_date='')
+	function get_journal_transactions($icpNo="",$start_date="",$end_date='',$voucher)
     {
 		try{
 			$this->db->reconnect();
-			$query = $this->db->query("CALL get_journal_transactions(?,?,?)",array($icpNo,$start_date,$end_date));	
+			$query = $this->db->query("CALL get_journal_transactions(?,?,?,?)",array($icpNo,$start_date,$end_date,$voucher));	
 			$result = $query->num_rows()>0?$query->result_array():array();
 			$this->db->close();
 		}catch(Exception $e){

@@ -10,7 +10,7 @@
 	$lang['voucher_number']				= 'Voucher Number';
 	$lang['payee']						= 'Payee/ Source';
 	$lang['address']					= 'Address';
-	$lang['details']					= 'Details';
+	$lang['details']					= 'Description';
 	$lang['bank_deposits']				= 'Bank Deposits';
 	$lang['bank_payments']				= 'Bank Payments';
 	$lang['bank_balance']				= 'Bank Balance';
@@ -29,6 +29,52 @@
 	$lang['start_serial_number']		= 'Start Serial Number';
 	$lang['number_of_leaves']			= 'Number Of Leaves';
 	$lang['create']						= 'Create';
+	$lang['transaction_voucher']		= 'Transaction Voucher';
+	$lang['voucher_type']				= 'Voucher Type';
+	$lang['select_voucher_type']		= 'Select Voucher Type';
+	$lang['payment_by_cash'] 			= 'Payment By Cash';
+	$lang['payment_by_cheque']			= 'Payment By Cheque';
+	$lang['bank_adjustments']			= 'Bank Adjustments';
+	$lang['cash_received']				= 'Cash Received';
+	$lang['petty_cash_rebanking'] 		= 'Petty Cash Rebanking';
+	$lang['cheque_reversal']			= 'Cheque Reversal';
+	$lang['enter_voucher_number']		= 'Enter a voucher number';
+	$lang['disabled']					= 'Disabled';
+	$lang['enabled']					= 'Enabled';
+	$lang['reset']						= 'Reset';
+	$lang['post']						= 'Post';
+	$lang['remove_row']					= 'Remove Item Row';
+	$lang['new_row']					= 'New Item Row';
+	$lang['check']						= 'Check';
+	$lang['quantity']					= 'Quantity';
+	$lang['item_details']				= 'Item Details';
+	$lang['unit_cost']					= 'Unit Cost';
+	$lang['cost']						= 'Cost';
+	$lang['account']					= 'Account';
+	$lang['budget_item']				= 'Budget Item';
+	$lang['civ_id']						= 'CIV ID';
+	$lang['total']						= 'Total';
+	$lang['select_account']				= 'Select Account';
+	$lang['select_bugdet_item']			= 'Select Bugdet Item';
+	$lang['print']						= 'Print';
+	$lang['raised_by']					= 'Raised By';
+	$lang['name']						= 'Name';
+	$lang['signature']					= 'Signature';
+	$lang['report']						= 'Report';
+	$lang['fund_balance_report']		= 'Fund Balance Report';
+	$lang['proof_of_cash']				= 'Proof Of Cash';
+	$lang['outstanding_cheques'] 		= 'Outstanding Cheques';
+	$lang['transit_deposit']			= 'Transit Deposit';
+	$lang['cleared_cheques']			= 'Cleared Cheques';
+	$lang['cleared_deposits']			= 'Cleared Deposits';
+	$lang['bank_reconcile']				= 'Bank Reconciliation';
+	$lang['expense_report']				= 'Expense Report';
+	$lang['budget']						= 'Budget';
+	$lang['budget_summary']				= 'Budget Summary';
+	$lang['budget_schedules']			= 'Budget Schedules';
+	$lang['income']						= 'Income';
+	$lang['expense']					= 'Expense';
+	$lang['end_month_balance']			= 'End Month Balance';
 	
 	
-
+	

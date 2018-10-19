@@ -87,9 +87,17 @@ final class Journal extends Layout implements Initialization{
 	/**
 	 * This method returns all voucher transactions in the selected month.
 	 */	
-    private function get_current_month_transactions()
-    {		
-		return $this->basic_model->get_journal_transactions($this->icpNo,$this->start_date,$this->end_date);;
+    private function get_current_month_transactions($params = array())
+    {
+    	//$params = array('start_date'=>"",'end_date'=>"",'voucher'=>"")	
+    	
+    	extract($params);
+    	
+    	if(!isset($start_date) || ($start_date > $end_date)) $start_date = $this->start_date;		
+		if(!isset($end_date) || ($start_date > $end_date)) $end_date = $this->end_date;	
+		if(!isset($voucher)) $voucher = null;	
+		
+		return $this->basic_model->get_journal_transactions($this->icpNo,$start_date,$end_date,$voucher);
     }
   	
 	/**
@@ -154,6 +162,54 @@ final class Journal extends Layout implements Initialization{
 		return $all_utilized_accounts;
 	}
 	
+	// private function get_utilized_accounts(){
+            /** Retrieve Income Accounts **/
+            /*$income_accounts_rows = array_column($this->get_journal_entries(), 1);
+            $income_accounts_unsort = array();
+            
+            foreach($income_accounts_rows as $value){
+                  $income_accounts_unsort = array_merge($income_accounts_unsort,array_keys($value));
+            }
+            
+            $income_accounts = array_unique($income_accounts_unsort);
+            sort($income_accounts);*/
+            
+            /** Retrieve Expense Accounts **/
+            /*$expense_accounts_rows = array_column($this->get_journal_entries(), 0);
+            $expense_accounts_unsort = array();
+            foreach($expense_accounts_rows as $value){
+                  $expense_accounts_unsort = array_merge($expense_accounts_unsort,array_keys($value));
+            }
+            
+            $expense_accounts = array_unique($expense_accounts_unsort);
+            sort($expense_accounts);*/
+            
+            /** All accounts **/
+        	// $income_accounts=$this->pull_up_utilized_accounts(1);
+            // $expense_accounts=$this->pull_up_utilized_accounts(0);
+            // $all_utilized_accounts = array("1"=>$income_accounts,"0"=>$expense_accounts);
+//             
+            // return $all_utilized_accounts;
+      // }
+      //Buddling this
+	  // private function pull_up_utilized_accounts($column_name)
+	  // {
+	        // $income_and_expense_accounts= array_column($this->get_journal_entries(), $column_name);
+	            // $unsorted_and_income_accounts= array();
+// 	            
+	            // foreach($income_and_expense_accounts as $value)
+	            // {
+	                  // $unsorted_and_income_accounts = array_merge($unsorted_and_income_accounts,array_keys($value));
+	            // }
+// 	            
+	            // $pulled_up_incomeaccounts = array_unique($unsorted_and_income_accounts);
+	            // return sort($pulled_up_incomeaccounts);
+	  // }
+      /**
+      * Creates an ungrouped array of all accounts that were trnsacted in the month
+      */
+	
+	
 	/**
 	 * Creates an ungrouped array of all accounts that were trnsacted in the month
 	 */
@@ -170,9 +226,9 @@ final class Journal extends Layout implements Initialization{
 		return $linear_accounts_text;
 	}
 
-	 function voucher_transactions(){
+	 function voucher_transactions($voucher=""){
 		$transactions_container = array();
-		$all_transactions =  $this->get_current_month_transactions();
+		$all_transactions = $voucher==""? $this->get_current_month_transactions(): $this->get_current_month_transactions(array("voucher"=>$voucher));
 		
 		$cnt = 0;
 		
@@ -443,6 +499,7 @@ final class Journal extends Layout implements Initialization{
 		return array_sum(array_column(array_column($this->construct_journal(), "bank"),"bank_inc"));
 	}
 	
+	
 	//This method calculates the total bank deposit for the month
 	private function get_bank_payment(){
 			
@@ -486,31 +543,58 @@ final class Journal extends Layout implements Initialization{
 		 */	
 		return array_sum(array_column(array_column($this->construct_journal(), "petty"),"petty_exp"));
 	}
+	
+	/**
+	 * Start - These methods calculates total incomes and expenses for the mont per account - Required to be optimized
+	 */
 
 	 function get_sum_per_income_account(){
 	 	$utilized_accounts =  $this->get_utilized_accounts();
+		$transactions = $this->get_journal_entries();
 		
 		$arr = array();
+		$arr2 = array();		
 		
-		foreach($utilized_accounts[1] as $value){
-			$arr[$value] = array_sum(array_column(array_column($this->construct_journal(), "income_spread"),$value));
+		foreach($transactions as $row){
+			if(array_key_exists('1', $row)){
+				$arr[] = $row[1];
+			}
 		}
 		
-		return $arr;
+		foreach($utilized_accounts[1] as $value){
+			$arr2[$value]=array_sum(array_column($arr, $value));
+		}
+		
+		return $arr2;
 	}
 	 
 	 function get_sum_per_expense_account(){
 	 	$utilized_accounts =  $this->get_utilized_accounts();
+		$transactions = $this->get_journal_entries();
 		
 		$arr = array();
+		$arr2 = array();		
 		
-		foreach($utilized_accounts[0] as $value){
-			$arr[$value] = array_sum(array_column(array_column($this->construct_journal(), "expense_spread"),$value));
+		foreach($transactions as $row){
+			if(array_key_exists('0', $row)){
+				$arr[] = $row[0];
+			}
 		}
 		
-		return $arr;
+		foreach($utilized_accounts[0] as $value){
+			$arr2[$value]=array_sum(array_column($arr, $value));
+		}
+		
+		return $arr2;
 	}
 	
+	function get_voucher($voucher){
+		
+	}
+	
+	/**
+	 * End - These methods calculates total incomes and expenses for the mont per account - Required to be optimized
+	 */
 	
 	private function readable_labels(){
 		
@@ -547,7 +631,7 @@ final class Journal extends Layout implements Initialization{
 	protected function pre_render_show_journal(){
 		
 		if(count($this->construct_journal())>0){
-				
+			//Check if in the current month	
 			$this->check_transacting_month();
 			
 			$data['records'] =  $this->construct_journal();
@@ -585,13 +669,19 @@ final class Journal extends Layout implements Initialization{
 	}
 	
 	protected function pre_render_show_voucher(){
-		
+		$voucher_found = false;
 		if($this->CI->input->get("voucher")){
-			$vouchers = $this->voucher_transactions();		
-			$data['voucher'] = $vouchers[$this->CI->input->get("voucher")];
+			
+			$vouchers = $this->voucher_transactions($this->CI->input->get("voucher"));		
+			
+			if(isset($vouchers[$this->CI->input->get("voucher")])){
+				$data['voucher'] = $vouchers[$this->CI->input->get("voucher")];
+				$voucher_found = true;
+			}
+			
 		}
 		
-		$data['view'] = $this->CI->input->get("voucher")?$this->get_view():"error";
+		$data['view'] = ($this->CI->input->get("voucher") && $voucher_found == true)?$this->get_view():"error";
 		
 		return $data;
 	}
@@ -614,6 +704,7 @@ final class Journal extends Layout implements Initialization{
 		$data['success'] = "";
 		if(isset($_POST) && sizeof($_POST)>0){
 			$data['success'] = $this->insert_voucher_to_database($_POST);
+			//$this->CI->session->set_flashdata('flash_message', $this->insert_voucher_to_database($_POST));
 		}
 		
 		$data['voucher_date_range'] = $this->get_voucher_date_picker_control();

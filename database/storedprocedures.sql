@@ -88,14 +88,29 @@ END$$
 DELIMITER ;
 
 DELIMITER $$
-CREATE PROCEDURE `get_journal_transactions`(IN `icpNo` VARCHAR(6), IN `start_date` DATE, IN `end_date` DATE)
+CREATE PROCEDURE `get_journal_transactions`(IN `icpNo` VARCHAR(6), IN `start_date` DATE, IN `end_date` DATE, IN `voucher` INT(8))
 BEGIN
+
+IF voucher IS NULL THEN 
+
 SELECT voucher_header.VType,voucher_header.TDate,voucher_header.VNumber,voucher_header.Payee,voucher_header.Address,voucher_header.ChqNo,voucher_header.TDescription,
 voucher_body.AccNo,accounts.AccText,accounts.AccGrp,voucher_body.Qty,voucher_body.Details,voucher_body.UnitCost,SUM(Cost) as Cost,voucher_body.scheduleID,voucher_body.civaCode  FROM voucher_body 
 LEFT JOIN voucher_header ON voucher_body.hID = voucher_header.hID 
 LEFT JOIN accounts ON voucher_body.AccNo = accounts.AccNo 	
 WHERE voucher_header.icpNo = icpNo AND voucher_header.TDate BETWEEN start_date AND end_date 	
 GROUP BY voucher_header.VNumber,voucher_body.AccNo;
+
+ELSE
+
+SELECT voucher_header.VType,voucher_header.TDate,voucher_header.VNumber,voucher_header.Payee,voucher_header.Address,voucher_header.ChqNo,voucher_header.TDescription,
+voucher_body.AccNo,accounts.AccText,accounts.AccGrp,voucher_body.Qty,voucher_body.Details,voucher_body.UnitCost,SUM(Cost) as Cost,voucher_body.scheduleID,voucher_body.civaCode  FROM voucher_body 
+LEFT JOIN voucher_header ON voucher_body.hID = voucher_header.hID 
+LEFT JOIN accounts ON voucher_body.AccNo = accounts.AccNo 	
+WHERE voucher_header.icpNo = icpNo AND voucher_header.VNumber = voucher 	
+GROUP BY voucher_header.VNumber,voucher_body.AccNo;
+
+END IF;
+
 END$$
 DELIMITER ;
 

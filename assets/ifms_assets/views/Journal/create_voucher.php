@@ -1,7 +1,5 @@
 <?php
-//print_r($cheques_utilized);
-//print_r($accounts);
-//print_r($accounts['revenue']);
+//print_r();
 ?>
 <style> .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; } .toggle.ios .toggle-handle { border-radius: 20px; } </style>
 <hr/>
@@ -13,7 +11,7 @@
 				<div class="form-group">
 					<label class="control-label col-sm-3">Search a Voucher</label>
 					<div class="col-sm-6">
-						<input type="text" class="form-control" id="VNumber" placeholder="Enter a voucher number" />
+						<input type="text" class="form-control" id="SearchVNumber" placeholder="<?=$this->l('enter_voucher_number');?>" />
 					</div>
 					<div class="col-sm-2">
 						<div id="go_btn" class="btn btn-default">Go</div>
@@ -22,7 +20,11 @@
 			</div>
 			
 			<div class="col-sm-6">
-				<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>/?assetview=<?=$this->get_selected_voucher_number()!=""?"scroll_journal":"show_journal";?>&project=<?=$this->get_project_id();?>&startdate=<?=$this->get_start_date_epoch();?>&enddate=<?=$this->get_start_date_epoch();?>&scroll=<?=isset($segments[8])?$segments[8]:0;?>&lib=journal" class="btn btn-default btn-icon icon-left hidden-print pull-right" class="btn btn-default">Back <i class="entypo-left-dir"></i></a>
+					<a href="<?=$this->get_url(array("assetview"=>"show_journal","start_date"=>$this->get_start_date_epoch(),
+						"end_date"=>$this->get_end_date_epoch(),"scroll"=>$this->get_scroll()));?>" 
+						class="btn btn-default btn-icon icon-left hidden-print pull-right">
+							<?=$this->l('back');?>
+					</a>
 			</div>
 				
 		</div>
@@ -36,7 +38,7 @@
 			       	<div class="panel-heading">
 			           	<div class="panel-title" >
 			           		<i class="entypo-plus-circled"></i>
-								Payment Voucher
+								<?=$this->l('transaction_voucher');?>
 			           	</div>
 			        </div>
 			        
@@ -44,7 +46,7 @@
 		
 						
 		
-						<?php echo form_open("", array('id' => 'frm_voucher', 'class' => 'form-horizontal form-groups-bordered validate', 'enctype' => 'multipart/form-data')); ?>
+						<?php echo form_open($this->get_url(array('assetview'=>'create_voucher')), array('id' => 'frm_voucher', 'class' => 'form-horizontal form-groups-bordered validate', 'enctype' => 'multipart/form-data')); ?>
 		
 						<div class="row">	
 						<div class="col-sm-12">		
@@ -53,16 +55,21 @@
 						            <table id='tblVch' class='table'>
 						            	<thead>
 							                <tr>
-							                    <th colspan="8"  style="text-align: center;"><?php echo $this->get_project_id(); ?><br>Payment Voucher</th>
+							                    <th colspan="8"  style="text-align: center;"><?php echo $this->get_project_id(); ?><br><?=$this->l("transaction_voucher")?></th>
 							                </tr>
 										</thead>
 										
 										<tbody>
 											<tr>
-												<td id="error_msg" style="color:red;text-align: center;">
+												<td colspan="8" id="error_msg" style="text-align: center;">
 													<?php
-													if (isset($success))
-														echo $success;
+														if (isset($success)){
+													?>
+														<div class="label label-danger"><?php echo $success;?></div>
+													<?php	
+														unset($success);
+														}
+														//$this->CI->session->flashdata('flash_message');
 													?>
 												</td>
 											</tr>
@@ -71,14 +78,14 @@
 						                    
 						                    <td colspan="2">
 						                    	<div class="col-sm-12 form-group" id='VType'>
-						                    		<label for="VTypeMain" class="control-label"><span style="font-weight: bold;">Voucher Type:</span></label>
+						                    		<label for="VTypeMain" class="control-label"><span style="font-weight: bold;"><?=$this->l('voucher_type')?>:</span></label>
 								                        <select name="VType" id="VTypeMain" class="form-control required" data-validate="required">
-								                            <option value="">Select Voucher Type</option>
-								                            <option value="PC">Payment By Cash</option>
-								                            <option value="CHQ">Payment By Cheque</option>
-								                            <option value="BCHG">Bank Adjustments</option>
-								                            <option value="CR">Cash Received</option>					                            
-								                            <option value="PCR">Petty Cash Rebanking</option>
+								                            <option value=""><?=$this->l("select_voucher_type")?></option>
+								                            <option value="PC"><?=$this->l('payment_by_cash');?></option>
+								                            <option value="CHQ"><?=$this->l('payment_by_cheque')?></option>
+								                            <option value="BCHG"><?=$this->l('bank_adjustments');?></option>
+								                            <option value="CR"><?=$this->l('cash_received');?></option>					                            
+								                            <option value="PCR"><?=$this->l('petty_cash_rebanking')?></option>
 								                        </select>
 						                        </div>
 						                    </td>
@@ -86,15 +93,15 @@
 						                    
 						                    <td colspan="2">
 						                    	<div class="col-sm-12 form-group">
-						                    		<label for="ChqNo" class="control-label"><span style="font-weight: bold;">Cheque Number:</span></label>
+						                    		<label for="ChqNo" class="control-label"><span style="font-weight: bold;"><?=$this->l('cheque_number');?>:</span></label>
 						                    			<input class="form-control" type="text" id="ChqNo" name="ChqNo" data-validate="number,minlength[2]"  readonly="readonly"/>
 						                    	</div>
 						                    </td>
 						                    
 						                 	<td colspan="4">
-						                    	<label  for="reversal" class="col-sm-12"><span style="font-weight: bold;">Cheque Reversal</span> 
+						                    	<label  for="reversal" class="col-sm-12"><span style="font-weight: bold;"><?=$this->l('cheque_reversal');?></span> 
 													<div class="col-sm-12">
-															<input type="checkbox" data-on="Enabled" data-off="Disabled" data-onstyle="danger" 
+															<input type="checkbox" data-on="<?=$this->l('enabled');?>" data-off="<?=$this->l('disabled');?>" data-onstyle="danger" 
 																data-offstyle="info" data-style="ios" data-toggle="toggle" id="reversal" 
 																	disabled name="reversal"/>
 													</div>
@@ -106,7 +113,7 @@
 						                <tr>		               
 								            <td colspan="3">
 								            	<div class="form-group">
-													<label class="control-label"><span style="font-weight: bold;">Date: </span></label>
+													<label class="control-label"><span style="font-weight: bold;"><?=$this->l('date');?>: </span></label>
 													
 														<div class="input-group">
 															<input type="text" name="TDate" id="TDate" class="form-control datepicker required" 
@@ -125,7 +132,7 @@
 								            <td colspan="2">&nbsp;</td>
 								            <td colspan="3">
 								            	<div class="form-group">
-								            		<label for='VNumber' class="control-label"><span style="font-weight: bold;">Voucher Number</span></label>	
+								            		<label for='VNumber' class="control-label"><span style="font-weight: bold;"><?=$this->l('voucher_number');?></span></label>	
 								            		<input type="text" class="form-control required" id="VNumber" name="VNumber" data-validate="required"  value="<?=$voucher_number;?>" readonly/>
 								            	</div>
 								            </td>
@@ -134,7 +141,7 @@
 						                <tr>
 						                    <td colspan="8">
 						                    	<div class="form-group">
-						                    		<label for="Payee" class="control-label"><span style="font-weight: bold;">Payee/Vendor: </span></label>
+						                    		<label for="Payee" class="control-label"><span style="font-weight: bold;"><?=$this->l('payee');?>: </span></label>
 						                    		<input type="text" class="form-control required" data-validate="required"  id="Payee" name="Payee"/>
 						                    	</div>
 						                    </td>
@@ -142,7 +149,7 @@
 						                <tr>
 						                   <td colspan="8">
 						                    	<div class="form-group">
-						                    			<label for="Address" class="control-label"><span style="font-weight: bold;">Address: </span></label>
+						                    			<label for="Address" class="control-label"><span style="font-weight: bold;"><?=$this->l('address');?>: </span></label>
 						                    		<input type="text" class="form-control required" data-validate="required"  id="Address" name="Address"/>
 						                    	</div>
 						                    </td>
@@ -153,8 +160,8 @@
 						                   
 						                    <td colspan="8">
 						                    	<div class="form-group">
-						                    			<label for="TDescription" class="control-label"><span style="font-weight: bold;">Description</span></label>
-						                    		<input type="text" class="form-control required" data-validate="required" id="TDescription" name="TDescription"/>
+						                    			<label for="TDescription" class="control-label"><span style="font-weight: bold;"><?=$this->l('details')?></span></label>
+						                    				<input type="text" class="form-control required" data-validate="required" id="TDescription" name="TDescription"/>
 						                    	</div>
 						                    	
 						                    </td>
@@ -171,27 +178,27 @@
 							<div class="col-sm-12">
 								<div class="col-sm-1">
 									<a href="#"   id="resetBtn" class="btn btn-default btn-icon icon-left hidden-print pull-left">
-								      	Reset
+								      	<?=$this->l('reset');?>
 								    	 <i class="entypo-plus-circled"></i>
 									</a>
 								</div>
 								
 								<div class="col-sm-1">		
 								<button type="submit" id="btnPostVch" class="btn btn-default btn-icon icon-left hidden-print pull-left">
-								     Post
+								     <?=$this->l('post');?>
 								     <i class="entypo-thumbs-up"></i>
 								</button>
 								</div>
 								
 						
 								<div id='btnDelRow' class="btn btn-default btn-icon icon-left hidden hidden-print pull-left">
-								      Remove Item Row
+								      <?=$this->l('remove_row');?>
 								     <i class="entypo-minus-circled"></i>
 								</div>
 													
 								<div class="col-sm-1">		
 									<div id='addrow' class="btn btn-default btn-icon icon-left hidden-print pull-left">
-									      New Item Row
+									      <?=$this->l('new_row');?>
 									     <i class="entypo-plus-circled"></i>
 									</div>
 								</div>	
@@ -205,8 +212,14 @@
 				        <table id="bodyTable" class="table table-striped">
 				        	<thead>
 					            <tr style="font-weight: bold;">
-					                <th>Check</th><th>Quantity</th><th>Items Purchased/ Services Received</th><th>Unit Cost</th><th>Cost</th><th>Account</th><th>Budget Item</th></th><th>CIV Code</th>
-					            </tr>
+					                <th><?=$this->l('check');?></th><th><?=$this->l('quantity');?></th>
+					                <th><?=$this->l('item_details');?></th>
+					                <th><?=$this->l('unit_cost');?></th>
+					                <th><?=$this->l('cost');?></th>
+					                <th><?=$this->l('account');?></th>
+					                <th><?=$this->l('budget_item');?></th>
+					                <th><?=$this->l('civ_id');?></th>
+					            </tr
 					         </thead>
 					         <tbody>
 					         	
@@ -223,7 +236,7 @@
 						            <tr>
 						            	<td colspan="5">
 						            		<div class="form-group pull-right">
-						            			<label for='totals' class="control-label"><span style="font-weight: bold;">Totals:</span></label>
+						            			<label for='totals' class="control-label"><span style="font-weight: bold;"><?=$this->l('total');?>:</span></label>
 						            			<input class="form-control" type="text" id="totals" name="totals" value="0" readonly="readonly" />
 						            		</div>
 						            	</td>
@@ -349,11 +362,11 @@
 					+"<td><input type='text' class='form-control detail unit calculate required' name='UnitCost[]'/></td>"
 					+"<td><input type='text' class='form-control detail cost required' readonly='readonly' value='0' name='Cost[]'/></td>"
 					+"<td><select class='form-control detail accounts required' name='AccNo[]'>"
-					+"<option value=''>Select Account</option>"
+					+"<option value=''><?=$this->l('select_account');?></option>"
 					+accounts_option
 					+"</select></td>"
 					+"<td><select class='form-control detail budget_items required' name='scheduleID[]'>"
-					+"<option value=''>Select Bugdet Item</option>"
+					+"<option value=''><?=$this->l('select_bugdet_item');?></option>"
 					+"</select></td>"
 					+"<td><input type='text' class='form-control detail civ' name='civaCode[]' readonly='readonly' value='0'/></td>"
 					+"</tr>";
@@ -628,13 +641,17 @@
 	
 	$(document).on("submit","#frm_voucher",function(){
 		
+		var url ='<?php echo $this->get_url(array('assetview'=>"show_voucher"));?>&voucher='+$("#VNumber").val();
+		
 		if($("#bodyTable tbody").length == 0){
-			alert("Voucher lacks details");
+			//alert("Voucher lacks details");
+			show_alert("Voucher lacks details");
 			return false;
 		}
 		
 		if($("#VTypeMain").val()=="CHQ" && $("#ChqNo").val()==""){
-			alert("You must provide a cheque number");
+			//alert("You must provide a cheque number");
+			show_alert("You must provide a cheque number");
 			$("#ChqNo").css("border","1px red solid");
 			return false;
 		}
@@ -649,7 +666,8 @@
 		});
 		
 		if(required_count>0){
-			alert(required_count+" required fields are empty");
+			//alert(required_count+" required fields are empty");
+			show_alert(required_count+" required fields are empty");
 			return false;
 		}
 	});
@@ -657,7 +675,16 @@
 	$("#reversal").change(function(){
 		//alert($(this).is(":checked"));
 	});
-	
+
+$("#go_btn").click(function(){
+	var url ='<?php echo $this->get_url(array('assetview'=>"show_voucher"));?>&voucher='+$("#SearchVNumber").val();
+	showAjaxModal(url);
+})	
+
+
+$('#error_msg').delay(3000).fadeOut('slow');
+
 </script>
 
 <script> $(function() { $('#reversal').bootstrapToggle(); }) </script>
+

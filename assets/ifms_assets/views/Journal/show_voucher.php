@@ -4,12 +4,16 @@
 ?>
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">						
-			
-			<a href="<?php echo base_url().$this->get_controller().'/'.$this->get_method();?>?assetview=show_journal&project=<?=$this->get_project_id();?>&startdate=<?=$this->get_start_date_epoch();?>&enddate=<?=$this->get_start_date_epoch();?>&scroll=<?=$this->get_scroll();?>&lib=journal" class="btn btn-default">Back</a>
-			
+				
+			<a href="<?=$this->get_url(array("assetview"=>"show_journal","start_date"=>$this->get_start_date_epoch(),
+					"end_date"=>$this->get_end_date_epoch(),"scroll"=>$this->get_scroll()));?>" 
+						class="btn btn-default btn-icon icon-left hidden-print">
+							<?=$this->l('back');?>
+			</a>
+					
 			<!-- <center> -->
 			    <a onclick="PrintElem('#voucher_print')" class="btn btn-default btn-icon icon-left hidden-print pull-right">
-			        Print Voucher
+			        <?=$this->l('print');?>
 			        <i class="entypo-print"></i>
 			    </a>
 			<!-- </center> -->
@@ -19,39 +23,39 @@
 						<table  class="table table-striped datatable">
 							<thead>
 								<tr>
-									<th colspan="8" style="text-align:center;"><?php echo $this->get_project_id();?><br>Transaction Voucher</th>
+									<th colspan="8" style="text-align:center;"><?php echo $this->get_project_id();?><br><?=$this->l('transaction_voucher');?></th>
 								</tr>
 							</thead>
 							<tbody>
 								
 								<tr>
-									<td  colspan="5"><span style="font-weight: bold;">Date: </span> <?php echo $voucher['details']['TDate'];?></td>
-									<td  colspan="3"><span style="font-weight: bold;">Number: </span> <?php echo $voucher['details']['VNumber'];?></td>
+									<td  colspan="5"><span style="font-weight: bold;"><?=$this->l('date');?>: </span> <?php echo $voucher['details']['TDate'];?></td>
+									<td  colspan="3"><span style="font-weight: bold;"><?=$this->l('voucher_number');?>: </span> <?php echo $voucher['details']['VNumber'];?></td>
 								</tr>
 								
 								<tr>
-									<td colspan="5"><span style="font-weight: bold;">Vendor/Payee: </span> <?php echo $voucher['details']['Payee'];?></td>
+									<td colspan="5"><span style="font-weight: bold;"><?=$this->l('payee');?> </span> <?php echo $voucher['details']['Payee'];?></td>
 									<?php $chqNo = explode("-",$voucher['details']['ChqNo']);?>
-									<td  colspan="3"><span style="font-weight: bold;">Cheque Number: </span> <?php echo $chqNo[0];?></td>
+									<td  colspan="3"><span style="font-weight: bold;"><?=$this->l('cheque_number');?>: </span> <?php echo $chqNo[0];?></td>
 								</tr>
 								
 								<tr>
-									<td  colspan="5"><span style="font-weight: bold;">Address: </span> <?php echo $voucher['details']['Address'];?></td>
-									<td  colspan="3"><span style="font-weight: bold;">Voucher Type: </span> <?php echo $voucher['details']['VType'];?></td>
+									<td  colspan="5"><span style="font-weight: bold;"><?=$this->l('address');?>: </span> <?php echo $voucher['details']['Address'];?></td>
+									<td  colspan="3"><span style="font-weight: bold;"><?=$this->l('voucher_type');?>: </span> <?php echo $voucher['details']['VType'];?></td>
 								</tr>
 								
 								<tr>
-									<td colspan="8"><span style="font-weight: bold;">Description: </span> <?php echo $voucher['details']['TDescription'];?></td>
+									<td colspan="8"><span style="font-weight: bold;"><?=$this->l('details')?>: </span> <?php echo $voucher['details']['TDescription'];?></td>
 								</tr>
 								
 								<tr style="font-weight: bold;">
-									<td>Quantity</td>
-									<td colspan="2">Items Purchased/ Service Received</td>
-									<td style="text-align: right;">Unit Cost</td>
-									<td style="text-align: right;">Cost</td>
-									<td  style="text-align: right;">Account</td>
-									<td  style="text-align: right;">Budget Item</td>
-									<td  style="text-align: right;">CIV Code</td>
+									<td><?=$this->l('quantity');?></td>
+									<td colspan="2"><?=$this->l('item_details');?></td>
+									<td style="text-align: right;"><?=$this->l('unit_cost');?></td>
+									<td style="text-align: right;"><?=$this->l('cost');?></td>
+									<td  style="text-align: right;"><?=$this->l('account');?></td>
+									<td  style="text-align: right;"><?=$this->l('budget_item');?></td>
+									<td  style="text-align: right;"><?=$this->l('civ_id');?></td>
 								</tr>
 								<?php
 									$total = 0;
@@ -72,14 +76,14 @@
 								?>
 								
 								<tr>
-									<td style="font-weight: bold;" colspan="5">Totals</td>
+									<td style="font-weight: bold;" colspan="5"><?=$this->l('total');?></td>
 									<td style="font-weight: bold;text-align: right;"><?=number_format($total,2);?></td>
 									<td>&nbsp;</td>
 									<td>&nbsp;</td>
 								</tr>
 								
 								<tr>
-									<td><span style="font-weight: bold;">Raised By</span></td>
+									<td><span style="font-weight: bold;"><?=$this->l('raised_by');?></span></td>
 									<td colspan="5"><span style="font-weight: bold;">Name: </span>  </td>
 									<td colspan="2"><span style="font-weight: bold;">Signature: </span></td>
 								</tr>
@@ -88,23 +92,23 @@
 									<td colspan="4"><span style="font-weight: bold;">Approved By</span></td>
 								</tr>
 								<tr>
-									<td colspan="3">Name: </td>
-									<td colspan="1">Signature: </td> 
-									<td colspan="3">Name: </td>
-									<td colspan="1">Signature</td>
+									<td colspan="3"><?=$this->l('name');?>: </td>
+									<td colspan="1"><?=$this->l('signature');?>: </td> 
+									<td colspan="3"><?=$this->l('name');?>: </td>
+									<td colspan="1"><?=$this->l('signature');?></td>
 								</tr>
 								<tr>
-									<td colspan="3">Name: </td>
-									<td colspan="1">Signature: </td> 
-									<td colspan="3">Name: </td>
-									<td colspan="1">Signature</td>
+									<td colspan="3"><?=$this->l('name');?>: </td>
+									<td colspan="1"><?=$this->l('signature');?>: </td> 
+									<td colspan="3"><?=$this->l('name');?>: </td>
+									<td colspan="1"><?=$this->l('signature');?></td>
 								</tr>
 								
 								<tr>
-									<td colspan="3">Name: </td>
-									<td colspan="1">Signature: </td> 
-									<td colspan="3">Name: </td>
-									<td colspan="1">Signature</td>
+									<td colspan="3"><?=$this->l('name');?>: </td>
+									<td colspan="1"><?=$this->l('signature');?>: </td> 
+									<td colspan="3"><?=$this->l('name');?>: </td>
+									<td colspan="1"><?=$this->l('signature');?></td>
 								</tr>
 							</tbody>
 						</table>
