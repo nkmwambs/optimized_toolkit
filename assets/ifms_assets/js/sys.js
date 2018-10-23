@@ -2,6 +2,8 @@ $(document).ready(function(){
         
 });
 
+$(".datepicker").datepicker();
+
 function go_back(){
 	window.history.back();
 }

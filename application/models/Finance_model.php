@@ -40,10 +40,10 @@ class Finance_model extends CI_Model{
 		// return $result;
     // }
 	
-	function get_icp_max_voucher ($icp=""){
+	function get_icp_max_voucher ($icp="",$vtype=null){
 		try{
 			$this->db->reconnect();
-			$query = $this->db->query("CALL get_icp_max_voucher(?)",array($icp));
+			$query = $this->db->query("CALL get_icp_max_voucher(?,?)",array($icp,$vtype));
 			$result = $query->num_rows()>0?$query->row():array();
 			$this->db->close();
 		}catch(Exception $e){
@@ -118,6 +118,22 @@ class Finance_model extends CI_Model{
 		extract((array)$this->get_icp_max_voucher($icp));
 		
 		return $Fy;
+	}
+	
+	public function get_last_cheque_used($icp="",$vtype="CHQ"){
+		extract((array)$this->get_icp_max_voucher($icp,$vtype));
+		
+		$chq_bank_arr = explode("-", $ChqNo);
+		
+		return $chq_bank_arr[0];
+	}
+	
+	public function get_current_bank($icp="",$vtype="CHQ"){
+		extract((array)$this->get_icp_max_voucher($icp,$vtype));
+		
+		$chq_bank_arr = explode("-", $ChqNo);
+		
+		return $chq_bank_arr[1];
 	}
 	
 	function get_transacting_month($icp=""){
@@ -203,7 +219,7 @@ class Finance_model extends CI_Model{
 		
 		return $result;
 	}
-	
+	/**Can be combined with get_budget_schedules**/
 	function get_approved_budget_spread($icpNo="",$fy=""){
 		try{
 			$this->db->reconnect();
@@ -217,6 +233,18 @@ class Finance_model extends CI_Model{
 		return $result;
 	}
 	
+	function get_budget_schedules($icpNo="",$fy=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_budget_schedules(?,?)",array($icpNo,$fy));
+			$result = $query->num_rows()>0?$query->result_array():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
 	
 	function get_cheques_utilized_with_bank_code($icpNo=""){
 		try{
@@ -269,6 +297,7 @@ class Finance_model extends CI_Model{
 		
 		return $result;
 	}
+	
 	
 	function insert_voucher_to_database($post_array=array()){
 		
@@ -326,8 +355,34 @@ class Finance_model extends CI_Model{
 		$rows = $this->db->affected_rows();
 		
 		if($rows>0){
-			return "Voucher Created Successful";
+			return true;
+		}else{
+			return false;
 		}
+	}
+	
+	function change_cheque_booklet_status($icpNo){
+		$this->db->where(array("icpNo"=>$icpNo,"status"=>1));
+		$this->db->update("cheque_book",array('status'=>0));
+		
+		if($this->db->affected_rows()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	function get_latest_cheque_book($icpNo){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_latest_cheque_book(?)",array($icpNo));
+			$result = $query->num_rows()>0?$query->row():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
 	}
 
 	function insert_cheque_booklet($post_array=array()){

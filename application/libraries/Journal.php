@@ -278,8 +278,32 @@ final class Journal extends Layout implements Initialization{
 		return $this->basic_model->get_project_details($this->get_project_id());
 	}
 	
+	private function change_cheque_booklet_status($icpNo){
+		$remaining_leaves = $this->get_unused_cheque_leaves();
+		$msg = "";
+		
+		if(count($remaining_leaves) == 0){
+			if($this->basic_model->change_cheque_booklet_status($icpNo))
+				$msg =  " ".$this->l('cheque_booklet_exhausted');
+		}
+		
+		return $msg;
+	}
+	
 	private function insert_voucher_to_database($post_array=array()){
-		return $this->basic_model->insert_voucher_to_database($post_array);
+		
+		$msg = $this->l('vouching_failure');
+		
+		if($this->basic_model->insert_voucher_to_database($post_array)){
+			$msg = $this->l('vouching_success');
+			if($post_array['VType'] == "CHQ"){
+				$msg .= $this->change_cheque_booklet_status($post_array['icpNo']);
+			}
+			
+			
+		}
+		
+		return $msg;
 	}
 	
 	private function current_voucher_date(){
@@ -588,9 +612,48 @@ final class Journal extends Layout implements Initialization{
 		return $arr2;
 	}
 	
-	function get_voucher($voucher){
-		
+	private function get_last_cheque_used(){
+		return $this->basic_model->get_last_cheque_used($this->icpNo);
 	}
+	
+	private function get_current_bank(){
+		return $this->basic_model->get_current_bank($this->icpNo);
+	}
+	
+	private function get_latest_cheque_book(){
+		return $this->basic_model->get_latest_cheque_book($this->icpNo);
+	}
+	
+
+	
+	private function strip_bank_code($value){
+		$explode = explode("-", $value);
+		return $explode[0];
+	}
+	
+	private function get_utilized_cheques(){
+		$cheques = array_column($this->get_coded_cheques_utilized(),"ChqNo");
+		
+		return array_unique(array_map(array($this,"strip_bank_code"), $cheques));
+	}
+	
+	
+	private function get_bank_coded_utilized_cheques(){
+		$cheques = array_column($this->get_coded_cheques_utilized(),"ChqNo");
+		
+		return array_unique($cheques);
+	}
+	
+	protected function list_range_of_cheque_leaves(){
+		$last_cheque_book = $this->get_latest_cheque_book();
+		$chunk = array_chunk(range($last_cheque_book->start_serial+$last_cheque_book->pages, $last_cheque_book->pages),$last_cheque_book->pages+1);
+		return $chunk[0];
+	}
+	
+	private function get_unused_cheque_leaves(){
+		return array_diff($this->list_range_of_cheque_leaves(), $this->get_utilized_cheques());
+	}	
+	
 	
 	/**
 	 * End - These methods calculates total incomes and expenses for the mont per account - Required to be optimized
@@ -715,11 +778,14 @@ final class Journal extends Layout implements Initialization{
 		$project_details = $this->get_project_details();
 		$data['bank_code'] = $project_details->bankID;
 		$data['civ_accounts'] = $this->accounts_with_open_icp_civs();// To be removed
+		$data['last_cheque_book'] = $this->get_latest_cheque_book();
+		$data['unused_cheque_leaves'] = $this->get_unused_cheque_leaves();
 		
 		$data['view'] = $this->get_view();
 		
 		return $data;
 	}
+	
 
 	protected function pre_render_cheque_book(){
 		
@@ -733,6 +799,8 @@ final class Journal extends Layout implements Initialization{
 		$data['banks'] = $this->_get_banks();
 		$project_details = $this->get_project_details();
 		$data['project_bank_id'] = $project_details->bankID;
+		$data['last_cheque_used'] = $this->get_last_cheque_used();
+		$data['last_cheque_book'] = $this->get_latest_cheque_book();
 		return $data;
 	}
 

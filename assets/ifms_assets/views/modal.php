@@ -12,7 +12,7 @@
 }
 
 .modal-dialog {
-  min-width: 50%;
+  min-width: 60%;
   max-height: 100%;
   margin: 0;
   padding: 0;

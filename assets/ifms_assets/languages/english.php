@@ -75,6 +75,36 @@
 	$lang['income']						= 'Income';
 	$lang['expense']					= 'Expense';
 	$lang['end_month_balance']			= 'End Month Balance';
-	
+	$lang['project']					= 'FCP Number';
+	$lang['start_date']					= 'Start Date';
+	$lang['start_serial']				= 'Start Serial';
+	$lang['leaves']						= 'Leaves';
+	$lang['last_cheque_book']			= 'Last Cheque Booklet';
+	$lang['last_used_cheque']			= 'Last Used Cheque';
+	$lang['cheque_leaves']				= 'Cheque Leaves';
+	$lang['select_cheque']				= 'Select a Cheque';
+	$lang['vouching_failure']			= 'Voucher posting failed';
+	$lang['vouching_success']			= 'Voucher posted successful';
+	$lang['cheque_booklet_exhausted']	= 'Cheque Booklet Exhausted. Please order a new one';
+	$lang['edit']						= 'Edit';
+	$lang['action']						= 'Action';
+	$lang['often']						= 'How Often';
+	$lang['validate']					= 'Validate';
+	$lang['jul']						= 'Jul';
+	$lang['aug']						= 'Aug';
+	$lang['sep']						= 'Sep';
+	$lang['oct']						= 'Oct';
+	$lang['nov']						= 'Nov';
+	$lang['dec']						= 'Dec';
+	$lang['jan']						= 'Jan';
+	$lang['feb']						= 'Feb';
+	$lang['mar']						= 'Mar';
+	$lang['apr']						= 'Apr';
+	$lang['may']						= 'May';
+	$lang['jun']						= 'Jun';
+	$lang['status']						= 'Status';
+	$lang['last_action_date']			= 'Last Action Date';
+	$lang['fy']							= 'Financial Year';
+	$lang['submit_date']				= 'Submit Date';
 	
 	

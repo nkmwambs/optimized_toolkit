@@ -1,5 +1,6 @@
 <?php
-//print_r();
+//print_r($this->get_unused_cheque_leaves());
+
 ?>
 <style> .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; } .toggle.ios .toggle-handle { border-radius: 20px; } </style>
 <hr/>
@@ -98,7 +99,23 @@
 						                    	</div>
 						                    </td>
 						                    
-						                 	<td colspan="4">
+						                    <td colspan="2">
+						                    	<div class="col-sm-12 form-group">
+						                    		<label class="control-label"><?=$this->l('cheque_leaves');?></label>
+						                    		<select id="cheque_selector" disabled="disabled" class="form-control">
+						                    			<option><?=$this->l('select_cheque');?></option>
+						                    			<?php 
+						                    				foreach($unused_cheque_leaves as $cheque){
+						                    			?>
+						                    				<option><?=$cheque;?></option>
+						                    			<?php
+															}
+						                    			?>
+						                    		</select>
+						                    	</div>	
+						                    </td>
+						                    
+						                 	<td colspan="2">
 						                    	<label  for="reversal" class="col-sm-12"><span style="font-weight: bold;"><?=$this->l('cheque_reversal');?></span> 
 													<div class="col-sm-12">
 															<input type="checkbox" data-on="<?=$this->l('enabled');?>" data-off="<?=$this->l('disabled');?>" data-onstyle="danger" 
@@ -291,15 +308,21 @@
 		
 	});
 	
+	$("#cheque_selector").change(function(){
+		$('#ChqNo').val($(this).val());
+	});
+	
 	$("#VTypeMain").change(function(){
 		
 		var val = $(this).val();
 		add_row();
 		if(val==='CHQ'){
 			$('#ChqNo').removeAttr('readonly');
+			$("#cheque_selector").removeAttr("disabled");
 		}else{
 			$('#ChqNo').val("");
 			$('#ChqNo').prop('readonly','readonly');
+			$("#cheque_selector").prop("disabled","disabled");
 		}
 	});
 	
@@ -521,6 +544,9 @@
 		var bank_code = <?=$bank_code;?>;
 		var code_chqno = chqno+"-"+bank_code;
 		
+		var booklet_range = <?=json_encode($this->list_range_of_cheque_leaves());?>
+		
+		
 		var obj = <?=json_encode($cheques_utilized);?>;
 
 		var chqno_exists = false;
@@ -592,6 +618,20 @@
 				}
 				
 				
+			}
+		}
+		else{
+			chqno_exists = false;
+			for(i=0;i<booklet_range.length;i++){
+				if(booklet_range[i] == chqno){
+					chqno_exists = true;
+					return false;
+				}
+			}
+			
+			if(!chqno_exists){
+				alert("You can't use a cheque number not in the current cheque booklet or your leaves are all used");
+				$(this).val("");
 			}
 		}
 		

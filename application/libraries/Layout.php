@@ -196,12 +196,14 @@ class Layout {
 		if(!isset($lib)) $lib = 'journal';
 		if(!isset($scroll)) $scroll = 0;
 		if(!isset($assetview)) $assetview = 'show_journal';
+		if(!isset($fy)) $fy = $this->get_current_fy();
 			
 		$this->lib_url = base_url().$this->get_controller()."/".$this->get_method()."?";
 		$this->lib_url .= "assetview=".$assetview."&project=".$this->get_project_id();
 		$this->lib_url .= "&startdate=".$startdate."&enddate=".$enddate;
 		$this->lib_url .= "&lib=".$lib;
 		$this->lib_url .= "&scroll=".$scroll;
+		$this->lib_url .= "&fy=".$fy;
 		
 		if(isset($voucher)){
 			$this->lib_url .= "&voucher=".$voucher;
@@ -276,7 +278,9 @@ class Layout {
 	 */
 	protected function get_current_fy(){
 		$count = $this->config->fy_start_month - 1;
-		return date('y',strtotime("+".$count." months",$this->get_start_date_epoch()));
+		$fy = date('y',strtotime("+".$count." months",$this->get_start_date_epoch()));
+		if($this->CI->input->get('fy')) $fy = $this->CI->input->get('fy');
+		return $fy;
 	}
 	
 	protected function get_fy_start_date(){
