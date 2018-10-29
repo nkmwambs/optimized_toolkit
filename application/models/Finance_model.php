@@ -207,6 +207,32 @@ class Finance_model extends CI_Model{
 		return $result;
 	}
 	
+	function get_budgeted_accounts($requirebudget="1",$type){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_budgeted_accounts(?,?)",array($requirebudget,$type));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
+	function get_account_choices($accNo=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_account_choices(?)",array($accNo));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
 	function get_current_approved_budget($icpNo="",$fy=""){
 		try{
 			$this->db->reconnect();
@@ -244,6 +270,56 @@ class Finance_model extends CI_Model{
 		}
 		
 		return $result;
+	}
+	
+	function create_budget_header($icpNo="",$fy=""){
+		$flag = false;	
+		
+		$this->db->insert("planheader",array("fy"=>$fy,"icpNo"=>$icpNo));
+		
+		if($this->db->affected_rows()>0){
+			$flag = true;
+		}
+		
+		return $flag;
+	}
+	
+	function insert_budget_schedule($icpNo="",$post_array=array()){
+		
+		$msg = "Posting failed";
+		
+		//Get Planheaderid
+		$planheaderid = 0;
+		
+		if($this->db->get_where("planheader",array("icpNo"=>$icpNo,"fy"=>$post_array['fy']))->num_rows()>0){
+			$planheaderid = $this->db->get_where("planheader",array("icpNo"=>$icpNo,"fy"=>$post_array['fy']))->row()->planHeaderID;
+		}
+		
+		//Insert if planheader is found
+		if($planheaderid > 0){
+			$data['planHeaderID'] = $planheaderid;
+			$data['AccNo'] = $post_array['AccNo'];
+			$data['details'] = $post_array['details'];
+			$data['qty'] = $post_array['qty'];
+			$data['unitCost'] = $post_array['unitCost'];
+			$data['often'] = $post_array['often'];
+			$data['totalCost'] = $post_array['totalCost'];
+			
+			$range = range(1, 12);
+			foreach($range as $month){
+				$data['month_'.$month.'_amount'] = $post_array['month_'.$month.'_amount'];
+			}
+			
+			$data['notes'] = $post_array['notes'];	
+			
+			$this->db->insert("plansschedule",$data);
+			
+			if($this->db->affected_rows()>0){
+				$msg = "Item Posted Successful";
+			}					
+		}
+		
+		echo $msg;
 	}
 	
 	function get_cheques_utilized_with_bank_code($icpNo=""){

@@ -291,6 +291,34 @@ class Layout {
 		return date('Y-'.$month.'-01',strtotime("-".$count." months",$this->get_start_date_epoch()));
 	}
 	
+	     /**
+         * Gets list of months in an FY
+         * @param  int $start Unix timestamp
+         * @return array
+         */
+        function get_range_of_fy_months(){
+        	
+			$start = strtotime($this->get_fy_start_date());
+        	$end = strtotime(date('Y-m-01',strtotime("+11 months",strtotime($this->get_fy_start_date()))));
+
+            $current = $start;
+            $ret = array(date("m",$start));
+
+            while( $current<$end ){
+                
+                $next = date('Y-m-01', $current) . "+1 month";
+                $current = strtotime($next);
+                $ret[] = date("m",$current);
+            }
+
+            return $ret;
+        }
+		
+	function get_month_name_from_number($month_num=""){
+		$month_name = date("M", mktime(0, 0, 0, $month_num, 10));
+		return $month_name;
+	} 	
+	
 	protected function get_months_elapsed(){
 	 	// @link http://www.php.net/manual/en/class.datetime.php
 		$d1 = new DateTime($this->get_fy_start_date());

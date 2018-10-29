@@ -45,6 +45,30 @@
 	</div>
 </div>
 <hr />
+<div class="row">
+	<div class="<?=$this->get_column_size();?>">
+		<ul class="nav nav-pills">
+			<li>
+				<div class="btn-group left-dropdown">
+					<a class="btn btn-default" href="<?=$this->get_url(array("assetview"=>"create_budget_item","lib"=>"budget","scroll"=>$this->get_scroll()));?>"><?=$this->l('action');?></a>
+						<button type="button" class="btn btn-green dropdown-toggle" data-toggle="dropdown">
+							<span class="caret"></span>
+						</button>
+								
+						<ul class="dropdown-menu dropdown-green" role="menu">
+							<li><a href="<?=$this->get_url(array("assetview"=>"create_budget_item","lib"=>"budget"));?>"><?=$this->l('create_budget_item')?></a></li>
+							<li class="divider"></li>
+							<li><a href="#" onclick="confirm_ajax_action('<?=$this->get_url(array('assetview'=>'ajax_mass_submit_budget','lib'=>'budget'))?>')"><?=$this->l('mass_submit_budget')?></a></li>
+							<li class="divider"></li>
+							<li><a href="#" onclick="showAjaxModal('<?=$this->get_url(array("assetview"=>"clone_budget","lib"=>"budget"));?>')"><?=$this->l('clone_budget')?></a></li>
+							<li class="divider"></li>
+							<li><a href="#" onclick="confirm_ajax_action('<?=$this->get_url(array("assetview"=>"ajax_delete_budget","lib"=>"budget"));?>')"><?=$this->l('delete_budget')?></a></li>
+							<li class="divider"></li>
+						</ul>
+				</div>	
+	</div>
+</div>
+<hr />
 <div id="budget_print">
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
@@ -254,7 +278,7 @@
 </div>
 
 <script>
-		var spinner = $( "#spinner" ).spinner();
+	var spinner = $( "#spinner" ).spinner();
 	
 	$("#spinner_btn").click(function(ev){
 		var url = '<?=$this->get_url(array('assetview'=>'show_budget','lib'=>'budget'));?>&fy='+$("#spinner").val();
@@ -276,4 +300,5 @@
 		    formValues: true          
 		});
     }
+    
 </script>

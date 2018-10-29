@@ -154,4 +154,45 @@
 	$("#modal_ajax, #modal-5, #modal-4").draggable({
 	    handle: ".modal-header"
 	});
-</script>	      
+	
+	function confirm_ajax_action(url){
+		$.ajax({
+    		url:url,
+    		beforeSend:function(){
+    			$("#overlay").css("display","block");
+    		},
+    		success:function(resp){
+    			$("#overlay").css("display","none");
+    			alert(resp);
+    		},
+    		error:function(){
+    			
+    		}
+    	});
+	}
+</script>
+
+
+<style>
+	#overlay {
+    position: fixed; /* Sit on top of the page content */
+    display: none; /* Hidden by default */
+    width: 100%; /* Full width (cover the whole page) */
+    height: 100%; /* Full height (cover the whole page) */
+    top: 0; 
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5); /* Black background with opacity */
+    z-index: 2; /* Specify a stack order in case you're using a different order for other elements */
+    cursor: pointer; /* Add a pointer on hover */
+}
+
+#overlay img{
+	display: block;
+	margin-left: auto;
+    margin-right: auto;
+} 
+</style>
+
+<div id="overlay"><img src='<?php echo base_url()."assets/ifms_assets/images/preloader4.gif";?>'/></div>	      

@@ -106,5 +106,11 @@
 	$lang['last_action_date']			= 'Last Action Date';
 	$lang['fy']							= 'Financial Year';
 	$lang['submit_date']				= 'Submit Date';
-	
-	
+	$lang['create_budget_item']			= 'Create Budget Item';
+	$lang['mass_submit_budget']			= 'Mass Submit Budget';
+	$lang['clone_budget']				= 'Clone Budget';
+	$lang['delete_budget']				= 'Delete Budget';
+	$lang['new_bugdet_item']			= 'New Budget Item';
+	$lang['budget_tag']					= 'Budget Tag';
+	$lang['notes_here']					= 'Write Your Notes Here';
+	$lang['select_tag']					= 'Select a Tag';

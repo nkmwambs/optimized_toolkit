@@ -1,4 +1,16 @@
 DELIMITER $$
+CREATE  PROCEDURE `get_budgeted_accounts`(IN `reqbudget` INT(5), IN `type` INT(5))
+BEGIN
+
+IF type IS NULL THEN 
+SELECT * FROM accounts WHERE budget = reqbudget  ORDER BY AccNo;
+ELSE 
+SELECT * FROM accounts WHERE AccGRP = type AND budget = reqbudget ORDER By AccNo;
+END IF;
+END$$
+DELIMITER ;
+
+DELIMITER $$
 CREATE  PROCEDURE `get_accounts`(IN `type` INT(5))
 BEGIN
 
@@ -15,6 +27,39 @@ CREATE  PROCEDURE `get_banks`()
 BEGIN
 
 SELECT * FROM banks;
+
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `get_budget_schedules`(IN `icp` VARCHAR(6), IN `fyr` INT(2))
+BEGIN
+
+SELECT planheader.icpNo,planheader.fy,accounts.AccText,accounts.AccName,plansschedule.AccNo,parentAccID,plansschedule.scheduleID,qty,unitCost,often,plansschedule.totalCost,plansschedule.details,plansschedule.approved,month_1_amount,month_2_amount,month_3_amount,month_4_amount,month_5_amount,month_6_amount,month_7_amount,month_8_amount,month_9_amount,month_10_amount,month_11_amount,month_12_amount,notes,approved,submitDate,stmp 
+FROM planheader LEFT JOIN plansschedule ON 
+planheader.planHeaderID=plansschedule.planHeaderID 
+LEFT JOIN accounts ON 
+accounts.AccNo=plansschedule.AccNo
+WHERE planheader.fy = fyr AND planheader.icpNo = icp ORDER BY AccNo;
+
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `get_approved_budget_spread`(IN `icp` VARCHAR(6), IN `fyr` INT(5))
+BEGIN
+
+SELECT plansschedule.scheduleID,planheader.icpNo,planheader.fy,plansschedule.AccNo,plansschedule.totalCost,plansschedule.details,plansschedule.approved,month_1_amount,month_2_amount,month_3_amount,month_4_amount,month_5_amount,month_6_amount,month_7_amount,month_8_amount,month_9_amount,month_10_amount,month_11_amount,month_12_amount 
+FROM planheader LEFT JOIN plansschedule ON planheader.planHeaderID=plansschedule.planHeaderID WHERE planheader.fy = fyr AND planheader.icpNo = icp AND plansschedule.approved = 2;
+
+END$$
+DELIMITER ;
+
+DELIMITER $$
+CREATE  PROCEDURE `get_account_choices`(IN `accNo` INT(5))
+BEGIN
+
+SELECT * FROM plan_item_choice WHERE AccNo = accNo ORDER By name;
 
 END$$
 DELIMITER ;
@@ -42,16 +87,6 @@ DELIMITER $$
 CREATE  PROCEDURE `get_cheques_utilized`(IN `icp` VARCHAR(6))
 BEGIN
 SELECT ChqNo,sum(totals) as totals FROM voucher_header WHERE icpNo = icp AND VType='CHQ' GROUP BY ChqNo;
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `get_approved_budget_spread`(IN `icp` VARCHAR(6), IN `fyr` INT(5))
-BEGIN
-
-SELECT plansschedule.scheduleID,planheader.icpNo,planheader.fy,plansschedule.AccNo,plansschedule.totalCost,plansschedule.details,plansschedule.approved,month_1_amount,month_2_amount,month_3_amount,month_4_amount,month_5_amount,month_6_amount,month_7_amount,month_8_amount,month_9_amount,month_10_amount,month_11_amount,month_12_amount 
-FROM planheader LEFT JOIN plansschedule ON planheader.planHeaderID=plansschedule.planHeaderID WHERE planheader.fy = fyr AND planheader.icpNo = icp AND plansschedule.approved = 2;
-
 END$$
 DELIMITER ;
 
@@ -233,20 +268,6 @@ FROM voucher_body
 LEFT JOIN voucher_header ON voucher_header.hID=voucher_body.hID  
 LEFT JOIN accounts ON accounts.AccNo=voucher_body.AccNo 
 WHERE voucher_header.icpNo = icpNo AND voucher_header.TDate BETWEEN start_date AND end_date;
-
-END$$
-DELIMITER ;
-
-DELIMITER $$
-CREATE  PROCEDURE `get_budget_schedules`(IN `icp` VARCHAR(6), IN `fyr` INT(2))
-BEGIN
-
-SELECT planheader.icpNo,planheader.fy,accounts.AccText,accounts.AccName,plansschedule.AccNo,parentAccID,plansschedule.scheduleID,qty,unitCost,often,plansschedule.totalCost,plansschedule.details,plansschedule.approved,month_1_amount,month_2_amount,month_3_amount,month_4_amount,month_5_amount,month_6_amount,month_7_amount,month_8_amount,month_9_amount,month_10_amount,month_11_amount,month_12_amount,notes,approved,submitDate,stmp 
-FROM planheader LEFT JOIN plansschedule ON 
-planheader.planHeaderID=plansschedule.planHeaderID 
-LEFT JOIN accounts ON 
-accounts.AccNo=plansschedule.AccNo
-WHERE planheader.fy = fyr AND planheader.icpNo = icp ORDER BY AccNo;
 
 END$$
 DELIMITER ;
