@@ -49,9 +49,9 @@
 								</button>
 								
 								<ul class="dropdown-menu dropdown-green" role="menu">
-									<li><a href="#"><?=$this->l('budget_summary');?></a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>'show_budget_summary',"lib"=>'budget'));?>"><?=$this->l('budget_summary');?></a></li>
 									<li class="divider"></li>
-									<li><a href="#"><?=$this->l('budget_schedules');?></a></li>
+									<li><a href="<?=$this->get_url(array("assetview"=>'show_budget_schedules',"lib"=>'budget'));?>"><?=$this->l('budget_schedules');?></a></li>
 									
 								</ul>
 							</div>

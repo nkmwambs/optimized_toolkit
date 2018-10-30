@@ -233,6 +233,35 @@ class Finance_model extends CI_Model{
 		return $result;
 	}
 	
+	function submit_draft_budget_item($scheduleID=""){
+		$this->db->where(array("scheduleID"=>$scheduleID));
+		//$data['approved'] = 1;
+		$data = array("approved"=>1,"submitDate"=>date("Y-m-d h:i:s"));
+		$this->db->update("plansschedule",$data);
+		
+		if($this->db->affected_rows()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	function mass_submit_draft_budget_items($icpNo="",$fy=""){
+		//Get Planheaderid	
+		$planHeaderID = $this->db->get_where("planheader",array("fy"=>$fy,'icpNo'=>$icpNo))->row()->planHeaderID;
+		
+		//Update all items for the headerid
+		$this->db->where(array("planHeaderID"=>$planHeaderID,"approved"=>0));
+		$data = array("approved"=>1,"submitDate"=>date("Y-m-d h:i:s"));
+		$this->db->update("plansschedule",$data);
+		
+		if($this->db->affected_rows()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}	
+	
 	function get_current_approved_budget($icpNo="",$fy=""){
 		try{
 			$this->db->reconnect();

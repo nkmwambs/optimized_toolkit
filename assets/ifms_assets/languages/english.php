@@ -114,3 +114,12 @@
 	$lang['budget_tag']					= 'Budget Tag';
 	$lang['notes_here']					= 'Write Your Notes Here';
 	$lang['select_tag']					= 'Select a Tag';
+	$lang['submit']						= 'Submit';
+	$lang['allow_delete']				= 'Allow Delete';
+	$lang['draft']						= 'Draft';
+	$lang['submitted']					= 'Submitted';
+	$lang['approved']					= 'Approved';
+	$lang['declined']					= 'Declined';
+	$lang['reinstated']					= 'Reinstated';
+	$lang['notes']						= "Notes";
+	

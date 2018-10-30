@@ -104,6 +104,30 @@ final class Budget extends Layout implements Initialization{
 		return $data;
 	}
 	
+	function pre_render_ajax_mass_submit_budget_items(){
+		$msg = 1;
+		$fy = $this->CI->input->post('fy');
+		$result = $this->basic_model->mass_submit_draft_budget_items($this->get_project_id(),$fy);
+		
+		if(!$result){
+			$msg = "No item updated";
+		}
+		
+		echo $msg;
+	}
+	
+	function pre_render_ajax_submit_budget_item(){
+		$msg = 1;
+		$scheduleID = $this->CI->input->post('scheduleID');
+		$result = $this->basic_model->submit_draft_budget_item($scheduleID);
+		
+		if(!$result){
+			$msg = "No item updated";
+		}
+		
+		echo $msg;
+	}
+	
 	function pre_render_ajax_get_choices_for_account(){
 			
 		$choices = $this->get_account_choices();
@@ -142,6 +166,28 @@ final class Budget extends Layout implements Initialization{
 		$data['budget_status'] = $this->list_budget_status();
 		
 		$data['view'] = "show_budget";
+		
+		return $data;
+	}
+	
+	protected function pre_render_show_budget_schedules(){
+		$data['budget_items'] = $this->group_schedules_by_accno();
+		$data['income_accounts'] = $this->group_income_accounts_by_accid();
+		$data['budget_status'] = $this->list_budget_status();
+		$this->load_alone = TRUE;
+		
+		$data['view'] = "show_budget_schedules";
+		
+		return $data;
+	}
+	
+	protected function pre_render_show_budget_summary(){
+		$data['budget_items'] = $this->group_schedules_by_accno();
+		$data['income_accounts'] = $this->group_income_accounts_by_accid();
+		$data['budget_status'] = $this->list_budget_status();
+		$this->load_alone = TRUE;
+		
+		$data['view'] = "show_budget_summary";
 		
 		return $data;
 	}

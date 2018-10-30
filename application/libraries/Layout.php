@@ -58,7 +58,7 @@ class Layout {
 	
 	protected $config;
 	
-	private $column_size = "col-sm-offset-1 col-sm-10 col-sm-offset-1";
+	private $column_size;
 	
 	private $lang_strings = array();
 	
@@ -123,7 +123,7 @@ class Layout {
 	}
 	
 	protected function get_column_size(){
-		return $this->column_size;
+		return $this->config->column_size;
 	}
 	
 	public function set_language($locale="english"){
@@ -162,6 +162,7 @@ class Layout {
 		/** Initialize all the config variables into this object */
 		$this->config->default_language 	= $this->CI->config->item('finance_default_language');
 		$this->config->fy_start_month	 	= $this->CI->config->item('fy_start_month');
+		$this->config->column_size	 	= $this->CI->config->item('column_size');
 		
 	}	
 	
