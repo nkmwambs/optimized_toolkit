@@ -58,6 +58,7 @@
 			   	title:'Information',
 				message: msg,
 				cssClass:'dialog-alert',
+				draggable: true,
 				buttons:[
 					{
 						label:'Close',

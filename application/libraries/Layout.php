@@ -398,6 +398,10 @@ class Layout {
 		$this->js_files[sha1($js_file)] = base_url().$js_file;		
 	}
 	
+	private function set_js_cdn($cdn_link){
+		 $this->js_files[sha1($cdn_link)] = $cdn_link;
+	}
+	
 	/**
 	 * Load JS - Loads all JS files to the js_files parameter
 	 *
@@ -418,7 +422,11 @@ class Layout {
 		$this->set_js_files($this->default_js_path.'datepicker/js/bootstrap-datepicker.min.js');
 		$this->set_js_files($this->default_js_path.'bootstrap-toggle/js/bootstrap-toggle.min.js');
 		$this->set_js_files($this->default_js_path.'bootstrap-dialog/js/bootstrap-dialog.min.js');
-		$this->set_js_files($this->default_js_path.'sys.js');
+		$this->set_js_files($this->default_js_path.'select2/select2.min.js');
+		$this->set_js_cdn("https://cloud.tinymce.com/stable/tinymce.min.js");
+		//$this->set_js_cdn("https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js");
+		$this->set_js_files($this->default_js_path.'ckeditor/ckeditor.js');
+		$this->set_js_files($this->default_js_path.'custom.js');
 		
 		return $this->js_files;
 	}
@@ -442,6 +450,8 @@ class Layout {
 		$this->set_css_files($this->default_css_path.'datepicker/css/bootstrap-datepicker.min.css');
 		$this->set_css_files($this->default_css_path.'bootstrap-toggle/css/bootstrap-toggle.min.css');
 		$this->set_css_files($this->default_css_path.'bootstrap-dialog/css/bootstrap-dialog.min.css');
+		$this->set_css_files($this->default_css_path.'select2/select2-bootstrap.css');
+		$this->set_css_files($this->default_css_path.'select2/select2.css');
 		
 		return $this->css_files;
 	}

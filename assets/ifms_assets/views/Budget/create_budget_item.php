@@ -142,7 +142,8 @@
 							
 							<div class="form-group">
 								<div class="col-xs-12">
-									<textarea rows="8" name="notes" id="notes" class="form-control toclear textField" placeholder="<?=$this->l("notes_here")?>" required="required"></textarea>
+									<textarea rows="8" id="notes" class="form-control textField" placeholder="<?=$this->l("notes_here")?>" required="required"></textarea>
+									<textarea name="notes" id="hidden_notes" class="toclear hidden"></textarea>
 								</div>
 								
 							</div>
@@ -160,6 +161,9 @@
 </div>		
 
 <script>
+$(document).ready(function(){
+	CKEDITOR.replace('notes');
+});
 	$(".calc_cost").change(function(){
 		var cost = 1;
 		$(".calc_cost").each(function(idx){
@@ -181,6 +185,10 @@
 	
 	$("#create_budget_item_form").submit(function(ev){
 		var check_spread = false;
+		var editor_data = CKEDITOR.instances.notes.getData();
+		//alert(editor_data);
+		$("#hidden_notes").val(editor_data);
+		
 		//Check if spread is correct
 		var sum_spread = 0;
 		$(".amount_spread").each(function(){
@@ -190,6 +198,7 @@
 		check_spread = parseFloat($("#totalCost").val()) == parseFloat(Math.round(sum_spread));
 		
 		if(check_spread){
+			
 			$.ajax({
 				url:'<?=$this->get_url(array("assetview"=>'ajax_budget_item_posting',"lib"=>'budget'));?>',
 				beforeSend:function(){
@@ -205,6 +214,7 @@
 							$(this).val("");	
 						}
 					});
+					CKEDITOR.instances.notes.setData("");
 					alert(resp);
 				},
 				error:function(){

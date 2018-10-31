@@ -128,6 +128,18 @@ final class Budget extends Layout implements Initialization{
 		echo $msg;
 	}
 	
+	function pre_render_ajax_delete_budget_item(){
+		$msg = 1;
+		$scheduleID = $this->CI->input->post('scheduleID');
+		$result = $this->basic_model->delete_budget_item($scheduleID);
+		
+		if(!$result){
+			$msg = "No item updated";
+		}
+		
+		echo $msg;
+	}
+	
 	function pre_render_ajax_get_choices_for_account(){
 			
 		$choices = $this->get_account_choices();
@@ -157,6 +169,28 @@ final class Budget extends Layout implements Initialization{
 			$msg = $this->basic_model->insert_budget_schedule($this->get_project_id(),$this->CI->input->post());
 		}
 		return $msg;
+	}
+	
+	function pre_render_ajax_budget_item_editing(){
+		$msg = "Operation failed";
+
+		//Post the schedule item
+		$msg = $this->basic_model->edit_budget_schedule($this->get_project_id(),$this->CI->input->post(),$this->CI->input->get('voucher'));
+		
+		return $msg;		
+	}
+	
+	function pre_render_ajax_budget_item_reinstating(){
+		$msg = "Operation failed";
+
+		//Post the schedule item
+		$msg = $this->basic_model->reinstating_budget_schedule($this->get_project_id(),$this->CI->input->post(),$this->CI->input->get('voucher'));
+		
+		return $msg;
+	}
+	
+	function pre_render_ajax_post_budget_notes(){
+		$this->basic_model->post_budget_notes($this->CI->input->post());
 	}
 	
 	protected function pre_render_show_budget(){
@@ -202,5 +236,50 @@ final class Budget extends Layout implements Initialization{
 		return $data;
 	}
 	
+	function get_budget_schedule_by_id($scheduleid=""){
+		return $this->basic_model->get_budget_schedules_by_id($scheduleid);
+	}
+	
+	function get_schedule_comments($scheduleid=""){
+		return $this->basic_model->get_schedule_comments($scheduleid);
+	}
+	
+	protected function pre_render_edit_budget_item(){
+		$data['scheduleitem'] = $this->get_budget_schedule_by_id($this->CI->input->get('voucher'));
+		
+		$data['choices'] = $this->get_account_choices();
+		$data['budget_items'] = $this->group_schedules_by_accno();
+		$data['income_accounts'] = $this->group_income_accounts_by_accid();
+		$data['accounts'] = $this->get_accounts_grouped_by_income();
+		$data['reinstate'] = false;
+		$data['view'] = "edit_budget_item";
+		
+		return $data;
+	}
+	
+	protected function pre_render_reinstate_budget_item(){
+		$data['scheduleitem'] = $this->get_budget_schedule_by_id($this->CI->input->get('voucher'));
+		
+		$data['choices'] = $this->get_account_choices();
+		$data['budget_items'] = $this->group_schedules_by_accno();
+		$data['income_accounts'] = $this->group_income_accounts_by_accid();
+		$data['accounts'] = $this->get_accounts_grouped_by_income();
+		$data['reinstate'] = true;
+		$data['view'] = "edit_budget_item";
+		
+		return $data;
+	}
+	
+	protected function pre_render_show_budget_notes(){
+		$data['notes'] = $this->get_budget_schedule_by_id($this->CI->input->get('voucher'))->notes;
+		$data['view'] = 'show_budget_notes';
+		return $data;
+	}
+	
+	protected function pre_render_show_budget_comments(){
+		$data['comments'] = $this->get_schedule_comments($this->CI->input->get('voucher'));
+		$data['view'] = 'show_budget_comments';
+		return $data;
+	}
 
 }

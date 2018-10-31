@@ -220,6 +220,19 @@ class Finance_model extends CI_Model{
 		return $result;
 	}
 	
+	function get_schedule_comments($scheduleID=""){
+		// try{
+			// $this->db->reconnect();
+			// $query = $this->db->query("CALL get_schedule_comments(?)",array($scheduleID));
+			// $result = $query->num_rows()>0?$query->result_object():array();
+			// $this->db->close();
+		// }catch(Exception $e){
+			// echo "Message: ".$e->getMessage();
+		// }
+// 		
+		// return $result;
+	}	
+	
 	function get_account_choices($accNo=""){
 		try{
 			$this->db->reconnect();
@@ -245,6 +258,18 @@ class Finance_model extends CI_Model{
 			return false;
 		}
 	}
+
+	function delete_budget_item($scheduleID=""){
+		$this->db->where(array("scheduleID"=>$scheduleID));
+		
+		$this->db->delete("plansschedule");
+		
+		if($this->db->affected_rows()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}	
 
 	function mass_submit_draft_budget_items($icpNo="",$fy=""){
 		//Get Planheaderid	
@@ -301,6 +326,19 @@ class Finance_model extends CI_Model{
 		return $result;
 	}
 	
+	function get_budget_schedules_by_id($scheduleid=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_budget_schedules_by_id(?)",array($scheduleid));
+			$result = $query->num_rows()>0?$query->row():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}	
+	
 	function create_budget_header($icpNo="",$fy=""){
 		$flag = false;	
 		
@@ -345,6 +383,89 @@ class Finance_model extends CI_Model{
 			
 			if($this->db->affected_rows()>0){
 				$msg = "Item Posted Successful";
+			}					
+		}
+		
+		echo $msg;
+	}
+	
+	function edit_budget_schedule($icpNo="",$post_array=array(),$scheduleid=""){
+		
+		$msg = "Posting failed";
+		
+		//Get Planheaderid
+		$planheaderid = 0;
+		
+		if($this->db->get_where("planheader",array("icpNo"=>$icpNo,"fy"=>$post_array['fy']))->num_rows()>0){
+			$planheaderid = $this->db->get_where("planheader",array("icpNo"=>$icpNo,"fy"=>$post_array['fy']))->row()->planHeaderID;
+		}
+		
+		//Insert if planheader is found
+		if($planheaderid > 0){
+			$data['planHeaderID'] = $planheaderid;
+			$data['AccNo'] = $post_array['AccNo'];
+			$data['details'] = $post_array['details'];
+			$data['qty'] = $post_array['qty'];
+			$data['unitCost'] = $post_array['unitCost'];
+			$data['often'] = $post_array['often'];
+			$data['totalCost'] = $post_array['totalCost'];
+			
+			$range = range(1, 12);
+			foreach($range as $month){
+				$data['month_'.$month.'_amount'] = $post_array['month_'.$month.'_amount'];
+			}
+			
+			$data['notes'] = $post_array['notes'];	
+			$this->db->where(array("scheduleID"=>$scheduleid));
+			$this->db->update("plansschedule",$data);
+			
+			if($this->db->affected_rows()>0){
+				$msg = "Item Edited Successful";
+			}					
+		}
+		
+		echo $msg;
+	}	
+	
+	function post_budget_notes($post_array=array()){
+		$this->db->where(array("scheduleID"=>$post_array['scheduleID']));
+		$data['notes'] = $post_array['notes'];
+		$this->db->update("plansschedule",$data);
+	}
+	
+	function reinstating_budget_schedule($icpNo="",$post_array=array(),$scheduleid=""){
+		
+		$msg = "Posting failed";
+		
+		//Get Planheaderid
+		$planheaderid = 0;
+		
+		if($this->db->get_where("planheader",array("icpNo"=>$icpNo,"fy"=>$post_array['fy']))->num_rows()>0){
+			$planheaderid = $this->db->get_where("planheader",array("icpNo"=>$icpNo,"fy"=>$post_array['fy']))->row()->planHeaderID;
+		}
+		
+		//Insert if planheader is found
+		if($planheaderid > 0){
+			$data['planHeaderID'] = $planheaderid;
+			$data['AccNo'] = $post_array['AccNo'];
+			$data['details'] = $post_array['details'];
+			$data['qty'] = $post_array['qty'];
+			$data['unitCost'] = $post_array['unitCost'];
+			$data['often'] = $post_array['often'];
+			$data['totalCost'] = $post_array['totalCost'];
+			$data['approved'] = 4;
+ 			
+			$range = range(1, 12);
+			foreach($range as $month){
+				$data['month_'.$month.'_amount'] = $post_array['month_'.$month.'_amount'];
+			}
+			
+			$data['notes'] = $post_array['notes'];	
+			$this->db->where(array("scheduleID"=>$scheduleid));
+			$this->db->update("plansschedule",$data);
+			
+			if($this->db->affected_rows()>0){
+				$msg = "Item Reinstated Successful";
 			}					
 		}
 		

@@ -2,7 +2,7 @@
 include "utility_open_standalone.php";
 ?>
 <div class="row">
-	<div class="<?=$this->get_column_size();?>">
+	<div class="col-xs-12">
 		<table class="table table-bordered table-striped">
 			<thead>
 				<tr><th colspan="14"><?=$this->l("budget_summary");?></th></tr>

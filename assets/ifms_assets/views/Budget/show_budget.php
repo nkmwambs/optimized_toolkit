@@ -2,7 +2,10 @@
 <style>
 	@media print {
     	.page-break {page-break-after: always;}
+    	table{font-size:7pt;}
+    	@page {size: A4 landscape;}
 	}
+	
 </style>
 <hr />
 <div id="budget_print">
@@ -71,13 +74,20 @@
 </div>
 <hr />
 
-<!--Show Summary-->
-<?php include "show_budget_summary.php";?>
+<div class="row">
+	<div class="<?=$this->get_column_size();?>">
+		<!--Show Summary-->
+		<?php include "show_budget_summary.php";?>
+	</div>
+</div>
+
 <hr />
 <div class="page-break"></div>
-<div>
-	<!--Show Budget Schedules-->
-	<?php include "show_budget_schedules.php";?>
+<div class="row">
+	<div class="<?=$this->get_column_size();?>">
+		<!--Show Budget Schedules-->
+		<?php include "show_budget_schedules.php";?>
+	</div>
 </div>
 </div>
 

@@ -115,11 +115,15 @@
 	$lang['notes_here']					= 'Write Your Notes Here';
 	$lang['select_tag']					= 'Select a Tag';
 	$lang['submit']						= 'Submit';
-	$lang['allow_delete']				= 'Allow Delete';
+	$lang['allow_delete']				= 'Delete Allowable';
 	$lang['draft']						= 'Draft';
 	$lang['submitted']					= 'Submitted';
 	$lang['approved']					= 'Approved';
 	$lang['declined']					= 'Declined';
 	$lang['reinstated']					= 'Reinstated';
-	$lang['notes']						= "Notes";
-	
+	$lang['notes']						= 'Notes';
+	$lang['edit_bugdet_item']			= 'Edit Bugdet Item';
+	$lang['delete']						= 'Delete';
+	$lang['reinstate']					= 'Reinstate';
+	$lang['reinstate_bugdet_item']      = 'Reinstate Bugdet Item';
+	$lang['comments']					= 'Comments';
