@@ -42,19 +42,54 @@
 				echo form_open('', array('id'=>'frmLoad','class' => 'form-horizontal form-groups-bordered validate',"autocomplete"=>"off",'enctype' => 'multipart/form-data'));
 			?>
 				<div class="form-group">
-					<label for="" class="control-label col-sm-2">Project</label>
+					
+					<!-- <div class="col-sm-4">
+						<select class="form-control">
+							<option value="">Select Your Role</option>
+							<option value="">Partnership Facilitator</option>
+							<option value="">FCP Staff</option>
+							<option value="">Other National Office Staff</option>
+						</select>
+					</div> -->
+					
 					<div class="col-sm-4">
-						<input type="text" class="form-control" name="icpNo" id="icpNo" />
+						<input type="text" class="form-control" name="icpNo" id="icpNo" placeholder="Your FCP ID" />
 					</div>
+					
 					<div class="col-sm-2">
-						<a href="#" id="journal" class="btn btn-default submit pull-left">Go To Journal</a>
+						<div class="btn btn-default" id="go-btn">Go</div>
 					</div>
-					<div class="col-sm-2">
-						<a href="#" id="report" class="btn btn-default submit pull-left">Go To Report</a>
-					</div>
-					<div class="col-sm-2">
-						<a href="#" id="budget" class="btn btn-default submit pull-left">Go To Budget</a>
-					</div>
+					
+					<!--<div class="col-sm-4">
+						<select class="form-control" id="load_module">
+							<option value="">Select a Module</option>
+							<optgroup label="Journal Module">
+								<option value="show_journal-journal">Cash Journal</option>
+								<option value="create_voucher-journal">Create a Voucher</option>
+								<option value="cheque_book-journal">New Cheque Book</option>
+							</optgroup>
+							<optgroup label="Budget">
+								<option value="show_budget_summary-budget">Budget Summary</option>
+								<option value="show_budget_schedules-budget">Budget Schedules</option>
+								<option value="show_budget-budget">Full Budget</option>
+								<option value="create_budget_item-budget">Create Budget Item</option>
+							</optgroup>
+							<optgroup label="Financial Report">
+								<option value="show_fundbalance-report">Fund Balance Report</option>
+								<option value="show_proofcash-report">Proof Of Cash</option>
+								<option value="show_outstandingcheques-report">Outstanding Cheques</option>
+								<option value="show_transitdeposit-report">Transit Deposit</option>
+								<option value="show_clearedcheques-report">Cleared Cheques</option>
+								<option value="show_cleareddeposits-report">Cleared Deposits</option>
+								<option value="show_bankreconcile-report">Bank Reconciliation</option>
+								<option value="">Financial Ratios</option>
+								<option value="">Expense Breakdown</option>
+								<option value="">Bank Statements</option>
+								<option value="">Submit Report</option>
+							</optgroup>
+							
+						</select>
+					</div> -->
 				</div>
 				
 				
@@ -65,21 +100,18 @@
 <hr/>
 	
 <script>
-	$(".submit").click(function(ev){
+	$("#go-btn").click(function(){
 		var url = '<?=base_url();?>welcome/journal?assetview=show_journal&project='+$("#icpNo").val()+'&lib=journal';
-		if($(this).attr("id") == "report"){
-			url = '<?=base_url();?>welcome/journal?assetview=show_report&project='+$("#icpNo").val()+'&lib=report';
-		}else if($(this).attr("id") == "budget"){
-			url = '<?=base_url();?>welcome/journal?assetview=show_budget&project='+$("#icpNo").val()+'&lib=budget';
-		}
-
-		$(this).prop("href",url);
 		
+		if($("#icpNo").val()==""){
+			alert("Please provide a Project Number");
+			return false;
+		}
+		
+		location.href=url;
 	});
-	$(document).ready(function(){
-		//var language = window.navigator.userLanguage || window.navigator.language;
-		//alert(language);
-	});
+	
+	
 </script>	
 </body>
 </html>

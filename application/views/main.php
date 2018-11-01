@@ -19,9 +19,11 @@
 <?php endforeach; ?>
 	
 </head>
-<body class="page-body>
-	<div class="container">
-		<?php echo $output;?>
+<body class="page-body skins-blue">
+	<div class="page-container sidebar-collapsed">
+		<div style="margin: 20px;">
+			<?php echo $output;?>
+		</div>
 	</div>
 </body>
 </html>

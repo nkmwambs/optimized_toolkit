@@ -1,0 +1,9 @@
+#wrapper{
+	background-color:red;
+}
+
+div.dataTables_wrapper {
+        width: 100%;
+        margin: 0 auto;
+    }
+    

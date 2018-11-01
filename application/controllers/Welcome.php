@@ -37,7 +37,7 @@ class Welcome extends CI_Controller {
 	
 	public function journal(){
 		
-		$this->load->library('Finance',array('mod_name'=>$this->input->get("lib")));			
+		$this->load->library('Finance/Finance',array('mod_name'=>$this->input->get("lib")));			
 				
 		$output = $this->finance->render();
 	
