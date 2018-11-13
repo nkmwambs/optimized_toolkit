@@ -247,7 +247,7 @@ final class Journal extends Layout implements Initialization{
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['civaCode'] = $rows['civaCode'];
 			$cnt ++;
 		}
-		
+		 
 		return $transactions_container;
 	}
 	
