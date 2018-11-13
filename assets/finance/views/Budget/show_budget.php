@@ -20,18 +20,7 @@
 <hr class="hidden-print" />
 <div class="row hidden-print">
 		<div class="<?=$this->get_column_size();?>">
-			<form id="scroll" role="form" class="form-horizontal form-groups-bordered">
-				<div class="form-group hidden-print">
-					<label class="col-xs-3 pull-left control-label"><?=$this->l('fy')?>: </label>	
-						<div class="col-xs-5">
-							<input class=" pull-left" type="text" id="spinner" name="fy_scrolled" value="<?php echo $this->get_current_fy();?>" readonly="readonly"/>
-										
-						</div>
-					<div class="col-xs-2">
-						<a href="#" class="btn btn-default pull-left" id="spinner_btn"><?=$this->l('go');?></a>
-					</div>	
-				</div>
-			</form>
+			<?php $this->show_spinner("year",'budget','show_budget');?>
 		</div>
 </div>
 <hr class="hidden-print" />
@@ -94,12 +83,6 @@
 </div>
 
 <script>
-	var spinner = $( "#spinner" ).spinner();
-	
-	$("#spinner_btn").click(function(ev){
-		var url = '<?=$this->get_url(array('assetview'=>'show_budget','lib'=>'budget'));?>&fy='+$("#spinner").val();
-		$(this).prop("href",url);
-	});
 	
 	function PrintElem(elem)
     {

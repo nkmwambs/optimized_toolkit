@@ -193,6 +193,18 @@ class Finance_model extends CI_Model{
 		return $params;
 	}
 	
+	function get_trackable_expenses($icpNo="",$startdate="",$enddate=""){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_trackable_expenses(?,?,?)",array($icpNo,$startdate,$enddate));
+			$result = $query->num_rows()>0?$query->result_array():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
 		
 	function account_for_vouchers($param=null){
 		try{
@@ -248,7 +260,7 @@ class Finance_model extends CI_Model{
 	
 	function submit_draft_budget_item($scheduleID=""){
 		$this->db->where(array("scheduleID"=>$scheduleID));
-		//$data['approved'] = 1;
+
 		$data = array("approved"=>1,"submitDate"=>date("Y-m-d h:i:s"));
 		$this->db->update("plansschedule",$data);
 		
@@ -258,6 +270,25 @@ class Finance_model extends CI_Model{
 			return false;
 		}
 	}
+
+	function approve_budget_item($post_array=array()){
+		$this->db->where(array("scheduleID"=>$post_array['scheduleID']));
+
+		$data = array("approved"=>2);
+		
+		if(isset($post_array['trackable'])){
+			$data = array("approved"=>2,'trackable'=>$post_array['trackable']);	
+		}
+		
+		
+		$this->db->update("plansschedule",$data);
+		
+		if($this->db->affected_rows()>0){
+			return true;
+		}else{
+			return false;
+		}
+	}	
 
 	function delete_budget_item($scheduleID=""){
 		$this->db->where(array("scheduleID"=>$scheduleID));
@@ -343,6 +374,27 @@ class Finance_model extends CI_Model{
 		$flag = false;	
 		
 		$this->db->insert("planheader",array("fy"=>$fy,"icpNo"=>$icpNo));
+		
+		if($this->db->affected_rows()>0){
+			$flag = true;
+		}
+		
+		return $flag;
+	}
+	
+	function post_expense_breakdown($post_array=array()){
+		$flag = false;	
+		
+		for($i=0;$i<count($post_array['VNumber']);$i++){
+			$data['VNumber'] = $post_array['VNumber'][$i];
+			$data['scheduleID'] = $post_array['scheduleID'][$i];
+			$data['referenceNo'] = $post_array['referenceNo'][$i];
+			$data['amount'] = $post_array['amount'][$i];
+			
+			$this->db->insert("expense_breakdown",$data);
+		}
+		
+		
 		
 		if($this->db->affected_rows()>0){
 			$flag = true;

@@ -232,6 +232,10 @@ final class Report extends Layout implements Initialization{
 		return $this->basic_model->get_cleared_effects($this->icpNo,$this->start_date,$this->end_date);
 	}
 	
+	protected function get_trackable_expenses(){
+		return $this->basic_model->get_trackable_expenses($this->get_project_id(),$this->start_date,$this->end_date);
+	}
+	
 	protected function group_single_transaction_by_vtype(){
 		$singles = $this->get_outstanding_effects();
 		
@@ -457,6 +461,8 @@ final class Report extends Layout implements Initialization{
 		$data['transit_deposit']		= array_sum(array_column($this->deposit_transit(),"Cost"));
 		$data['journal_balance'] 		= $this->get_end_bank_balance();
 		
+		$data['trackable_expense'] = $this->get_trackable_expenses();
+		
 		$data['revenue_accounts'] = $this->budgeted_accounts();
 		
 		$data['view'] = "show_report";
@@ -571,4 +577,32 @@ final class Report extends Layout implements Initialization{
 			
 			return $data;
 	}	
+	
+	protected function pre_render_show_expensebreakdown(){
+			$this->check_transacting_month();
+			
+			$data['trackable_expense'] = $this->get_trackable_expenses();
+			
+			$this->load_alone = TRUE;
+			$data['view'] = "show_expensebreakdown";
+			
+			return $data;
+	}	
+	
+	function pre_render_add_expensebreakdown(){
+		$this->has_sidebar = false;
+		
+		$data['scheduleID'] = $this->CI->input->get("scheduleID");
+		$data['budgetItem'] = $this->CI->input->get("budgetItem");
+		$data['voucher'] = $this->CI->input->get("voucher");
+		$data['view'] = 'add_expensebreakdown';
+		
+		return $data;
+	}
+
+	function pre_render_ajax_post_expensebreakdown(){
+		//echo "Posting Successful";
+		echo ($this->basic_model->post_expense_breakdown($this->CI->input->post()))?"Posted Successful":"Error on Posting";
+		//print_r($this->CI->input->post());
+	}
 }

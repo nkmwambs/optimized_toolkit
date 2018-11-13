@@ -36,29 +36,16 @@ class Welcome extends CI_Controller {
 	
 	
 	public function journal(){
+		$args = array('mod_name'=>$this->input->get("lib"));
 		
-		$this->load->library('Finance/Finance',array('mod_name'=>$this->input->get("lib")));			
+		$this->load->library('Finance/Finance',$args);			
 				
-		$output = $this->finance->render();
+		//$output = $this->finance->render();
 	
-		$this->load->view("main",$output);
+		//$this->load->view("main",$output);
+		
+		$this->finance->render();
 	}
 
-	// public function report(){
-// 		
-		// $this->load->library('Finance',array('mod_name'=>'report'));			
-// 				
-		// $output = $this->finance->render();
-// 	
-		// $this->load->view("main",$output);
-	// }	
-// 	
-	// public function budget(){
-// 		
-		// $this->load->library('Finance',array('mod_name'=>'budget'));			
-// 				
-		// $output = $this->finance->render();
-// 	
-		// $this->load->view("main",$output);
-	// }
+
 }

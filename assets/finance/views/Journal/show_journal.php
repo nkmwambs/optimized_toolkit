@@ -1,5 +1,7 @@
 <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
-
+<?php
+//print_r($this->testing());
+?>
 <hr/>
 
 <div class="row">
@@ -20,7 +22,7 @@
 									<span class="caret"></span>
 								</button>
 								
-								<ul class="dropdown-menu dropdown-green" role="menu">
+								<ul class="dropdown-menu" role="menu">
 									<li><a href="<?=$this->get_url(array("assetview"=>"show_fundbalance","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('fund_balance_report')?></a></li>
 									<li class="divider"></li>
 									<li><a href="<?=$this->get_url(array("assetview"=>"show_proofcash","lib"=>"report","scroll"=>$this->get_scroll()));?>"><?=$this->l('proof_of_cash');?></a></li>
@@ -65,38 +67,37 @@
 	
 	<div class="row">
 		<div class="col-xs-12">
-			<div class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="select_btn"><?=$this->l('select_all_vouchers');?><i class="entypo-mouse"></i></div>
-			<a href="#"  class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id="print_vouchers"><?=$this->l('print_selected_vouchers')?><i class="entypo-print"></i></a>
-			<?php 
-				if($this->is_transacting_month){
-			?>
-				<!-- href="<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=create_voucher&project=<?=$this->get_project_id();?>&startdate<?=$transacting_month['start_date'];?>&enddate=<?=$transacting_month['end_date'];?>&lib=journal"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i> -->
-				<a class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3"  
-					href="<?=$this->get_url(array("assetview"=>"create_voucher"));?>"> <?=$this->l('new_voucher');?> <i class="entypo-list-add"></i> 
-				</a>		
-			<?php
-				}
-			?>
-			<a href="<?=$this->get_url(array('assetview'=>'cheque_book'));?>" class="btn btn-default btn-icon icon-left hidden-print pull-left col-xs-3" id=""><?=$this->l('add_cheque_booklet');?> <i class="entypo-book"></i></a>
+			<ul class="nav nav-pills">
+				<li><a href="#" class="btn btn-default btn-icon hidden-print pull-left" id="select_btn"><?=$this->l('select_all_vouchers');?> <i class="entypo-mouse"></i></a>
+				</li>
+				<li><a href="#"  class="btn btn-default btn-icon hidden-print pull-left" id="print_vouchers"><?=$this->l('print_selected_vouchers')?><i class="entypo-print"></i></a>
+				</li>
+				<?php 
+					if($this->is_transacting_month){
+				?>
+					<!-- href="<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=create_voucher&project=<?=$this->get_project_id();?>&startdate<?=$transacting_month['start_date'];?>&enddate=<?=$transacting_month['end_date'];?>&lib=journal"><?=$this->l('new_voucher');?> <i class="entypo-list-add"></i> -->
+					<li><a class="btn btn-default btn-icon hidden-print pull-left"  
+						href="<?=$this->get_url(array("assetview"=>"create_voucher"));?>"> <?=$this->l('new_voucher');?> <i class="entypo-list-add"></i> 
+					</a>
+					</li>		
+				<?php
+					}
+					
+				?>
+				<li>
+				<a href="<?=$this->get_url(array('assetview'=>'cheque_book'));?>" class="btn btn-default btn-icon hidden-print pull-left" id=""><?=$this->l('add_cheque_booklet');?> <i class="entypo-book"></i></a>
+					</li>		
+			</ul>
+
 		</div>
 	</div>
 	<hr />
 	<div class="row">
 		<div class="col-xs-6">
-			<form id="scroll" role="form" class="form-horizontal form-groups-bordered">
-				<div class="form-group hidden-print">
-					<label class="col-xs-3 pull-left control-label"><?=$this->l('scroll_months')?>: </label>	
-						<div class="col-xs-5">
-							<input class=" pull-left" type="text" id="spinner" name="spinned_months" value="<?php echo $this->get_scroll();?>" readonly="readonly"/>
-										
-						</div>
-					<div class="col-xs-2">
-						<a href="#" class="btn btn-default pull-left" id="spinner_btn"><?=$this->l('go');?></a>
-					</div>	
-				</div>
-			</form>
+			<?php $this->show_spinner("month");?>
 		</div>
 	</div>
+	<hr />
 </div>	
 		
 
@@ -108,6 +109,7 @@
 			<thead>
 				<tr>
 					<?php
+						//Creating columns of the journal table
 						$details = array_keys($records[0]['details']);
 						$bank = array_keys($records[0]['bank']);
 						$petty = array_keys($records[0]['petty']);
@@ -161,11 +163,7 @@
 						<th><?=number_format($sum_expenses[$cell],2);?></th>
 					<?php
 						}
-					?>				
-					
-					<!-- <th colspan="<?=count($income);?>"></th>
-					<th colspan="<?=count($expense);?>"></th> -->
-					
+					?>									
 					
 				</tr>
 			</thead>
@@ -181,11 +179,17 @@
 						if(isset($records[$i]['expense_spread'])) $expense_values = $records[$i]['expense_spread'];
 					
 						echo "<tr>";
+						//Creating details columns
 							foreach($details_values as $key=>$col){
 								if($key == "VNumber"){
+									$trackable = "";
+										if(in_array($col, $trackable_vouchers)){
+											$trackable = "fa fa-binoculars";
+										}
+										
 							?>		
-									<td><a href="<?=base_url().$this->get_controller().'/'.$this->get_method().'?assetview=show_voucher&project='.$this->get_project_id();?>&startdate=<?php echo $this->get_start_date_epoch();?>&enddate=<?php echo $this->get_end_date_epoch();?>&scroll=<?php echo $this->get_scroll();?>&voucher=<?=$col;?>&lib=journal" id="voucher_<?=$col;?>" class='btn btn-default'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td>
-							
+									<!-- <td><a href="<?=base_url().$this->get_controller().'/'.$this->get_method().'?assetview=show_voucher&project='.$this->get_project_id();?>&startdate=<?php echo $this->get_start_date_epoch();?>&enddate=<?php echo $this->get_end_date_epoch();?>&scroll=<?php echo $this->get_scroll();?>&voucher=<?=$col;?>&lib=journal" id="voucher_<?=$col;?>" class='btn btn-<?=$btn_color;?>'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?></a></td> -->							
+									<td><a href="<?=$this->get_url(array("assetview"=>'show_voucher','voucher'=>$col));?>" id="voucher_<?=$col;?>" class='btn btn-default btn-icon icon-right'><input type='checkbox' name="vouchers[]" value="<?=$col;?>" class="check_voucher"/><?=$col;?> <i style="color:red;" class="<?=$trackable;?>"></i></a> </td>
 							<?php
 								}elseif($key == "ChqNo"){
 									$chq = explode("-",$col);
@@ -195,8 +199,14 @@
 								}
 								 
 							}
+							
+							//Creating bank columns
 							foreach($bank_values as $col){ echo "<td>".number_format($col,2)."</td>";}
+							
+							//Creating Petty Cash columns
 							foreach($petty_values as $col){ echo "<td>".number_format($col,2)."</td>";}
+							
+							//Creating income spread columns
 							$j = 0;
 							if(isset($records[$i]['income_spread'])) {
 							
@@ -214,6 +224,8 @@
 									$j++;
 								}
 							}
+							
+							//Creating expense spread columns
 							
 							if(isset($records[$i]['expense_spread'])){	
 								foreach($expense_values as $col){ echo "<td>".number_format($col,2)."</td>";}
@@ -239,19 +251,15 @@
 
 
 <script>
-	var spinner = $( "#spinner" ).spinner();
-	
-	$("#spinner_btn").click(function(ev){
-		//alert($("#spinner").val());
-		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=show_journal&project=<?=$this->get_project_id();?>&startdate=<?=$this->get_start_date_epoch();?>&enddate=<?=$this->get_end_date_epoch();?>&scroll="+$("#spinner").val()+"&lib=journal";
-		
-		$(this).prop("href",url);
+
+$("#select_btn").click(function(){
+	$(".check_voucher").each(function(){
+		$(this).prop( "checked", true );
 	});
-	
+});	
 	
 $("#print_vouchers").click(function(){
-		var url = "<?=base_url();?><?=$this->get_controller();?>/<?=$this->get_method();?>?assetview=print_vouchers&project=<?=$this->get_project_id();?>&startdate=<?=$this->get_start_date_epoch();?>&enddate=<?=$this->get_end_date_epoch();?>&scroll=<?=$this->get_scroll();?>&lib=journal";
-		
+		var url = '<?=$this->get_url(array('assetview'=>'print_vouchers'));?>';
 		$("#frm_vouchers").prop("method","POST");
 		$("#frm_vouchers").prop("action",url);
 		$("#frm_vouchers").submit();

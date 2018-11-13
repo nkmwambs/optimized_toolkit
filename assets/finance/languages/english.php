@@ -148,4 +148,13 @@
 	$lang['proof_of_cash']				= 'Proof of Cash';
 	$lang['fund_balance']				= 'Fund Balance';
 	$lang['financial_report']			= 'Financial Report';
+	$lang['approval']					= 'Approval';
+	$lang['decline']					= 'Decline';
+	$lang['complete_budget']			= 'Complete Budget';
+	$lang['admin'] 						= 'Administration';
+	$lang['program_types'] 				= 'Program Types';
+	$lang['expense_tracking_tags'] 		= 'Expense Tracking Tags';
+	$lang['expense_vote_heads']			= 'Expense Vote Heads';
+	$lang['defined_accounts']			= 'Defined Accounts';
+	$lang['global_accounts'] 			= 'Global Accounts';
 	

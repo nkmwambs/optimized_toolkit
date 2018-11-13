@@ -69,7 +69,14 @@ foreach($to_print as $voucher){
 								?>
 									<tr>
 										<td><?=$row['Qty'];?></td>
-										<td colspan="2"><?=$row['Details']?></td>
+										<td colspan="2">
+											<?=$row['Details']?> (<?=isset($row['scheduleDetail'])?$row['scheduleDetail']:"Budget Item Not Defined";?>)
+											<?php
+												if($row['trackable']==1){
+													echo "<span class='fa fa-binoculars' style='color:red;'></span>";
+												}
+											?>		
+										</td>	
 										<td style="text-align: right;"><?=number_format($row['UnitCost'],2);?></td>
 										<td style="text-align: right;"><?=number_format($row['Cost'],2);?></td>
 										<td style="text-align: right;"><?=$row['AccNo'];?></td>

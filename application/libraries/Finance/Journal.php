@@ -80,7 +80,7 @@ final class Journal extends Layout implements Initialization{
 			);
 		}
 		
-		$cash_balance_columns = array_column($last_month_cash_balance, "accNo");
+		$cash_balance_columns = array_column($last_month_cash_balance, "accNo");// Array with key 0 as PC and 1 as BC
 		return array_combine($cash_balance_columns, $last_month_cash_balance);
 	}
 	
@@ -119,7 +119,7 @@ final class Journal extends Layout implements Initialization{
 		
 		foreach($all_transactions as $rows){
 			/**Columns to be removed in the details element value**/
-			$removeKeys = array("AccNo","AccText","AccGrp","Cost","scheduleID","civaCode","Qty","Details","UnitCost");
+			$removeKeys = array("AccNo","AccText","AccGrp","Cost","scheduleID","civaCode","Qty","Details","UnitCost","scheduleDetail","trackable");
 			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
 			
 			$transactions_container[$rows['VNumber']][$rows['AccGrp']][$rows['AccNo']] = $rows['Cost'];
@@ -238,6 +238,8 @@ final class Journal extends Layout implements Initialization{
 			
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Qty'] = $rows['Qty'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Details'] = $rows['Details'];
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['scheduleDetail'] = $rows['scheduleDetail'];//trackable
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['trackable'] = $rows['trackable'];//trackable
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['UnitCost'] = $rows['UnitCost'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Cost'] = $rows['Cost'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['AccNo'] = $rows['AccText'];
@@ -257,6 +259,9 @@ final class Journal extends Layout implements Initialization{
 		return $this->basic_model->get_current_approved_budget($this->get_project_id(),$this->get_current_fy());
 	}
 	
+	protected function get_trackable_expenses(){
+		return $this->basic_model->get_trackable_expenses($this->get_project_id(),$this->start_date,$this->end_date);
+	}
 	
 	private function get_civs(){
 		return $this->basic_model->get_civs();
@@ -576,40 +581,56 @@ final class Journal extends Layout implements Initialization{
 	 	$utilized_accounts =  $this->get_utilized_accounts();
 		$transactions = $this->get_journal_entries();
 		
-		$arr = array();
-		$arr2 = array();		
+		$incomes_in_journal_rows = array();
+		$sum_incomes_in_account = array();		
 		
 		foreach($transactions as $row){
 			if(array_key_exists('1', $row)){
-				$arr[] = $row[1];
+				$incomes_in_journal_rows[] = $row[1];
 			}
 		}
 		
-		foreach($utilized_accounts[1] as $value){
-			$arr2[$value]=array_sum(array_column($arr, $value));
+		foreach($utilized_accounts[1] as $account_number){
+			$sum_incomes_in_account[$account_number]= array_sum(array_column($incomes_in_journal_rows, $account_number));
 		}
 		
-		return $arr2;
+		return $sum_incomes_in_account;
 	}
+	 
+	 // function testing(){
+	 	// //$utilized_accounts =  $this->get_utilized_accounts();
+		// $transactions = $this->get_journal_entries();
+// 		
+		// $arr = array();
+		// $arr2 = array();		
+// 		
+		// foreach($transactions as $row){
+			// if(array_key_exists('1', $row)){
+				// $arr[] = $row[1];
+			// }
+		// }
+// 		
+		// return $arr;
+	 // }
 	 
 	 function get_sum_per_expense_account(){
 	 	$utilized_accounts =  $this->get_utilized_accounts();
 		$transactions = $this->get_journal_entries();
 		
-		$arr = array();
-		$arr2 = array();		
+		$expense_in_journal_rows = array();
+		$sum_expenses_in_account = array();		
 		
 		foreach($transactions as $row){
 			if(array_key_exists('0', $row)){
-				$arr[] = $row[0];
+				$expense_in_journal_rows[] = $row[0];
 			}
 		}
 		
-		foreach($utilized_accounts[0] as $value){
-			$arr2[$value]=array_sum(array_column($arr, $value));
+		foreach($utilized_accounts[0] as $account_number){
+			$sum_expenses_in_account[$account_number]=array_sum(array_column($expense_in_journal_rows, $account_number));
 		}
 		
-		return $arr2;
+		return $sum_expenses_in_account;
 	}
 	
 	private function get_last_cheque_used(){
@@ -691,6 +712,10 @@ final class Journal extends Layout implements Initialization{
 	 * - pre_render_create_voucher
 	 */
 	
+	private function get_trackable_vouchers(){
+		return array_unique(array_column($this->get_trackable_expenses(),"VNumber"));
+	}
+	
 	protected function pre_render_show_journal(){
 		
 		if(count($this->construct_journal())>0){
@@ -719,6 +744,8 @@ final class Journal extends Layout implements Initialization{
 			$data['all_accounts_labels'] = $this->linear_accounts_utilized();
 			
 			$data['transacting_month'] = $this->get_transacting_month();
+			
+			$data['trackable_vouchers'] = $this->get_trackable_vouchers();
 			
 			$data['view'] = $this->get_view();
 			

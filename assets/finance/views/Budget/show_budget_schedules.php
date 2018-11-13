@@ -196,9 +196,34 @@ include "utility_open_standalone.php";
 							             	}
 							             ?>
 							             
+							             <?php
+							             	if($cols['approved'] == 1){
+							             ?>
+							             <li class="approvalactionitem_<?=$cols['scheduleID']?> approvalactionitem_<?=$cols['approved']?>">
+							            	
+							            	<a href="#row_<?=$cols['scheduleID']?>" id="link_<?=$cols['scheduleID']?>_<?=$parentAccID."_".$account."_".$i;?>" onclick="approve_budget_item(this);">							                 								            
+							                 	<i class="fa fa-thumbs-up"></i>
+													<?php echo $this->l('approval');?>
+							                </a>
+							             </li>
+							             
+							             <li class="divider approvalactionitem_<?=$cols['scheduleID']?> approvalactionitem_<?=$cols['approved']?>"></li>
+							             
+							             <li class="declineactionitem_<?=$cols['scheduleID']?> declineactionitem_<?=$cols['approved']?>">
+							            	
+							            	<a href="#row_<?=$cols['scheduleID']?>" id="link_<?=$cols['scheduleID']?>_<?=$parentAccID."_".$account."_".$i;?>" onclick="decline_budget_item(this);">							                 								            
+							                 	<i class="fa fa-thumbs-down"></i>
+													<?php echo $this->l('decline');?>
+							                </a>
+							             </li>
+							             
+							             <li class="divider declineactionitem_<?=$cols['scheduleID']?> declineactionitem_<?=$cols['approved']?>"></li>
+							             
+							             <?php
+											}
+							             ?>
 							             <li>
-							            	<!-- <a href="#row_<?=$cols['scheduleID']?>" onclick="showAjaxModal('<?=$this->get_url(array("assetview"=>'show_budget_notes','lib'=>'budget','voucher'=>$cols['scheduleID']));?>');"> -->
-							            	<!-- <a href="#row_<?=$cols['scheduleID']?>" id="<?=$parentAccID."_".$account."_".$i;?>" onclick="show_budget_notes(this);">							                 	 -->
+							            	
 							            	<a href="#row_<?=$cols['scheduleID']?>" id="link_<?=$cols['scheduleID']?>_<?=$parentAccID."_".$account."_".$i;?>" onclick="show_budget_notes(this);">							                 								            
 							                 	<i class="fa fa-book"></i>
 													<?php echo $this->l('notes');?>
@@ -305,6 +330,51 @@ $(document).ready(function() {
    
 });
 
+function approve_budget_item(elem){
+	var id = $(elem).attr('id');
+	var obj = id.split('_');
+	var scheduleID = obj[1];
+	
+	var data = {"scheduleID":scheduleID};
+	
+	var cnf_trackable = confirm("Is this item tackable?");
+	
+	if(cnf_trackable){
+		data = {"scheduleID":scheduleID,"trackable":'1'};
+	}
+	
+			$.ajax({
+			url:'<?=$this->get_url(array("assetview"=>'ajax_approve_budget_item',"lib"=>"budget"));?>',
+			data:data,
+			type:"POST",
+			beforeSend:function(){
+				$("#overlay").css("display","block");
+			},
+			success:function(resp){
+				$("#overlay").css("display","none");
+				if(resp == "1"){
+					
+					$(".submitactionitem_"+scheduleID+", .editactionitem_"+scheduleID).remove();
+					
+					$(".notesrows").each(function(){
+						if(!$(this).hasClass('hidden')){
+							$(this).addClass("hidden");
+						}
+					});
+					
+					$("#action_"+scheduleID).toggleClass("btn-info btn-success");
+					$("#action_"+scheduleID).html('<?=$this->l('action')?> - <?=$this->l('approved');?> <span class="caret"></span>');
+					$("#status_"+scheduleID).html('<?=$this->l("approved");?>');
+				}else{
+					alert(resp);
+				}
+			},
+			error:function(){
+				alert("Error Occurred!");
+			}
+		});
+}
+
 function show_budget_notes(elem){
 	<?php $budget_array = json_encode($budget_items);;?>
 	
@@ -375,6 +445,13 @@ function submit_budget_item(scheduleID){
 				if(resp == "1"){
 					
 					$(".submitactionitem_"+scheduleID+", .editactionitem_"+scheduleID).remove();
+					
+					$(".notesrows").each(function(){
+						if(!$(this).hasClass('hidden')){
+							$(this).addClass("hidden");
+						}
+					});
+					
 					$("#action_"+scheduleID).toggleClass("btn-warning btn-info");
 					$("#action_"+scheduleID).html('<?=$this->l('action')?> - <?=$this->l('submitted');?> <span class="caret"></span>');
 					$("#status_"+scheduleID).html('<?=$this->l("submitted");?>');

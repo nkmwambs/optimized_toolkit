@@ -196,4 +196,4 @@
 } 
 </style>
 
-<div id="overlay"><img src='<?php echo base_url()."assets/ifms_assets/images/preloader4.gif";?>'/></div>	      
+<div id="overlay"><img src='<?php echo base_url()."assets/finance/images/preloader4.gif";?>'/></div>	      

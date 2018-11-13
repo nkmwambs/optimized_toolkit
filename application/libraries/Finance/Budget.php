@@ -128,6 +128,18 @@ final class Budget extends Layout implements Initialization{
 		echo $msg;
 	}
 	
+	function pre_render_ajax_approve_budget_item(){
+		$msg = 1;
+		
+		$result = $this->basic_model->approve_budget_item($this->CI->input->post());
+		
+		if(!$result){
+			$msg = "No item updated";
+		}
+		
+		echo $msg;
+	}
+	
 	function pre_render_ajax_delete_budget_item(){
 		$msg = 1;
 		$scheduleID = $this->CI->input->post('scheduleID');
@@ -228,6 +240,7 @@ final class Budget extends Layout implements Initialization{
 	
 	protected function pre_render_create_budget_item(){
 		$data['choices'] = $this->get_account_choices();
+		$data['budget_tags'] = "";
 		$data['budget_items'] = $this->group_schedules_by_accno();
 		$data['income_accounts'] = $this->group_income_accounts_by_accid();
 		$data['accounts'] = $this->get_accounts_grouped_by_income();

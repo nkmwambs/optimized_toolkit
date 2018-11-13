@@ -1,5 +1,5 @@
 <?php
-include "utility_open_standalone.php";
+$this->show_header($this->l("budget_summary"),"year");
 ?>
 <div class="row">
 	<div class="col-xs-12">
@@ -72,5 +72,5 @@ include "utility_open_standalone.php";
 </div>
 
 <?php
-include "utility_close_standalone.php";
+$this->show_footer();
 ?>

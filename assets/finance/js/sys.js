@@ -1,5 +1,5 @@
 $(document).ready(function(){
-        
+   $(".table").DataTable();     
 });
 
 $(".datepicker").datepicker();
@@ -9,7 +9,7 @@ function go_back(){
 }
 
 
-var datatable = $("table").DataTable(
+var datatable = $(".table").DataTable(
 			{
 				dom: 'Bfrtip',
 				buttons: [

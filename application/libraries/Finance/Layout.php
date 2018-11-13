@@ -74,6 +74,10 @@ class Layout {
 	
 	protected $load_alone = FALSE;
 	
+	protected $has_sidebar;
+	
+	protected $default_view = "show_journal";
+	
 	//private $fy_start_month = 7; 
 
 	function __construct($params = array()){
@@ -126,6 +130,14 @@ class Layout {
 		return $this->config->column_size;
 	}
 	
+	protected function get_sidebar_state(){
+		return $this->config->sidebar_state;
+	}
+	
+	protected function has_sidebar(){
+		return $this->config->has_sidebar;
+	}
+	
 	public function set_language($locale="english"){
 		$this->language = $locale;
 		return $this;
@@ -162,7 +174,10 @@ class Layout {
 		/** Initialize all the config variables into this object */
 		$this->config->default_language 	= $this->CI->config->item('finance_default_language');
 		$this->config->fy_start_month	 	= $this->CI->config->item('fy_start_month');
-		$this->config->column_size	 	= $this->CI->config->item('column_size');
+		$this->config->column_size	 		= $this->CI->config->item('column_size');
+		$this->config->sidebar_state 		= $this->CI->config->item('sidebar_state'); 
+		$this->config->has_sidebar 			= $this->CI->config->item('has_sidebar'); 
+		
 		
 	}	
 	
@@ -210,8 +225,13 @@ class Layout {
 			$this->lib_url .= "&voucher=".$voucher;
 		}
 		
+		if(isset($entry)){
+			$this->lib_url .= "&entry=".$entry;
+		}
+		
 		return $this->lib_url;
 	}
+
 	
 	protected function get_controller(){
 		return $this->CI->router->fetch_class();
@@ -231,7 +251,7 @@ class Layout {
 	
 	protected function get_view(){
 		//return $this->CI->uri->segment(3);
-		return $this->CI->input->get('assetview');
+		return $this->CI->input->get('assetview')?$this->CI->input->get('assetview'):$this->default_view;
 	}
 	
 	/** URL Segments Getters - End **/
@@ -352,6 +372,9 @@ class Layout {
 	 * @return	void
 	 */
 	 
+	protected function show_spinner($spinner_type="month",$lib="journal",$assetview="show_journal"){
+		 include_once ($this->default_view_path."/spinner.php");
+	}
 	
 	protected function set_view($data){
 		
@@ -362,9 +385,7 @@ class Layout {
 		ob_start();
 		
 		if(file_exists($this->default_view_path.$this->asset_view_group.'/'.$view.".php")){
-			include_once ($this->default_view_path."/navigation.php");
 			include_once ($this->default_view_path.$this->asset_view_group.'/'.$view.".php");
-			include_once ($this->default_view_path."/modal.php");
 		}else{ 
 			include_once ($this->default_view_path.$view.".php");
 		}
@@ -410,7 +431,7 @@ class Layout {
 	 * @return	array 	Returns an array of the JS files paths	
 	 */
 	 
-	private function load_js()
+	protected function load_js()
 	{
 		
 		//$this->set_js_cdn("https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js");
@@ -449,7 +470,7 @@ class Layout {
 	 * @return	array 	Returns an array of the CSS files paths	
 	 */
 	
-	private function load_css(){
+	protected function load_css(){
 		$this->set_css_files($this->default_css_path.'neon/neon-core.css');
 		$this->set_css_files($this->default_css_path.'bootstrap/bootstrap.min.css');
 		$this->set_css_files($this->default_css_path.'dataTables.bootstrap.min.css');
@@ -471,6 +492,24 @@ class Layout {
 		
 		return $this->css_files;
 	}
+
+	function main_view($output){
+		extract($output);
+		include_once ($this->default_view_path."/main_view.php");	
+	}
+	
+	function data_view($output){
+		extract($output);
+		include_once ($this->default_view_path."/data_view.php");	
+	}
+	
+	function show_header($title="",$spinner_type="month"){
+		include_once ($this->default_view_path."/utility_open_standalone.php");
+	}
+	
+	function show_footer(){
+		include_once ($this->default_view_path."/utility_close_standalone.php");
+	}
 	
 	/**
 	 * Get Layout - Arranges the output array ready for controller output
@@ -480,15 +519,15 @@ class Layout {
 	 */		
 	protected function get_layout(){
 		
-		$js_files = $this->load_js();
-		$css_files =  $this->load_css();
+		//$js_files = $this->load_js();
+		//$css_files =  $this->load_css();
 		
 		$this->CI->benchmark->mark('profiler_end');
 		
 		if($this->echo_and_die == false){
 			return (object) array(
-					'js_files' => $js_files,
-					'css_files' => $css_files,
+					//'js_files' => $js_files,
+					//'css_files' => $css_files,
 					'output' => $this->view_as_string,
 					'profiler'=>$this->CI->benchmark->elapsed_time('profiler_start', 'profiler_end'),
 			);
@@ -500,14 +539,12 @@ class Layout {
 		
 	}	
 	
-	function modal(){
-		
-	}
 
 	/**
 	 * Render 
 	 * 
 	 */
+	
 	
 	public function rendering(){
 		
@@ -534,7 +571,14 @@ class Layout {
 		$this->set_view($preference_data);
 		
 		/**Merges the view buffer, css, js and profiler results to an output object**/
-		return $this->get_layout(); 
+		$output = (array)$this->get_layout(); 
+		
+		//return $this->CI->load->view("main",$output);
+		
+		
+		return $this->main_view($output);
+		 
+		
 	}
 
 

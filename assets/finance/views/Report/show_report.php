@@ -112,7 +112,7 @@
 				</div>
 				
 				<div class="tab-pane" id="breakdown">
-					Expense Breakdown
+					<?php include "show_expensebreakdown.php";?>
 				</div>
 				
 				<div class="tab-pane" id="statements">

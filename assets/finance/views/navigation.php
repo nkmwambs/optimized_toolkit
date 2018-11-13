@@ -78,21 +78,29 @@
                 <span><?php echo $this->l('budget'); ?></span>
             </a>
             <ul>
-                <li class="<?php if ($this->get_view() == 'show_budget') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_budget","lib"=>"budget"));?>">
+                <li class="has-sub <?php if ($this->get_view() == 'show_budget') echo 'active'; ?> ">
+                    <a href="#">
                         <span><i class="fa fa-briefcase"></i> <?php echo $this->l('full_budget'); ?></span>
                     </a>
+                    <ul>
+                    	<li class="<?php if ($this->get_view() == 'show_budget') echo 'active'; ?>">
+                    		<a href="<?=$this->get_url(array("assetview"=>"show_budget","lib"=>"budget"));?>">
+		                        <span><i class="fa fa-briefcase"></i> <?php echo $this->l('complete_budget'); ?></span>
+		                    </a>
+                    	</li>
+						<li class="<?php if ($this->get_view() == 'show_budget_summary') echo 'active'; ?> ">
+		                    <a href="<?=$this->get_url(array("assetview"=>"show_budget_summary","lib"=>"budget"));?>">
+		                        <span><i class="fa fa-map-signs"></i> <?php echo $this->l('budget_summary'); ?></span>
+		                    </a>
+		                </li>
+		                <li class="<?php if ($this->get_view() == 'show_budget_schedules') echo 'active'; ?> ">
+		                    <a href="<?=$this->get_url(array("assetview"=>"show_budget_schedules","lib"=>"budget"));?>">
+		                        <span><i class="fa fa-newspaper-o"></i> <?php echo $this->l('budget_schedules'); ?></span>
+		                    </a>
+		                </li>
+					</ul>			
                 </li>
-                <li class="<?php if ($this->get_view() == 'show_budget_summary') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_budget_summary","lib"=>"budget"));?>">
-                        <span><i class="fa fa-map-signs"></i> <?php echo $this->l('budget_summary'); ?></span>
-                    </a>
-                </li>
-                <li class="<?php if ($this->get_view() == 'show_budget_schedules') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_budget_schedules","lib"=>"budget"));?>">
-                        <span><i class="fa fa-newspaper-o"></i> <?php echo $this->l('budget_schedules'); ?></span>
-                    </a>
-                </li>
+                
                 <li class="<?php if ($this->get_view() == 'create_budget_item') echo 'active'; ?> ">
                     <a href="<?=$this->get_url(array("assetview"=>"create_budget_item","lib"=>"budget"));?>">
                         <span><i class="fa fa-cart-plus"></i> <?php echo $this->l('create_budget_item'); ?></span>
@@ -144,36 +152,70 @@
                         <span><i class="fa fa-bank"></i> <?php echo $this->l('bank_reconciliation'); ?></span>
                     </a>
                 </li>
-                <li class="<?php if ($this->get_view() == 'show_outstandingcheques') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_outstandingcheques","lib"=>"report"));?>">
-                        <span><i class="fa fa-leaf"></i> <?php echo $this->l('oustanding_cheques'); ?></span>
-                    </a>
+                <li class="has-sub 
+                	<?php if ($this->get_view() == 'show_outstandingcheques' ||
+							$this->get_view() == 'show_transitdeposit') 
+							echo "opened active";?>">
+                	<a href="#">
+                		<span><i class="fa fa-clock-o"></i> Outstanding Effects</span>
+                	</a>
+                	<ul>
+                		<li class="<?php if ($this->get_view() == 'show_outstandingcheques') echo 'active'; ?> ">
+		                    <a href="<?=$this->get_url(array("assetview"=>"show_outstandingcheques","lib"=>"report"));?>">
+		                        <span><i class="fa fa-leaf"></i> <?php echo $this->l('oustanding_cheques'); ?></span>
+		                    </a>
+		                </li>
+		                <li class="<?php if ($this->get_view() == 'show_transitdeposit') echo 'active'; ?> ">
+		                    <a href="<?=$this->get_url(array("assetview"=>"show_transitdeposit","lib"=>"report"));?>">
+		                        <span><i class="fa fa-tags"></i> <?php echo $this->l('in_transit_deposit'); ?></span>
+		                    </a>
+		                </li>
+                	</ul>
                 </li>
-                <li class="<?php if ($this->get_view() == 'show_transitdeposit') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_transitdeposit","lib"=>"report"));?>">
-                        <span><i class="fa fa-tags"></i> <?php echo $this->l('in_transit_deposit'); ?></span>
-                    </a>
+                
+                <li class="has-sub 
+                	<?php if ($this->get_view() == 'show_clearedcheques' ||
+							$this->get_view() == 'show_cleareddeposits') 
+							echo "opened active";?>">
+                	<a href="#">
+                		<span><i class="fa fa-hourglass-o"></i>Cleared Effects</span>
+                	</a>
+                	<ul>
+						<li class="<?php if ($this->get_view() == 'show_clearedcheques') echo 'active'; ?> ">
+		                    <a href="<?=$this->get_url(array("assetview"=>"show_clearedcheques","lib"=>"report"));?>">
+		                        <span><i class="fa fa-bell-slash-o"></i> <?php echo $this->l('cleared_cheques'); ?></span>
+		                    </a>
+		                </li>
+		                <li class="<?php if ($this->get_view() == 'show_cleareddeposits') echo 'active'; ?> ">
+		                    <a href="<?=$this->get_url(array("assetview"=>"show_cleareddeposits","lib"=>"report"));?>">
+		                        <span><i class="fa fa-bell-slash"></i> <?php echo $this->l('cleared_deposits'); ?></span>
+		                    </a>
+		                </li>                		
+                	</ul>
                 </li>
-                <li class="<?php if ($this->get_view() == 'show_clearedcheques') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_clearedcheques","lib"=>"report"));?>">
-                        <span><i class="fa fa-bell-slash-o"></i> <?php echo $this->l('cleared_cheques'); ?></span>
-                    </a>
+                
+                <li class="has-sub 
+                	<?php if ($this->get_view() == 'show_budgetvariance' ||
+							$this->get_view() == 'show_expensebreakdown') 
+							echo "opened active";?>">
+                	<a href="#">
+                		<span><i class="fa fa-line-chart"></i>Expense Reports</span>
+                	</a>
+                	<ul>
+                		<li class="<?php if ($this->get_view() == 'show_budgetvariance') echo 'active'; ?> ">
+		                    <a href="<?=$this->get_url(array("assetview"=>"show_budgetvariance","lib"=>"report"));?>">
+		                        <span><i class="fa fa-hourglass-half"></i> <?php echo $this->l('budget_variance'); ?></span>
+		                    </a>
+		                </li>
+		                <li class="<?php if ($this->get_view() == 'show_expensebreakdown') echo 'active'; ?> ">
+		                    <a href="<?=$this->get_url(array("assetview"=>"show_expensebreakdown","lib"=>"report"));?>">
+		                        <span><i class="fa fa-list"></i> <?php echo $this->l('expense_breakdown'); ?></span>
+		                    </a>
+		                </li>
+                	</ul>
                 </li>
-                <li class="<?php if ($this->get_view() == 'show_cleareddeposits') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_cleareddeposits","lib"=>"report"));?>">
-                        <span><i class="fa fa-bell-slash"></i> <?php echo $this->l('cleared_deposits'); ?></span>
-                    </a>
-                </li>
-                <li class="<?php if ($this->get_view() == 'show_budgetvariance') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_budgetvariance","lib"=>"report"));?>">
-                        <span><i class="fa fa-hourglass-half"></i> <?php echo $this->l('budget_variance'); ?></span>
-                    </a>
-                </li>
-                <li class="<?php if ($this->get_view() == 'show_expensebreakdown') echo 'active'; ?> ">
-                    <a href="<?=$this->get_url(array("assetview"=>"show_expensebreakdown","lib"=>"report"));?>">
-                        <span><i class="fa fa-list"></i> <?php echo $this->l('expense_breakdown'); ?></span>
-                    </a>
-                </li>
+                
+                
                 <li class="<?php if ($this->get_view() == 'show_ratios') echo 'active'; ?> ">
                     <a href="<?=$this->get_url(array("assetview"=>"show_ratios","lib"=>"report"));?>">
                         <span><i class="fa fa-magic"></i> <?php echo $this->l('financial_ratios'); ?></span>
@@ -188,7 +230,53 @@
 				               
             </ul>
         </li>
-
+		
+		<li class="<?php
+             if ($this->get_view() == 'show_global_accounts' ||
+                $this->get_view() == 'show_income_accounts' ||
+                    $this->get_view() == 'show_expense_vote_heads' ||
+                    $this->get_view() == 'show_expense_tracking_tags' ||
+						$this->get_view() == 'show_program_types')
+                        echo 'opened active';
+        ?> ">
+        
+	   		    <a href="#">
+	                <i class="fa fa-cog"></i>
+	                <span><?php echo $this->l('admin'); ?></span>
+	            </a>
+	            
+	            <ul>
+	                <li class="<?php if ($this->get_view() == 'show_global_accounts') echo 'active'; ?> ">
+	                    <a href="<?=$this->get_url(array("assetview"=>"show_global_accounts","lib"=>"admin"));?>">
+	                        <span><i class="fa fa-globe"></i> <?php echo $this->l('global_accounts'); ?></span>
+	                    </a>
+	                </li>
+	                <li class="<?php if ($this->get_view() == 'show_income_accounts') echo 'active'; ?> ">
+	                    <a href="<?=$this->get_url(array("assetview"=>"show_income_accounts","lib"=>"admin"));?>">
+	                        <span><i class="fa fa-list"></i> <?php echo $this->l('defined_accounts'); ?></span>
+	                    </a>
+	                </li>
+	                <li class="<?php if ($this->get_view() == 'show_expense_vote_heads') echo 'active'; ?> ">
+	                    <a href="<?=$this->get_url(array("assetview"=>"show_expense_vote_heads","lib"=>"admin"));?>">
+	                        <span><i class="fa fa-language"></i> <?php echo $this->l('expense_vote_heads'); ?></span>
+	                    </a>
+	                </li>
+	                
+	                <li class="<?php if ($this->get_view() == 'show_expense_tracking_tags') echo 'active'; ?> ">
+	                    <a href="<?=$this->get_url(array("assetview"=>"show_expense_tracking_tags","lib"=>"admin"));?>">
+	                        <span><i class="fa fa-pencil"></i> <?php echo $this->l('expense_tracking_tags'); ?></span>
+	                    </a>
+	                </li>
+	                
+	                <li class="<?php if ($this->get_view() == 'show_program_types') echo 'active'; ?> ">
+	                    <a href="<?=$this->get_url(array("assetview"=>"show_program_types","lib"=>"admin"));?>">
+	                        <span><i class="fa fa-check-square-o"></i> <?php echo $this->l('program_types'); ?></span>
+	                    </a>
+	                </li>
+					               
+	            </ul>
+			
+		</li>
                
 
     </ul>
