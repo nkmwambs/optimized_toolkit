@@ -157,4 +157,10 @@
 	$lang['expense_vote_heads']			= 'Expense Vote Heads';
 	$lang['defined_accounts']			= 'Defined Accounts';
 	$lang['global_accounts'] 			= 'Global Accounts';
-	
+	$lang['account_description']		= 'Account Description';
+	$lang['suspend']					= 'Suspend';
+	$lang['activate']					= 'Activate';
+	$lang['edit_tracking_tags']			= 'Edit Tracking Tags';
+	$lang['add_tracking_tags']			= 'Add Tracking Tags';
+	$lang['suspended']					= 'Suspended';
+	$lang['active']						= 'Active';

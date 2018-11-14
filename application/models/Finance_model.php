@@ -639,6 +639,39 @@ class Finance_model extends CI_Model{
 		}
 	}
 	
+	function post_expense_tracking_tag($post_array){
+		
+		for($i=0;$i<count($post_array['account']);$i++){
+			$body[$i]['uk_expense_account_numeric_code'] = $post_array['account'][$i];
+			$body[$i]['tag_description'] = $post_array['description'][$i];
+			$body[$i]['tag_status'] = '1';//$post_array['description'][$i];
+		}
+		
+		$this->db->insert_batch("accounts_expense_tracking",$body);	
+		
+		$rows = $this->db->affected_rows();
+		
+		if($rows>0){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+	
+	function get_expense_tracking_tags($status = null,$tag_id = 0){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_expense_tracking_tags(?,?)",array($status,$tag_id));
+			$result = $query->num_rows()>0?$query->result_object():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;	
+	}
+	
 	function change_cheque_booklet_status($icpNo){
 		$this->db->where(array("icpNo"=>$icpNo,"status"=>1));
 		$this->db->update("cheque_book",array('status'=>0));
