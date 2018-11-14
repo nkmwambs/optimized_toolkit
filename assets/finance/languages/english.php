@@ -81,7 +81,6 @@
 	$lang['update_failed'] = 'Update Failed';
 	$lang['update_successful'] = 'Update Successful';
 	$lang['new_bugdet_item'] = 'New Bugdet Item';
-	$lang['budget_tag'] = 'Budget Tag';
 	$lang['select_tag'] = 'Select Tag';
 	$lang['fy'] = 'Fy';
 	$lang['quantity'] = 'Quantity';
@@ -90,3 +89,18 @@
 	$lang['total'] = 'Total';
 	$lang['notes_here'] = 'Notes Here';
 	$lang['create'] = 'Create';
+	$lang['expense_tracking_tag'] = 'Expense Tracking Tag';
+	$lang['validate'] = 'Validate';
+	$lang['submit_date'] = 'Submit Date';
+	$lang['last_action_date'] = 'Last Action Date';
+	$lang['allow_delete'] = 'Allow Delete';
+	$lang['approved'] = 'Approved';
+	$lang['notes'] = 'Notes';
+	$lang['comments'] = 'Comments';
+	$lang['submitted'] = 'Submitted';
+	$lang['approval'] = 'Approval';
+	$lang['decline'] = 'Decline';
+	$lang['draft'] = 'Draft';
+	$lang['submit'] = 'Submit';
+	$lang['delete'] = 'Delete';
+	$lang['reinstated'] = 'Reinstated';

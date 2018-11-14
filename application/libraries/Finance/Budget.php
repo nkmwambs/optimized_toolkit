@@ -88,6 +88,22 @@ final class Budget extends Layout implements Initialization{
 		return $this->basic_model->get_account_choices($this->CI->input->post('AccNo'));
 	}
 	
+	private function get_active_expense_tracking_tags(){
+		return $this->basic_model->get_expense_tracking_tags("open");
+	}
+	
+	private function get_active_expense_tracking_tags_grouped_by_account(){
+		$grouped = array();
+		$active_tags_records = $this->get_active_expense_tracking_tags();
+		
+		foreach($active_tags_records as $tag){
+			$grouped[$tag->tag_account][] = $tag;
+		}
+		
+		return $grouped;
+	}
+	
+	
 	function pre_render_ajax_mass_submit_budget(){
 		echo "Success";
 		
@@ -240,7 +256,7 @@ final class Budget extends Layout implements Initialization{
 	
 	protected function pre_render_create_budget_item(){
 		$data['choices'] = $this->get_account_choices();
-		$data['budget_tags'] = "";
+		$data['expense_tracking_tags'] = $this->get_active_expense_tracking_tags_grouped_by_account();
 		$data['budget_items'] = $this->group_schedules_by_accno();
 		$data['income_accounts'] = $this->group_income_accounts_by_accid();
 		$data['accounts'] = $this->get_accounts_grouped_by_income();

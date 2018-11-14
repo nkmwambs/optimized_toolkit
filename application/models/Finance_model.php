@@ -419,6 +419,7 @@ class Finance_model extends CI_Model{
 			$data['planHeaderID'] = $planheaderid;
 			$data['AccNo'] = $post_array['AccNo'];
 			$data['details'] = $post_array['details'];
+			$data['expense_tracking_tag_id'] = $post_array['expense_tracking_tag_id'];
 			$data['qty'] = $post_array['qty'];
 			$data['unitCost'] = $post_array['unitCost'];
 			$data['often'] = $post_array['often'];

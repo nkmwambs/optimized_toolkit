@@ -1,6 +1,6 @@
 <hr />
 <?php
-//print_r($choices);
+print_r($expense_tracking_tags);
 ?>
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
@@ -54,10 +54,17 @@
 							</div>
 							
 							<div class="form-group">
-								<label class="col-xs-4 control-label"><?=$this->l('budget_tag');?></label>
+								<label class="col-xs-4 control-label"><?=$this->l('expense_tracking_tag');?> <span id="tracking_tags_count" class="badge badge-success">0</span></label>
 								<div class="col-xs-8">
-									<select class="form-control" id="plan_item_tag_id" name="plan_item_tag_id">
-										<option value=""><?=$this->l('select_tag')?></option>
+									<select class="form-control" id="expense_tracking_tag_id" name="expense_tracking_tag_id">
+										<option value="0"><?=$this->l('select_tag')?></option>
+										<?php
+											foreach($expense_tracking_tags as $tags){
+										?>
+											
+										<?php
+											}
+										?>
 									</select>
 								</div>
 							</div>
@@ -158,100 +165,3 @@
 					</div>	
 	</div>
 </div>		
-
-<script>
-$(document).ready(function(){
-	CKEDITOR.replace('notes');
-});
-	$(".calc_cost").change(function(){
-		var cost = 1;
-		$(".calc_cost").each(function(idx){
-			cost*=parseFloat($(this).val());
-		});	
-		
-		$("#totalCost").val(cost);
-		
-		$(".amount_spread").each(function(){
-			$(this).val((cost/12).toFixed(2));
-		});
-	});
-	
-	$("#clr_spread").click(function(){
-		$(".amount_spread").each(function(){
-			$(this).val(0);
-		});
-	});
-	
-	$("#create_budget_item_form").submit(function(ev){
-		var check_spread = false;
-		var editor_data = CKEDITOR.instances.notes.getData();
-		//alert(editor_data);
-		$("#hidden_notes").val(editor_data);
-		
-		//Check if spread is correct
-		var sum_spread = 0;
-		$(".amount_spread").each(function(){
-			sum_spread += parseFloat($(this).val());
-		});
-		
-		check_spread = parseFloat($("#totalCost").val()) == parseFloat(Math.round(sum_spread));
-		
-		if(check_spread){
-			
-			$.ajax({
-				url:'<?=$this->get_url(array("assetview"=>'ajax_budget_item_posting',"lib"=>'budget'));?>',
-				beforeSend:function(){
-					$("#overlay").css("display","block");
-				},
-				type:"POST",
-				data:$(this).serializeArray(),
-				success:function(resp){
-					$("#overlay").css("display","none");
-					$(".toclear").each(function(){
-						$(this).val(0);
-						if($(this).hasClass("textField")){
-							$(this).val("");	
-						}
-					});
-					CKEDITOR.instances.notes.setData("");
-					alert(resp);
-				},
-				error:function(){
-					
-				}
-			});
-		}else{
-			alert("Spread is incorrect");
-		}
-		
-		ev.preventDefault();
-	});
-	
-	
-	$("#AccNo").change(function(){
-		var hasChoice = $('option:selected').data('choices');
-		
-		if(hasChoice){
-			//var option = "<option>Select a Description</option>";
-			$.ajax({
-				url:'<?=$this->get_url(array('assetview'=>'ajax_get_choices_for_account','lib'=>'budget'));?>',
-				type:"POST",
-				data:{'AccNo':$(this).val()},
-				beforeSend:function(){
-					$("#overlay").css("display","block");
-				},
-				success:function(option){
-					$("#overlay").css("display","none");
-					$("#description_holder").html("<select class='form-control' id='details' name='details' required='required'>"+option+"</select>");
-				},
-				error:function(){
-					
-				}
-			});
-			
-		}else{
-			$("#description_holder").html('<input type="text" class="form-control toclear textField" id="details" name="details" required="required" />');
-		}
-	});
-	
-</script>
