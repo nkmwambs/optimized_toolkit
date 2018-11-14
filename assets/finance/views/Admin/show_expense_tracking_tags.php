@@ -1,7 +1,7 @@
 <hr />
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
-		<a href="<?=$this->get_url(array('assetview'=>'add_expense_tracking_tags','lib'=>'admin'));?>" class="btn btn-default pull-left">Add Record</a>
+		<a href="<?=$this->get_url(array('assetview'=>'add_expense_tracking_tags','lib'=>'admin'));?>" class="btn btn-default pull-left"><?=$this->l('add_record');?></a>
 	</div>
 </div>
 

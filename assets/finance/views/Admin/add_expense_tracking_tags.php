@@ -15,19 +15,19 @@
 					<ul class="nav nav-pills">
 						<li>
 							<a id="add_row" class="btn btn-default btn-icon icon-left hidden-print pull-left">
-								Add Row
+								<?=$this->l('add_row');?>
 							</a>	
 						</li>
 						
 						<li>
 							<a id="btnDelRow" class="btn btn-default btn-icon icon-left hidden hidden-print pull-left">
-								Remove Rows
+								<?=$this->l('remove_rows');?>
 							</a>	
 						</li>
 						
 						<li>
 							<a id="resetBtn" class="btn btn-default btn-icon icon-left hidden-print pull-left">
-								Reset
+								<?=$this->l('reset');?>
 							</a>	
 						</li>
 						

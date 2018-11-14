@@ -146,12 +146,14 @@ class Layout {
 	
 	protected function _load_language()
 	{
+		$lang = array();
+			
 		if($this->language === null)
 		{
 			$this->language = strtolower($this->config->default_language);
 		}
 		include($this->default_language_path.'/'.$this->language.'.php');
-
+		
 		foreach($lang as $handle => $lang_string)
 			if(!isset($this->lang_strings[$handle]))
 				$this->lang_strings[$handle] = $lang_string;
@@ -159,7 +161,21 @@ class Layout {
 	}
 	
 	
-	public function l($handle){
+	protected function l($handle){
+
+		if(!array_key_exists($handle, $this->lang_strings))
+		{
+			$phrase = ucwords(implode(" ",explode("_", $handle)));
+			
+			//Add the new lang phrase to the language file
+			$new_lang_phrase = "	\$lang['".$handle."'] = '".$phrase."';".PHP_EOL;
+			$fp = fopen($this->default_language_path.'/'.$this->language.'.php', 'a');
+			fwrite($fp, $new_lang_phrase);
+			fclose($fp);
+			
+			$this->lang_strings[$handle] = $phrase;
+		}
+			
 		return $this->lang_strings[$handle];
 	}	
 	

@@ -105,7 +105,7 @@
 	<div class="<?=$this->get_column_size();?>" id="display">
 		<form id="frm_vouchers">
 
-		<table class="table table-striped" id="ifms_journal_view">
+		<table class="table table-striped datatable" id="ifms_journal_view">
 			<thead>
 				<tr>
 					<?php
