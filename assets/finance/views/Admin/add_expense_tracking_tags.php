@@ -1,6 +1,5 @@
-<?php
-//print_r($this->group_expense_account_to_incomes());
-?>
+<?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');?>
+
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">	
 		<div class="panel panel-primary" data-collapsed="0">
@@ -92,59 +91,4 @@
 		</div>
 	</div>
 </div>	
-
-<script>
-	$("#add_row").on("click",function(){
-		clone_last_body_row('tbl_expensetrackingtags','tr_clone');
-	})
-	
-	
-	$(document).on("click",".check",function(){
 		
-		var checked = $(".check:checked").length;
-		if(checked>0){
-			$("#btnDelRow").removeClass("hidden");	
-		}else{
-			$("#btnDelRow").addClass("hidden");
-		}
-	});
-	
-	
-	$("#btnDelRow").click(function(){
-		remove_selected_rows("tbl_expensetrackingtags",'btnDelRow','check');
-	});
-	
-	
-	$("#resetBtn").on('click',function(){
-		remove_all_rows("tbl_expensetrackingtags");
-	})
-	
-	
-	$("#btnCreate").on('click',function(ev){
-		
-		if($("input select").val("")) return false;
-		
-		var url = '<?=$this->get_url(array('assetview'=>'ajax_post_expense_tracking_tag','lib'=>'admin'));?>';
-		var data = $("#frm_create_expense_tracking").serializeArray();
-		
-		$.ajax({
-			url:url,
-			data:data,
-			type:"POST",
-			beforeSend:function(){
-				$("#overlay").css("display",'block');
-			},
-			success:function(resp){
-				alert(resp);
-				$("#overlay").css("display",'none');
-				remove_all_rows("tbl_expensetrackingtags");
-			},
-			error:function(){
-				alert('Error Occurred');
-			}
-		});
-		
-		ev.preventDefault();
-	});
-		
-</script>		

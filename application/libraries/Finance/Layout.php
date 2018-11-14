@@ -401,7 +401,8 @@ class Layout {
 		ob_start();
 		
 		if(file_exists($this->default_view_path.$this->asset_view_group.'/'.$view.".php")){
-			include_once ($this->default_view_path.$this->asset_view_group.'/'.$view.".php");
+			include_once ($this->default_view_path.$this->asset_view_group.'/'.$view.".php");// This is the content of the view
+			include_once ($this->default_assets_path.'/scripts/'.lcfirst($this->asset_view_group).".php");//For view independent JS scripts
 		}else{ 
 			include_once ($this->default_view_path.$view.".php");
 		}
@@ -486,6 +487,8 @@ class Layout {
 		$this->set_js_cdn("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js");
 		$this->set_js_cdn("https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js");
 		$this->set_js_cdn("https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js");
+		
+		//$this->set_js_files($this->default_js_path.'modules_js/'.lcfirst($this->asset_view_group).'.js?'.rand());
 		
 		$this->set_js_files($this->default_js_path.'sys.js?'.rand());
 		
