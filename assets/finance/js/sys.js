@@ -1,14 +1,6 @@
 $(document).ready(function(){
-   
-   $(".table").DataTable();    
+   $(".table").DataTable();     
 });
-
-   	function clone_last_body_row(table_id,row_class){
-		var $tr    = $("#"+table_id+" tbody tr:last").closest('.'+row_class);
-		var $clone = $tr.clone();
-		$clone.find('.'+row_class).val('');
-		$tr.after($clone);
-	} 
 
 $(".datepicker").datepicker();
 
@@ -56,8 +48,6 @@ $("textarea").keydown(function(e) {
         return false;
     }
 });
-
-
 
 
 
