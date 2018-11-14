@@ -90,6 +90,10 @@ class Admin extends Layout implements Initialization{
 	protected function pre_render_ajax_edit_expense_tracking_tag(){
 		echo "Hey there!";
 	}
+	
+	protected function pre_render_ajax_update_expense_tracking_tag_status(){
+		echo "Hey there!";
+	}
 
 	protected function pre_render_show_expense_tracking_tags(){
 		

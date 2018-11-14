@@ -1,28 +1,64 @@
-$(document).ready(function(){
-   $(".table").DataTable();     
-});
 
-$(".datepicker").datepicker();
-
-function go_back(){
-	window.history.back();
-}
-
-
-var datatable = $(".table").DataTable(
-			{
-				dom: 'Bfrtip',
-				buttons: [
-					'copyHtml5',
-					'excelHtml5',
-					'csvHtml5',
-					'pdfHtml5'
-				],
-				"ordering": false,
-		        stateSave: true,
-		        "scrollX": true,
-		     }
+$(function(){
+	
+	$(".datepicker").datepicker();
+	
+	$(".datatable").DataTable(
+		{
+			dom: 'Bfrtip',
+			buttons: [
+            	'copy', 'csv', 'excel', 'pdf', 'print'
+        	],
+			"ordering": false,
+		    "stateSave": true,
+		    "scrollX": true
+		 }
 	);
+	
+	
+	
+	
+	
+});
+	
+	function go_back(){
+		window.history.back();
+	}
+
+	function clone_last_body_row(table_id,row_class){
+		var $tr    = $("#"+table_id+" tbody tr:last").closest('.'+row_class);
+		var $clone = $tr.clone();
+		$clone.find('.'+row_class).children().val('');
+		$tr.after($clone);
+	}
+	
+	function remove_all_rows(tbl_id){
+		 $("#"+tbl_id+" tbody").find("tr:gt(0)").remove();
+		 $("select,input").val("");
+		 
+	}
+	
+	function remove_selected_rows(tbl_id,action_btn_id,checkbox_class){
+		var elem = $("#"+tbl_id+" tbody");
+		
+		$("."+checkbox_class).each(function(){
+			if($(this).is(":checked")){
+				if(elem.children().length > 1){
+					$(this).closest("tr").remove();//Replaced .parent().parent() to .closest()
+				}else{
+					alert("You need atleast one row in the table");
+				}
+			}
+			
+			var checked = $(".check:checked").length;
+			if(checked>0){
+				$("#"+action_btn_id).removeClass("hidden");	
+			}else{
+				$("#"+action_btn_id).addClass("hidden");
+			}
+		});		
+	}
+
 
 /**Adopted as it is from https://sumtips.com/snippets/javascript/tab-in-textarea/*
  *	By default when you press the tab key in a textarea, it moves to the next focusable element. 

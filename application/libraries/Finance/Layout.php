@@ -424,6 +424,10 @@ class Layout {
 		 $this->js_files[sha1($cdn_link)] = $cdn_link;
 	}
 	
+	private function set_css_cdn($cdn_link){
+		 $this->css_files[sha1($cdn_link)] = $cdn_link;
+	}
+	
 	/**
 	 * Load JS - Loads all JS files to the js_files parameter
 	 *
@@ -447,8 +451,6 @@ class Layout {
 		$this->set_js_files($this->default_js_path.'bootstrap-toggle/js/bootstrap-toggle.min.js');
 		$this->set_js_files($this->default_js_path.'bootstrap-dialog/js/bootstrap-dialog.min.js');
 		$this->set_js_files($this->default_js_path.'select2/select2.min.js');
-		//$this->set_js_cdn("https://cloud.tinymce.com/stable/tinymce.min.js");
-		//$this->set_js_cdn("https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js"); 
 		$this->set_js_files($this->default_js_path.'gsap/TweenMax.min.js');
 		$this->set_js_files($this->default_js_path.'neon/resizeable.js');
 		$this->set_js_files($this->default_js_path.'ckeditor/ckeditor.js');
@@ -456,9 +458,20 @@ class Layout {
 		$this->set_js_files($this->default_js_path.'neon/neon-api.js');
 		$this->set_js_files($this->default_js_path.'neon/neon-custom.js');
 		$this->set_js_files($this->default_js_path.'neon/neon-demo.js');
-		//$this->set_js_files($this->default_js_path.'neon/neon-skins.js');
 		
-		$this->set_js_files($this->default_js_path.'sys.js');
+		
+		//Used in Datatables
+		// $this->set_js_cdn("https://code.jquery.com/jquery-3.3.1.js");
+		// $this->set_js_cdn("https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js");
+		$this->set_js_cdn("https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js");
+		$this->set_js_cdn("https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js");
+		$this->set_js_cdn("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js");
+		$this->set_js_cdn("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js");
+		$this->set_js_cdn("https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js");
+		$this->set_js_cdn("https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js");
+		$this->set_js_cdn("https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js");
+		
+		$this->set_js_files($this->default_js_path.'sys.js?'.rand());
 		
 		return $this->js_files;
 	}
@@ -486,9 +499,9 @@ class Layout {
 		$this->set_css_files($this->default_css_path.'select2/select2-bootstrap.css');
 		$this->set_css_files($this->default_css_path.'select2/select2.css');
 		
-		
-		//$this->set_css_files($this->default_css_path.'neon/neon-theme.css');
-		//$this->set_css_files($this->default_css_path.'neon/neon.css');
+		//Used in Datatables
+		$this->set_css_cdn("https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css");
+		$this->set_css_cdn("https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css");
 		
 		return $this->css_files;
 	}

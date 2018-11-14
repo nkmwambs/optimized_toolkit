@@ -98,13 +98,6 @@
 		clone_last_body_row('tbl_expensetrackingtags','tr_clone');
 	})
 	
-	function clone_last_body_row(table_id,row_class){
-		var $tr    = $("#"+table_id+" tbody tr:last").closest('.'+row_class);
-		var $clone = $tr.clone();
-		$clone.find('.'+row_class).children().val('');
-		$tr.after($clone);
-	}
-	
 	
 	$(document).on("click",".check",function(){
 		
@@ -118,46 +111,18 @@
 	
 	
 	$("#btnDelRow").click(function(){
-		remove_selected_rows("tbl_expensetrackingtags",'btnDelRow');
+		remove_selected_rows("tbl_expensetrackingtags",'btnDelRow','check');
 	});
 	
-	function remove_selected_rows(tbl_id,action_btn_id){
-		var elem = $("#"+tbl_id+" tbody");
-		
-		$(".check").each(function(){
-			if($(this).is(":checked")){
-				if(elem.children().length > 1){
-					$(this).parent().parent().remove();
-				}else{
-					alert("You need atleast one row in the table");
-				}
-			}
-			
-			var checked = $(".check:checked").length;
-			if(checked>0){
-				$("#"+action_btn_id).removeClass("hidden");	
-			}else{
-				$("#"+action_btn_id).addClass("hidden");
-			}
-		});		
-	}
 	
 	$("#resetBtn").on('click',function(){
 		remove_all_rows("tbl_expensetrackingtags");
 	})
 	
-	function remove_all_rows(tbl_id){
-		 $("#"+tbl_id+" tbody").find("tr:gt(0)").remove();
-		 $("select input").val("");
-		 
-	}
 	
 	$("#btnCreate").on('click',function(ev){
 		
-		if($("input select").val("")) {
-			
-			return false;
-		}
+		if($("input select").val("")) return false;
 		
 		var url = '<?=$this->get_url(array('assetview'=>'ajax_post_expense_tracking_tag','lib'=>'admin'));?>';
 		var data = $("#frm_create_expense_tracking").serializeArray();
@@ -179,8 +144,7 @@
 			}
 		});
 		
-		//alert("Hello");
 		ev.preventDefault();
-	})
+	});
 		
 </script>		

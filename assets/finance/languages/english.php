@@ -161,3 +161,7 @@
 	$lang['suspend'] 					= 'Suspend';
 	$lang['edit_tracking_tags']			= 'Edit Tracking Tags';
 	$lang['add_tracking_tags']			= 'Add Tracking Tags';
+	$lang['suspended'] 					= 'Suspended';
+	$lang['activated'] 					= 'Activated';
+	$lang['active'] 					= 'Active';
+	$lang['activate'] 					= 'Activate';

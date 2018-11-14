@@ -9,7 +9,7 @@
 
 <div>
 	<div class="<?=$this->get_column_size();?>">
-		<table class="table table striped">
+		<table class="table table striped datatable">
 			<thead>
 				<tr>
 					<th><?=$this->l('action');?></th>
@@ -40,7 +40,7 @@
 									</li>
 									<li class="divider"></li>
 									<li>
-										<a href="#">
+										<a href="#" onclick="change_item_status(this,'<?=$tag->tag_id;?>','<?=$tag->tag_status;?>');">
 											<?php
 												if($tag->tag_status == 1){
 											?>
@@ -48,7 +48,7 @@
 													<?=$this->l('suspend');
 												}else{
 											?>
-												<i class="fa fa-eye-slash"></i>
+												<i class="fa fa-eye"></i>
 													<?=$this->l('activate');
 											
 												}
@@ -73,3 +73,35 @@
 		</table>
 	</div>	
 </div>
+
+<script>
+	function change_item_status(elem,id,status){
+		var url = '<?=$this->get_url(array('assetview'=>'ajax_update_expense_tracking_tag_status','lib'=>'admin'));?>';
+		var data = {'tag_id':id,'tag_status':status};
+		var status_tag = $(elem).closest("tr").find("td:last").html().trim();
+		//alert(status_tag);
+		
+		$.ajax({
+			url:url,
+			data:data,
+			beforeSend:function(){
+				$("#overlay").css("display","block");
+			},
+			success:function(resp){
+				$("#overlay").css("display","none");
+				if(status == '1' || status_tag == 'Active'){
+					$(elem).closest("tr").find("td:last").html("<?=$this->l('suspended');?>");
+					$(elem).html("<i class='fa fa-eye'></i> <?=$this->l('activate');?>");
+					
+				}else if(status == '0' || status_tag == 'Suspended'){
+					$(elem).closest("tr").find("td:last").html("<?=$this->l('active');?>");
+					$(elem).html("<i class='fa fa-eye-slash'></i> <?=$this->l('suspend');?>");
+				}
+			},
+			error:function(xhr,err){
+				alert(err);
+			}
+		});
+		
+	}
+</script>
