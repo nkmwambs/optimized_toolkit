@@ -1,5 +1,5 @@
 
-$(function(){
+$(function($){
 	
 	$(".datepicker").datepicker();
 	
@@ -9,7 +9,7 @@ $(function(){
 			buttons: [
             	'copy', 'csv', 'excel', 'pdf', 'print'
         	],
-			"ordering": false,
+			"ordering": true,
 		    "stateSave": true,
 		    "scrollX": true
 		 }

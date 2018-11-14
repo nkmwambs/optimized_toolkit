@@ -672,6 +672,22 @@ class Finance_model extends CI_Model{
 		return $result;	
 	}
 	
+	function update_expense_tracking_tag_status($post_array){
+			
+		$data['tag_status'] = $post_array['tag_status'];
+		
+		$this->db->where(array('accounts_expense_tracking_id'=>$post_array['tag_id']));
+	
+		$this->db->update('accounts_expense_tracking',$data);
+		
+		if($this->db->affected_rows()>0){
+			return true;
+		}else{
+			return false;
+		}
+		
+	}
+	
 	function change_cheque_booklet_status($icpNo){
 		$this->db->where(array("icpNo"=>$icpNo,"status"=>1));
 		$this->db->update("cheque_book",array('status'=>0));

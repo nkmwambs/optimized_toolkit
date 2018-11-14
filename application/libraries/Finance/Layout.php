@@ -402,6 +402,7 @@ class Layout {
 		
 		if(file_exists($this->default_view_path.$this->asset_view_group.'/'.$view.".php")){
 			include_once ($this->default_view_path.$this->asset_view_group.'/'.$view.".php");// This is the content of the view
+			include_once ($this->default_assets_path.'/scripts/setup.php');
 			include_once ($this->default_assets_path.'/scripts/'.lcfirst($this->asset_view_group).".php");//For view independent JS scripts
 		}else{ 
 			include_once ($this->default_view_path.$view.".php");
@@ -460,7 +461,7 @@ class Layout {
 		$this->set_js_files($this->default_js_path.'bootstrap/bootstrap.min.js');
 		$this->set_js_files($this->default_js_path.'jquery.dataTables.min.js');
 		//$this->set_js_files($this->default_js_path.'buttons.bootstrap.js');
-		//$this->set_js_cdn("https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js");
+		$this->set_js_cdn("https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js");
 		$this->set_js_files($this->default_js_path.'dataTables.bootstrap.min.js');
 		$this->set_js_files($this->default_js_path.'jquery-ui.min.js');
 		$this->set_js_files($this->default_js_path.'printThis.js');
@@ -479,7 +480,7 @@ class Layout {
 		
 		//Used in Datatables
 		// $this->set_js_cdn("https://code.jquery.com/jquery-3.3.1.js");
-		// $this->set_js_cdn("https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js");
+		//$this->set_js_cdn("https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js");
 		$this->set_js_cdn("https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js");
 		$this->set_js_cdn("https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js");
 		$this->set_js_cdn("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js");

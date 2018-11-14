@@ -58,33 +58,68 @@
 	
 //JS for show_expense_tracking_tag.php
 
-	function change_item_status(elem,id,status){
+	function change_item_status(elem,tag_id,tag_status){
 		var url = '<?=$this->get_url(array('assetview'=>'ajax_update_expense_tracking_tag_status','lib'=>'admin'));?>';
-		var data = {'tag_id':id,'tag_status':status};
-		var status_tag = $(elem).closest("tr").find("td:last").html().trim();
-		//alert(status_tag);
+		var status = tag_status==1?0:1;
+
+		/**Alternative to the Ajaxsetup in the assets/finance/scripts/setup.php
+		 * var csrf_test_name = $("input[name=csrf_test_name]").val();
+		 * var data = {'csrf_test_name' : csrf_test_name, 'tag_id':id,'tag_status':status};
+		 */
 		
+		var data = {'tag_id':tag_id,'tag_status':status};//Use AjaxSetup to add csrf hash to prevent Forbidden requests
+		
+		//Set $config['csrf_regenerate'] = false; in the Codeigniter Config file
 		$.ajax({
 			url:url,
 			data:data,
+			type:"POST",
 			beforeSend:function(){
 				$("#overlay").css("display","block");
 			},
 			success:function(resp){
 				$("#overlay").css("display","none");
-				if(status == '1' || status_tag == 'Active'){
+				if($(elem).hasClass('active')){
 					$(elem).closest("tr").find("td:last").html("<?=$this->l('suspended');?>");
+					$(elem).toggleClass('active suspended');
 					$(elem).html("<i class='fa fa-eye'></i> <?=$this->l('activate');?>");
-					
-				}else if(status == '0' || status_tag == 'Suspended'){
+				}else{
 					$(elem).closest("tr").find("td:last").html("<?=$this->l('active');?>");
+					$(elem).toggleClass('suspended active');
 					$(elem).html("<i class='fa fa-eye-slash'></i> <?=$this->l('suspend');?>");
 				}
+
+				alert(resp);
 			},
-			error:function(xhr,err){
-				alert(err);
+			error:function(xhr,err,msg){
+				alert(msg);
+				$("#overlay").css("display","none");
 			}
 		});
 		
 	}
+	
+//JS for edit_expense_tracking_tag.php
+
+$("#edit_record").on('click',function(){
+	//alert('frm_edit_expense_tracking');
+	var url = '<?=$this->get_url(array('assetview'=>'ajax_edit_expense_tracking_tag','lib'=>'admin'))?>';
+	var data = $("#frm_edit_expense_tracking").serializeArray();
+	
+	$.ajax({
+		url:url,
+		data:data,
+		beforeSend:function(){
+			$("#overlay").css('display','block');
+		},
+		success:function(resp){
+			$("#overlay").css('display','none');
+			alert(resp);
+			location.replace('<?=$this->get_url(array('assetview'=>'show_expense_tracking_tags','lib'=>'admin'));?>');
+		},
+		error:function(xhr,err){
+			alert(err);
+		}
+	});
+})	
 </script>

@@ -76,3 +76,7 @@
 	$lang['income'] = 'Income';
 	$lang['expense'] = 'Expense';
 	$lang['end_month_balance'] = 'End Month Balance';
+	$lang['edit_tracking_tags'] = 'Edit Tracking Tags';
+	$lang['select'] = 'Select';
+	$lang['update_failed'] = 'Update Failed';
+	$lang['update_successful'] = 'Update Successful';

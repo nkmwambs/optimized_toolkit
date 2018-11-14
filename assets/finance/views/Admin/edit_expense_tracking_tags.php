@@ -72,28 +72,4 @@
 		</div>
 	</div>
 </div>	
-
-<script>
-
-$("#edit_record").on('click',function(){
-	//alert('frm_edit_expense_tracking');
-	var url = '<?=$this->get_url(array('assetview'=>'ajax_edit_expense_tracking_tag','lib'=>'admin'))?>';
-	var data = $("#frm_edit_expense_tracking").serializeArray();
 	
-	$.ajax({
-		url:url,
-		data:data,
-		beforeSend:function(){
-			$("#overlay").css('display','block');
-		},
-		success:function(resp){
-			$("#overlay").css('display','none');
-			location.replace('<?=$this->get_url(array('assetview'=>'show_expense_tracking_tags','lib'=>'admin'));?>');
-		},
-		error:function(xhr,err){
-			alert(err);
-		}
-	});
-})
-		
-</script>		

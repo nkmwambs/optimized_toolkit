@@ -42,7 +42,7 @@
 									</li>
 									<li class="divider"></li>
 									<li>
-										<a href="#" onclick="change_item_status(this,'<?=$tag->tag_id;?>','<?=$tag->tag_status;?>');">
+										<a href="#" class="<?=$tag->tag_status==1?"active":"suspended";?>" onclick="change_item_status(this,'<?=$tag->tag_id;?>','<?=$tag->tag_status;?>');">
 											<?php
 												if($tag->tag_status == 1){
 											?>
@@ -75,3 +75,5 @@
 		</table>
 	</div>	
 </div>
+
+<!-- <input type="hidden" name="<?php echo $this->CI->security->get_csrf_token_name(); ?>" value="<?php echo $this->CI->security->get_csrf_hash(); ?>" /> -->
