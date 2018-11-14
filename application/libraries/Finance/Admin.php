@@ -88,7 +88,12 @@ class Admin extends Layout implements Initialization{
 	}
 	
 	protected function pre_render_ajax_edit_expense_tracking_tag(){
-		echo "Hey there!";
+		$msg = $this->l('update_failed');	
+		if($this->basic_model->edit_expense_tracking_tag($this->CI->input->post())){
+			$msg = $this->l('update_successful');	
+		}
+		
+		echo $msg;
 	}
 	
 	function pre_render_ajax_update_expense_tracking_tag_status(){

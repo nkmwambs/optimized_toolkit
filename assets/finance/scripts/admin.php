@@ -109,6 +109,7 @@ $("#edit_record").on('click',function(){
 	$.ajax({
 		url:url,
 		data:data,
+		type:"POST",
 		beforeSend:function(){
 			$("#overlay").css('display','block');
 		},

@@ -80,3 +80,13 @@
 	$lang['select'] = 'Select';
 	$lang['update_failed'] = 'Update Failed';
 	$lang['update_successful'] = 'Update Successful';
+	$lang['new_bugdet_item'] = 'New Bugdet Item';
+	$lang['budget_tag'] = 'Budget Tag';
+	$lang['select_tag'] = 'Select Tag';
+	$lang['fy'] = 'Fy';
+	$lang['quantity'] = 'Quantity';
+	$lang['unit_cost'] = 'Unit Cost';
+	$lang['often'] = 'Often';
+	$lang['total'] = 'Total';
+	$lang['notes_here'] = 'Notes Here';
+	$lang['create'] = 'Create';

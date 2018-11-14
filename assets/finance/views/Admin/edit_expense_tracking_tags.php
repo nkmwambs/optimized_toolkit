@@ -54,7 +54,7 @@
 						<div class="form-group">
 							<label class="control-label col-xs-4"><?=$this->l('status');?></label>
 							<div class="col-xs-8">
-								<select class="form-control required" id="status" name"status">
+								<select class="form-control required" id="status" name="status">
 									<option value=""><?=$this->l('select');?></option>
 									<option value="0" <?php if($tag->tag_status == '0') echo "selected";?> ><?=$this->l('suspended');?></option>
 									<option value="1" <?php if($tag->tag_status == '1') echo "selected";?> ><?=$this->l('active');?></option>
@@ -67,6 +67,7 @@
 								<div id="edit_record" class="btn btn-default"><?=$this->l('edit');?></div>
 							</div>
 						</div>
+						<input type="hidden" name="tag_id" value="<?=$tag_id;?>" />
 					</form>
 			</div>
 		</div>
