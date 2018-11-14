@@ -114,6 +114,13 @@ include "utility_open_standalone.php";
 									?>
 							         <button type="button" title="<?=$label;?>" id="action_<?=$cols['scheduleID']?>" class="btn btn-<?=$btn_color;?> btn-sm dropdown-toggle action_<?=$cols['approved']?>" data-toggle="dropdown">
 							               <?php echo $this->l('action');?> - <?=$label;?> <span class="caret"></span>
+							        		<?php
+							        			if($cols['expense_tracking_tag_id']>0){
+							        		?>
+							        			<i style="color:red;" class="fa fa-binoculars"></i>
+							        		<?php
+							        			}
+							        		?>
 							         </button>
 							         
 							         <ul class="dropdown-menu dropdown-default pull-left" role="menu">
@@ -244,7 +251,7 @@ include "utility_open_standalone.php";
 							         </ul>
 							      </div> 
 							</td>
-							<td><?=$cols['details'];?></td>
+							<td><?php echo $cols['details']; if($cols['expense_tracking_tag_id']>0) echo "<span style='color:red;'> [".$cols['tag_description']."]</span>";?></td>
 							<td><?=$cols['qty'];?></td>
 							<td style="text-align: right;"><?=number_format($cols['unitCost'],2);?></td>
 							<td><?=$cols['often'];?></td>
@@ -337,11 +344,11 @@ function approve_budget_item(elem){
 	
 	var data = {"scheduleID":scheduleID};
 	
-	var cnf_trackable = confirm("Is this item tackable?");
+	//var cnf_trackable = confirm("Is this item trackable?");
 	
-	if(cnf_trackable){
-		data = {"scheduleID":scheduleID,"trackable":'1'};
-	}
+	//if(cnf_trackable){
+		//data = {"scheduleID":scheduleID,"trackable":'1'};
+	//}
 	
 			$.ajax({
 			url:'<?=$this->get_url(array("assetview"=>'ajax_approve_budget_item',"lib"=>"budget"));?>',

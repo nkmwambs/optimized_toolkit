@@ -1,7 +1,5 @@
 <hr />
-<?php
-print_r($expense_tracking_tags);
-?>
+
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">
 		<a href="#" onclick="javascript:go_back();" 
