@@ -136,3 +136,8 @@
 	$lang['track_expenses'] = 'Track Expenses';
 	$lang['reference_number'] = 'Reference Number';
 	$lang['amount'] = 'Amount';
+	$lang['add_expense_breakdown'] = 'Add Expense Breakdown';
+	$lang['delete_row'] = 'Delete Row';
+	$lang['record_created'] = 'Record Created';
+	$lang['update'] = 'Update';
+	$lang['save'] = 'Save';

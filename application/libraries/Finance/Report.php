@@ -441,6 +441,11 @@ final class Report extends Layout implements Initialization{
 		
 		return $grid;
 	}	
+
+	private function get_tracked_expenses_breakdown(){
+		return $this->basic_model->get_tracked_expenses_breakdown($this->CI->input->get("voucher"),
+		$this->CI->input->get("scheduleID"));
+	}
 	
 	protected function pre_render_show_report(){
 		$data['transacting_month'] 	= $this->get_transacting_month();
@@ -592,6 +597,7 @@ final class Report extends Layout implements Initialization{
 	function pre_render_add_expensebreakdown(){
 		$this->has_sidebar = false;
 		
+		$data['expense_breakdown'] = $this->get_tracked_expenses_breakdown();
 		$data['scheduleID'] = $this->CI->input->get("scheduleID");
 		$data['budgetItem'] = $this->CI->input->get("budgetItem");
 		$data['voucher'] = $this->CI->input->get("voucher");
@@ -602,7 +608,13 @@ final class Report extends Layout implements Initialization{
 
 	function pre_render_ajax_post_expensebreakdown(){
 		//echo "Posting Successful";
-		echo ($this->basic_model->post_expense_breakdown($this->CI->input->post()))?"Posted Successful":"Error on Posting";
+		echo ($this->basic_model->post_expense_breakdown($this->CI->input->post()))?$this->l('record_created'):$this->l('error_occurred');
+		//print_r($this->CI->input->post());
+	}
+	
+	function pre_render_ajax_update_expensebreakdown(){
+		//echo "Posting Successful";
+		echo ($this->basic_model->post_expense_breakdown($this->CI->input->post(),"update"))?$this->l('record_created'):$this->l('error_occurred');
 		//print_r($this->CI->input->post());
 	}
 }

@@ -32,10 +32,35 @@ $(function($){
 		$tr.after($clone);
 	}
 	
-	function remove_all_rows(tbl_id){
+	function remove_all_rows(tbl_id,td_hosting_checkbox_postion){
+		if (td_hosting_checkbox_postion === undefined) {
+	        td_hosting_checkbox_postion = 0;
+	    }
 		 $("#"+tbl_id+" tbody").find("tr:gt(0)").remove();
-		 $("select,input").val("");
 		 
+		 var elem = $("select,input");
+		 
+		 //Clear values elements that are not readonly or disabled
+		 $.each(elem,function(){
+		 	if($(this).is('[readonly]') == false && $(this).is('[disabled]')== false)
+		    {
+		      $(this).val(null);
+		    }
+		 });
+		 
+		 
+		 
+		 //Uncheck the check box of the first row
+		 $("#"+tbl_id+" tbody").find("tr:eq(0) td:eq("+td_hosting_checkbox_postion+")").children().prop("checked",false);		 
+	}
+	
+	function show_hide_delete_button_on_check(checkbox_class,delete_button_id){
+		var checked = $("."+checkbox_class+":checked").length;
+		if(checked>0){
+			$("#"+delete_button_id).removeClass("hidden");	
+		}else{
+			$("#"+delete_button_id).addClass("hidden");
+		}
 	}
 	
 	function remove_selected_rows(tbl_id,action_btn_id,checkbox_class){
@@ -47,6 +72,9 @@ $(function($){
 					$(this).closest("tr").remove();//Replaced .parent().parent() to .closest()
 				}else{
 					alert("You need atleast one row in the table");
+					
+					//Uncheck the check box of the first row
+					$("#"+tbl_id+" tbody").find("tr:eq(0) td:eq("+td_hosting_checkbox_postion+")").children().prop("checked",false);
 				}
 			}
 			

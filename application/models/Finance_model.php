@@ -370,6 +370,19 @@ class Finance_model extends CI_Model{
 		return $result;
 	}	
 	
+	function get_tracked_expenses_breakdown($voucher,$scheduleid){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_tracked_expenses_breakdown(?,?)",array($voucher,$scheduleid));
+			$result = $query->num_rows()>0?$query->result_array():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;	
+	}
+	
 	function create_budget_header($icpNo="",$fy=""){
 		$flag = false;	
 		
@@ -382,7 +395,13 @@ class Finance_model extends CI_Model{
 		return $flag;
 	}
 	
-	function post_expense_breakdown($post_array=array()){
+	function post_expense_breakdown($post_array=array(),$update=""){
+		
+		if($update=='update'){
+			$this->db->where(array("VNumber"=>$post_array['VNumber'][0],"scheduleID"=>$post_array['scheduleID'][0]));
+			$this->db->delete("expense_breakdown");
+		}
+		
 		$flag = false;	
 		
 		for($i=0;$i<count($post_array['VNumber']);$i++){
@@ -402,6 +421,8 @@ class Finance_model extends CI_Model{
 		
 		return $flag;
 	}
+	
+	
 	
 	function insert_budget_schedule($icpNo="",$post_array=array()){
 		

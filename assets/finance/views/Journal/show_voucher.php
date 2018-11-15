@@ -69,8 +69,9 @@
 											<?php
 												if($row['tag_id']>0){
 													echo "<span class='fa fa-binoculars' style='color:red;'></span></br>";
+																									echo "<a href='".$this->get_url(array("assetview"=>'add_expensebreakdown','lib'=>'report',"voucher"=>$voucher['details']['VNumber']))."&scheduleID=".$row['scheduleID']."&budgetItem=".$row['tag_description']."'><u>[".$this->l('tracking_tag').": ".$row['tag_description']."]</u></a>";
 												}
-												echo "<a href='".$this->get_url(array("assetview"=>'add_expensebreakdown','lib'=>'report',"voucher"=>$voucher['details']['VNumber']))."&scheduleID=".$row['scheduleID']."&budgetItem=".$row['tag_description']."'><u>[".$this->l('tracking_tag').": ".$row['tag_description']."]</u></a>";
+
 											?>		
 										</td>		
 										<td style="text-align: right;"><?=number_format($row['UnitCost'],2);?></td>

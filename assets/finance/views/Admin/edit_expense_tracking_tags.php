@@ -64,7 +64,7 @@
 						
 						<div class="form-group">
 							<div class="col-xs-12">
-								<div id="edit_record" class="btn btn-default"><?=$this->l('edit');?></div>
+								<div id="edit_record" class="btn btn-default"><?=$this->l('save');?></div>
 							</div>
 						</div>
 						<input type="hidden" name="tag_id" value="<?=$tag_id;?>" />

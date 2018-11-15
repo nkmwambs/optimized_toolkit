@@ -8,13 +8,7 @@
 	
 	
 	$(document).on("click",".check",function(){
-		
-		var checked = $(".check:checked").length;
-		if(checked>0){
-			$("#btnDelRow").removeClass("hidden");	
-		}else{
-			$("#btnDelRow").addClass("hidden");
-		}
+		show_hide_delete_button_on_check("check","btnDelRow");
 	});
 	
 	
@@ -30,7 +24,7 @@
 	
 	$("#btnCreate").on('click',function(ev){
 		
-		if($("input select").val("")) return false;
+		if($("input,select").val(null)) return false;
 		
 		var url = '<?=$this->get_url(array('assetview'=>'ajax_post_expense_tracking_tag','lib'=>'admin'));?>';
 		var data = $("#frm_create_expense_tracking").serializeArray();
