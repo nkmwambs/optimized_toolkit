@@ -1,9 +1,8 @@
-#wrapper{
-	background-color:red;
+ /* Don't print link hrefs 
+  * Adopted from https://makandracards.com/makandra/29149-bootstrap-how-to-avoid-printing-link-urls
+  * */
+@media print {
+  a[href]:after {
+    content: none
+  }
 }
-
-div.dataTables_wrapper {
-        width: 100%;
-        margin: 0 auto;
-    }
-    

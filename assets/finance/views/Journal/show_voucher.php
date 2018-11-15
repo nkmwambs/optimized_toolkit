@@ -2,7 +2,7 @@
 
 <hr />
 <?php
-//print_r($voucher);
+//print_r($tracked_voucher_cost);
 ?>
 <div class="row">
 	<div class="<?=$this->get_column_size();?>">						
@@ -68,8 +68,17 @@
 											<?=$row['Details']?> 
 											<?php
 												if($row['tag_id']>0){
-													echo "<span class='fa fa-binoculars' style='color:red;'></span></br>";
-																									echo "<a href='".$this->get_url(array("assetview"=>'add_expensebreakdown','lib'=>'report',"voucher"=>$voucher['details']['VNumber']))."&scheduleID=".$row['scheduleID']."&budgetItem=".$row['tag_description']."'><u>[".$this->l('tracking_tag').": ".$row['tag_description']."]</u></a>";
+											?>	<div class="hidden-print">	
+												<!-- <span class='fa fa-binoculars' style='color:red;'></span></br> -->
+												<a href='<?=$this->get_url(array("assetview"=>'add_expensebreakdown','lib'=>'report',
+													"voucher"=>$voucher['details']['VNumber'])).
+													"&scheduleID=".$row['scheduleID']."&cost=".array_sum($tracked_voucher_cost[$row['tag_id']]);?>'>
+														<u>
+															[<?=$this->l('tracking_tag').": ".$row['tag_description'];?>]
+														</u>
+												</a>
+												</div>
+											<?php	
 												}
 
 											?>		
@@ -140,21 +149,3 @@
 </div>
 
 <hr />    
-
-<script type="text/javascript">
-	function PrintElem(elem)
-    {
-        $(elem).printThis({ 
-		    debug: false,              
-		    importCSS: true,             
-		    importStyle: true,         
-		    printContainer: false,       
-		    loadCSS: "", 
-		    pageTitle: "Payment Voucher",             
-		    removeInline: false,        
-		    printDelay: 333,            
-		    header: null,             
-		    formValues: true          
-		});
-    }
-</script>

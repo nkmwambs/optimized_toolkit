@@ -141,3 +141,6 @@
 	$lang['record_created'] = 'Record Created';
 	$lang['update'] = 'Update';
 	$lang['save'] = 'Save';
+	$lang['total_spent'] = 'Total Spent';
+	$lang['total_tracked'] = 'Total Tracked';
+	$lang['balance'] = 'Balance';

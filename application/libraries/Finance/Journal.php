@@ -759,6 +759,22 @@ final class Journal extends Layout implements Initialization{
  		return $data;
 		
 	}
+
+	function group_sum_expense_by_tracking_tag_id (){
+		$voucher = $this->voucher_transactions($this->CI->input->get("voucher"));
+		
+		$voucher_body = $voucher[$this->CI->input->get("voucher")]['body'];
+		
+		$group = array();
+		
+		foreach($voucher_body as $row){
+			if($row['tag_id'] > 0){
+				$group[$row['tag_id']][] = $row['Cost']; 
+			}
+		}
+		
+		return $group;
+	}
 	
 	protected function pre_render_show_voucher(){
 		$voucher_found = false;
@@ -768,6 +784,7 @@ final class Journal extends Layout implements Initialization{
 			
 			if(isset($vouchers[$this->CI->input->get("voucher")])){
 				$data['voucher'] = $vouchers[$this->CI->input->get("voucher")];
+				$data['tracked_voucher_cost'] = $this->group_sum_expense_by_tracking_tag_id();
 				$voucher_found = true;
 			}
 			

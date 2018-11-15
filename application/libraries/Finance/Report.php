@@ -594,13 +594,23 @@ final class Report extends Layout implements Initialization{
 			return $data;
 	}	
 	
+	private function get_tag_id_from_budget_schedule(){
+		return $this->basic_model->get_budget_schedules_by_id($this->CI->input->get("scheduleID"))
+			->expense_tracking_tag_id;
+	}
+	
+	function get_expense_tracking_record(){
+		return $this->basic_model->get_expense_tracking_tag_by_id($this->get_tag_id_from_budget_schedule());
+	}
+	
 	function pre_render_add_expensebreakdown(){
 		$this->has_sidebar = false;
 		
 		$data['expense_breakdown'] = $this->get_tracked_expenses_breakdown();
 		$data['scheduleID'] = $this->CI->input->get("scheduleID");
-		$data['budgetItem'] = $this->CI->input->get("budgetItem");
+		$data['budgetItem'] = $this->get_expense_tracking_record()->tag_description;
 		$data['voucher'] = $this->CI->input->get("voucher");
+		$data['spent_for_tracking'] = $this->CI->input->get("cost");;
 		$data['view'] = 'add_expensebreakdown';
 		
 		return $data;

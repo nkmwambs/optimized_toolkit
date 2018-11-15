@@ -1,4 +1,3 @@
-
 $(function($){
 	
 	$(".datepicker").datepicker();
@@ -15,11 +14,32 @@ $(function($){
 		 }
 	);
 	
-	
-	
-	
-	
 });
+
+	function sum_column_of_textboxes(textboxes_class){
+		var total = 0;
+		$('.'+textboxes_class).each(function(){
+			total += parseFloat($(this).val());
+		});
+		
+		return total;
+	}
+	
+	function PrintElem(elem)
+    {
+        $(elem).printThis({ 
+		    debug: false,              
+		    importCSS: true,             
+		    importStyle: true,         
+		    printContainer: false,       
+		    loadCSS: "", 
+		    pageTitle: "Payment Voucher",             
+		    removeInline: false,        
+		    printDelay: 333,            
+		    header: 'FCP Payment Voucher',             
+		    formValues: true          
+		});
+    }
 	
 	function go_back(){
 		window.history.back();
@@ -86,6 +106,8 @@ $(function($){
 			}
 		});		
 	}
+	
+	
 
 
 /**Adopted as it is from https://sumtips.com/snippets/javascript/tab-in-textarea/*

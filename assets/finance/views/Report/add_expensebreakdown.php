@@ -1,5 +1,5 @@
 <?php
-//print_r($expense_breakdown);
+//print_r($this->get_tag_id_from_budget_schedule());
 ?>
 <div class="panel panel-primary"data-collapsed="1">
       	<div class="panel-heading">
@@ -52,11 +52,11 @@
 								?>
 									<tr class="tr_clone">
 										<td><input type="checkbox" class="check" disabled="disabled" /></td>
-										<td><input type="number" required="required" readonly="readonly" name="VNumber[]" id="" class="form-control" value="<?=$row['VNumber'];?>"/></td>
-										<input type="hidden" required="required" readonly="readonly" name="scheduleID[]" id="" class="form-control" value="<?=$row['scheduleID'];?>"/>
-										<td><input type="text" required="required" readonly="readonly" name="" id="" class="form-control" value="<?=$row['details'];?>"/></td>
-										<td><input type="text" required="required" name="referenceNo[]" id="" class="form-control toempty" value="<?=$row['referenceNo'];?>" /></td>
-										<td><input type="number" required="required" name="amount[]" id="" class="form-control" value="<?=$row['amount'];?>" /></td>
+										<td><input type="number" required="required" readonly="readonly" name="VNumber[]" id="" class="form-control VNumber" value="<?=$row['VNumber'];?>"/></td>
+										<input type="hidden" required="required" readonly="readonly" name="scheduleID[]" id="" class="form-control scheduleID" value="<?=$row['scheduleID'];?>"/>
+										<td><input type="text" required="required" readonly="readonly" name="" id="" class="form-control details" value="<?=$row['tag_description'];?>"/></td>
+										<td><input type="text" required="required" name="referenceNo[]" id="" class="form-control toempty referenceNo" value="<?=$row['referenceNo'];?>" /></td>
+										<td><input type="number" required="required" name="amount[]" id="" class="form-control amount" value="<?=$row['amount'];?>" /></td>
 									</tr>	
 								<?php	
 								}
@@ -64,15 +64,27 @@
 						?>
 						<tr class="tr_clone">
 							<td><input type="checkbox" class="check" /></td>
-							<td><input type="number" required="required" readonly="readonly" name="VNumber[]" id="" class="form-control" value="<?=$voucher;?>"/></td>
-							<input type="hidden" required="required" readonly="readonly" name="scheduleID[]" id="" class="form-control" value="<?=$scheduleID;?>"/>
-							<td><input type="text" required="required" readonly="readonly" name="" id="" class="form-control" value="<?=$budgetItem;?>"/></td>
-							<td><input type="text" required="required" name="referenceNo[]" id="" class="form-control toempty" /></td>
-							<td><input type="number" required="required" name="amount[]" id="" class="form-control" /></td>
+							<td><input type="number" required="required" readonly="readonly" name="VNumber[]" id="" class="form-control voucher" value="<?=$voucher;?>"/></td>
+							<input type="hidden" required="required" readonly="readonly" name="scheduleID[]" id="" class="form-control scheduleID" value="<?=$scheduleID;?>"/>
+							<td><input type="text" required="required" readonly="readonly" name="" id="" class="form-control details" value="<?=$budgetItem;?>"/></td>
+							<td><input type="text" required="required" name="referenceNo[]" id="" class="form-control toempty referenceNo" /></td>
+							<td><input type="number" required="required" name="amount[]" id="" class="form-control amount"  value="0"/></td>
 						</tr>
 					</tbody>
 				
 				<tfoot>
+					<tr>
+						<td colspan="4"><?=$this->l('total_spent');?></td>
+						<td id="spent"><?=$spent_for_tracking;?></td>
+					</tr>
+					<tr>
+						<td colspan="4"><?=$this->l('total_tracked');?></td>
+						<td id="tracked">0</td>
+					</tr>
+					<tr>
+						<td colspan="4"><?=$this->l('balance');?></td>
+						<td id="balance">0</td>
+					</tr>
 					<tr>
 						<?php
 							if(count($expense_breakdown)>0){
@@ -94,6 +106,26 @@
 </div>		
 
 <script>
+	$(function(){
+		var spent = <?=$spent_for_tracking;?>;
+		var tracked = sum_column_of_textboxes("amount")
+		var balance = parseFloat(spent) - parseFloat(tracked);
+		
+		$("#tracked").html(tracked);
+		$("#balance").html(balance);
+		
+	})
+	
+	$(".amount").on('change',function(){
+		var spent = <?=$spent_for_tracking;?>;
+		var tracked = sum_column_of_textboxes("amount")
+		var balance = parseFloat(spent) - parseFloat(tracked);
+		
+		$("#tracked").html(tracked);
+		$("#balance").html(balance);
+	})
+	
+
 	$("#clone_row").click(function(){
 		clone_last_body_row("tbl_breakdown","tr_clone");
 	});

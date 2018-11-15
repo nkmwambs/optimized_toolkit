@@ -510,7 +510,7 @@ class Layout {
 		$this->set_css_files($this->default_css_path.'neon/neon-core.css');
 		$this->set_css_files($this->default_css_path.'bootstrap/bootstrap.min.css');
 		$this->set_css_files($this->default_css_path.'dataTables.bootstrap.min.css');
-		$this->set_css_files($this->default_css_path.'custom.css');
+		$this->set_css_files($this->default_css_path.'custom.css?'.rand());
 		$this->set_css_files($this->default_css_path.'jquery-ui-themes/base/jquery-ui.min.css');
 		$this->set_css_files($this->default_css_path.'jquery-ui-themes/base/theme.css');
 		$this->set_css_files($this->default_css_path.'font-icons/font-awesome/css/font-awesome.css');

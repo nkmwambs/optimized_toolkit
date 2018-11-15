@@ -694,6 +694,19 @@ class Finance_model extends CI_Model{
 		return $result;	
 	}
 	
+	function get_expense_tracking_tag_by_id($id){
+		try{
+			$this->db->reconnect();
+			$query = $this->db->query("CALL get_expense_tracking_tag_by_id(?)",array($id));
+			$result = $query->num_rows()>0?$query->row():array();
+			$this->db->close();
+		}catch(Exception $e){
+			echo "Message: ".$e->getMessage();
+		}
+		
+		return $result;
+	}
+	
 	function update_expense_tracking_tag_status($post_array){
 			
 		$data['tag_status'] = $post_array['tag_status'];
