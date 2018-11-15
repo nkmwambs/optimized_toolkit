@@ -1,6 +1,5 @@
 <?php
-//print_r($this->get_unused_cheque_leaves());
-
+//print_r($this->budget_grouped_items());
 ?>
 <style> .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; } .toggle.ios .toggle-handle { border-radius: 20px; } </style>
 <hr/>
@@ -417,6 +416,8 @@
 	
 	$(document).on("change", ".accounts", function(){
 		
+		//$(".selectBoxIt").selectBoxIt();
+		
 		var account = $(this).val();
 		
 		var civa_input = $(this).parent().next().next().children();
@@ -476,11 +477,15 @@
 		var select_obj = obj[account];	
 
 		for (i=0;i<select_obj.length;i++){
-		 	budget_item_options+="<option value='"+select_obj[i].scheduleID+"'>"+select_obj[i].details+"</option>";
+			var expense_tracking_tag = "";
+			if(!!select_obj[i].tag_id){
+				expense_tracking_tag = " [<?=$this->l('tracking_tag');?>: "+select_obj[i].tag_description+"]";
+			}
+		 	budget_item_options+="<option value='"+select_obj[i].scheduleID+"'>"+select_obj[i].details+expense_tracking_tag+"</option>";
 		}
 				
 		
-		var select_budget_items = 	"<select class='form-control detail required' name='scheduleID[]'>"
+		var select_budget_items = 	"<select class='form-control selectBoxIt detail required' name='scheduleID[]'>"
 									+"<option value=''>Select Bugdet Item</option>"
 									+ budget_item_options
 									+"</select>";
