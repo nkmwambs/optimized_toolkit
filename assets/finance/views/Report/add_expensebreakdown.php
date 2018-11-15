@@ -10,17 +10,29 @@
 			</div>
            </div>
 		<div class="panel-body">
-				<div class="btn btn-info" id="clone_row">Add Row</div>
-				<hr	/>
-				<?php echo form_open("", array('id' => 'frm_breakdown', 'class' => 'form-horizontal form-groups-bordered validate', 'enctype' => 'multipart/form-data')); ?>
+			
+			<ul class="nav nav-pills">
+				<li>
+					<a id="" href="#" onclick="go_back();" class="btn btn-default btn-icon icon-left hidden-print pull-left">
+						<?=$this->l('back');?>
+					</a>
+				</li>
+				<li>
+					<a href="#" class="btn btn-default" id="clone_row">Add Row</a>	
+				</li>
+			</ul>
+			
+			<hr />
+			
+			<?php echo form_open("", array('id' => 'frm_breakdown', 'class' => 'form-horizontal form-groups-bordered validate', 'enctype' => 'multipart/form-data')); ?>
 
 				<table class="table table-striped" id="tbl_breakdown">
 					<thead>
 						<tr>
-							<th>Voucher Number</th>
-							<th>Budget Item</th>
-							<th>Reference Number</th>
-							<th>Amount</th>
+							<th><?=$this->l('voucher_number');?></th>
+							<th><?=$this->l('expense_tracking_tag')?></th>
+							<th><?=$this->l('reference_number');?></th>
+							<th><?=$this->l('amount');?></th>
 						</tr>
 					</thead>
 					<tbody>

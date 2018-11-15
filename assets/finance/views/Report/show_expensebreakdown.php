@@ -35,7 +35,7 @@ include "utility_open_standalone.php";
 								<td><?=$row['VNumber'];?></td>
 								<td><?=$row['Cost'];?></td>
 								<td>0</td>
-								<td><button class="btn btn-danger" onclick="showAjaxModal('<?=$this->get_url(array("assetview"=>'add_expensebreakdown','lib'=>'report',"voucher"=>$row['VNumber']));?>&scheduleID=<?=$row['scheduleID']?>&budgetItem=<?=$row['details'];?>')">Not Available</button></td>
+								<td><a class="btn btn-danger" href="<?=$this->get_url(array("assetview"=>'add_expensebreakdown','lib'=>'report',"voucher"=>$row['VNumber']));?>&scheduleID=<?=$row['scheduleID']?>&budgetItem=<?=$row['details'];?>">Not Available</a></td>
 							</tr>
 						<?php
 							}

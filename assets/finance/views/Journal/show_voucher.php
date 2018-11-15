@@ -1,3 +1,5 @@
+<?php defined('BASEPATH') OR exit('No direct script access allowed');?>
+
 <hr />
 <?php
 //print_r($voucher);
@@ -63,17 +65,18 @@
 									<tr>
 										<td><?=$row['Qty'];?></td>
 										<td colspan="2">
-											<?=$row['Details']?> (<?=isset($row['scheduleDetail'])?$row['scheduleDetail']:"Budget Item Not Defined";?>)
+											<?=$row['Details']?> 
 											<?php
-												if($row['trackable']==1){
-													echo "<span class='fa fa-binoculars' style='color:red;'></span>";
+												if($row['tag_id']>0){
+													echo "<span class='fa fa-binoculars' style='color:red;'></span></br>";
 												}
+												echo "<a href='".$this->get_url(array("assetview"=>'add_expensebreakdown','lib'=>'report',"voucher"=>$voucher['details']['VNumber']))."&scheduleID=".$row['scheduleID']."&budgetItem=".$row['tag_description']."'><u>[".$this->l('tracking_tag').": ".$row['tag_description']."]</u></a>";
 											?>		
 										</td>		
 										<td style="text-align: right;"><?=number_format($row['UnitCost'],2);?></td>
 										<td style="text-align: right;"><?=number_format($row['Cost'],2);?></td>
 										<td style="text-align: right;"><?=$row['AccNo'];?></td>
-										<td style="text-align: right;"><?=$row['scheduleID'];?></td>
+										<td style="text-align: right;"><?=isset($row['scheduleDetail'])?$row['scheduleDetail']:"Budget Item Not Defined";?></td>
 										<td style="text-align: right;"><?=$row['civaCode'];?></td>
 									</tr>
 								<?php

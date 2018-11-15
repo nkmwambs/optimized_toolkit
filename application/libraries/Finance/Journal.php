@@ -1,4 +1,5 @@
 <?php
+defined('BASEPATH') OR exit('No direct script access allowed');
 
 /************************************************************************************************************
  * Journal Package
@@ -119,7 +120,7 @@ final class Journal extends Layout implements Initialization{
 		
 		foreach($all_transactions as $rows){
 			/**Columns to be removed in the details element value**/
-			$removeKeys = array("AccNo","AccText","AccGrp","Cost","scheduleID","civaCode","Qty","Details","UnitCost","scheduleDetail","trackable");
+			$removeKeys = array("AccNo","AccText","AccGrp","Cost","scheduleID","civaCode","Qty","Details","UnitCost","scheduleDetail","tag_id","tag_description");
 			$transactions_container[$rows['VNumber']]['details'] = array_diff_key($rows, array_flip($removeKeys));
 			
 			$transactions_container[$rows['VNumber']][$rows['AccGrp']][$rows['AccNo']] = $rows['Cost'];
@@ -239,7 +240,8 @@ final class Journal extends Layout implements Initialization{
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Qty'] = $rows['Qty'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Details'] = $rows['Details'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['scheduleDetail'] = $rows['scheduleDetail'];//trackable
-			$transactions_container[$rows['VNumber']]['body'][$cnt]['trackable'] = $rows['trackable'];//trackable
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['tag_id'] = $rows['tag_id'];//trackable
+			$transactions_container[$rows['VNumber']]['body'][$cnt]['tag_description'] = $rows['tag_description'];//trackable
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['UnitCost'] = $rows['UnitCost'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['Cost'] = $rows['Cost'];
 			$transactions_container[$rows['VNumber']]['body'][$cnt]['AccNo'] = $rows['AccText'];

@@ -129,3 +129,10 @@
 	$lang['tracking_tag'] = 'Tracking Tag';
 	$lang['vouching_failure'] = 'Vouching Failure';
 	$lang['vouching_success'] = 'Vouching Success';
+	$lang['print'] = 'Print';
+	$lang['raised_by'] = 'Raised By';
+	$lang['name'] = 'Name';
+	$lang['signature'] = 'Signature';
+	$lang['track_expenses'] = 'Track Expenses';
+	$lang['reference_number'] = 'Reference Number';
+	$lang['amount'] = 'Amount';

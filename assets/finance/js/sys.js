@@ -9,7 +9,7 @@ $(function($){
 			buttons: [
             	'copy', 'csv', 'excel', 'pdf', 'print'
         	],
-			"ordering": true,
+			"ordering": false,
 		    "stateSave": true,
 		    "scrollX": true
 		 }
