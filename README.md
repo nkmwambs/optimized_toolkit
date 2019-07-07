@@ -17,9 +17,9 @@
  Tuesday| 45|
  Wednesday|67|
  
- `````
+ ```
  if(x=4){
  {
  echo "Hello";
  }
- ``````
+ ```
