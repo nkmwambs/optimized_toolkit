@@ -1,6 +1,6 @@
 # optimized_toolkit
 
-- Create a database compatl8_mvc 
+- Create a ~~database~~ compatl8_mvc 
 
 - Dump the sql files in optimized_toolkit/database in the order of:
   - tables_schema.sql
