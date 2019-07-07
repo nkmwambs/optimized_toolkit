@@ -17,9 +17,6 @@
  Tuesday| 45|
  Wednesday|67|
  
- ```
- if(x=4){
- {
- echo "Hello";
- }
- ```
+- [x] Item 1
+- []  Item 2
+- []  Item 3
