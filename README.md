@@ -10,3 +10,8 @@
   - voucher_body.sql
  - On the Git CLI go to htdocs folder (Assuming using XAMPP) type $ git clone https://github.com/nkmwambs/optimized_toolkit.git
  - Go to the browser url and type [localhost](http://localhost/optimized_toolkit)
+ 
+ Days of the week| Number of changes|
+ ----------------|------------------|
+ Monday| 24
+ ______|_____
