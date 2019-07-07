@@ -17,6 +17,6 @@
  Tuesday| 45|
  Wednesday|67|
  
--[X] Item 1
--[X]  Item 2
--[X]  Item 3
+-[x] Item 1
+-[x]  Item 2
+-[x]  Item 3
