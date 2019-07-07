@@ -12,7 +12,7 @@
  - Go to the browser url and type [localhost](http://localhost/optimized_toolkit)
  
  Days of the week| Number of changes|
- ------------------------------------
+ ----------------|------------------|
  Monday| 24 |
  Tuesday| 45|
  Wednesday|67|
