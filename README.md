@@ -14,4 +14,5 @@
  Days of the week| Number of changes|
  ----------------|------------------|
  Monday| 24
- ______|_____
+ ------|----|
+ Tuesday| 45|
